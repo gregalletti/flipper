@@ -264,7 +264,7 @@ function main() {
   function drawScene() {
 
     // update uv coordinates of dynamic score system  
-    updateScoreTex();
+    //supdateScoreTex();
 
     // adjust camera
     viewX += viewXSpeed * camera_dt;

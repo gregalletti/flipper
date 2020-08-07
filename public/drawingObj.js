@@ -247,10 +247,7 @@ function main() {
   for (let i in allMeshes)
     addMeshToScene(i);
     
-  // loading complete: dismiss loading screen
-  loadingBg.style.opacity = 0.0;
-  loadingMsg.style.opacity = 0.0;
-
+  
   function updateScoreTex() {
     if (actualScore != score) {
       actualScore = score;

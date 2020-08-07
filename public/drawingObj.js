@@ -282,7 +282,7 @@ function main() {
 
     // compose view and light
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
-
+/*
     // update world matrices for moving objects
     allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y);
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
@@ -302,7 +302,7 @@ function main() {
       var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
-      
+     
       gl.uniform3fv(eyePositionHandle, eyePositionTransformed);    
       gl.uniform3fv(materialDiffColorHandle, materialColor);
       gl.uniform3fv(lightColorHandleA, directionalLightColorA);
@@ -326,7 +326,7 @@ function main() {
       gl.bindVertexArray(vaos[i]);
       gl.drawElements(gl.TRIANGLES, allMeshes[i].indices.length, gl.UNSIGNED_SHORT, 0);
     }
-
+*/
     window.requestAnimationFrame(drawScene);
   }
   

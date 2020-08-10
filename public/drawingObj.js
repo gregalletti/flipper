@@ -121,7 +121,7 @@ var tunnelRightMesh;
 var tunnelLeftMesh;
 var tunnelUpMesh;
 
-var allMeshes;
+var objects;
 
 var texture;
 
@@ -158,19 +158,19 @@ function main() {
   Math.sin(dirLightAlpha),
   Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  var directionalLightColorA = [0.85, 0.35, 0.35];
+  var directionalLightColorA = [0.15, 0.35, 0.35];
 
   var directionalLightB = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
   Math.sin(dirLightAlpha),
   Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  var directionalLightColorB = [0.35, 0.35, 0.85];
+  var directionalLightColorB = [0.45, 0.95, 0.15];
 
   // define material color 
   var materialColor = [1.0, 1.0, 1.0];
 
   // define ambient light color and material
-  var ambientLight = [0.55, 0.1, 0.8];
+  var ambientLight = [0.15, 0.1, 0.8];
   var ambientMat = [0.4, 0.2, 0.6];
     
   //define specular component of color
@@ -205,7 +205,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/pinball.jpg";
+  image.src = baseDir + "textures/icon.jpg";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -247,16 +247,19 @@ function main() {
   for (let i in allMeshes)
     addMeshToScene(i);
     
-  
+  // loading complete: dismiss loading screen
+  //loadingBg.style.opacity = 0.0;
+  //loadingMsg.style.opacity = 0.0;
+
   function updateScoreTex() {
     if (actualScore != score) {
       actualScore = score;
       let scoreArr = Array.from(String(actualScore), Number).reverse();
-      let scoreMeshes = [dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh];
+      let scoreMeshes = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];
       for (let i = 0; i < scoreArr.length; i++) {
         let digit = scoreArr[i];
         scoreMeshes[i].textures = numUVs[digit];
-        addMeshToScene(i + 6);
+        addMeshToScene(i + 11);
       }
     }
   }  
@@ -264,7 +267,7 @@ function main() {
   function drawScene() {
 
     // update uv coordinates of dynamic score system  
-    //supdateScoreTex();
+    updateScoreTex();
 
     // adjust camera
     viewX += viewXSpeed * camera_dt;
@@ -282,7 +285,7 @@ function main() {
 
     // compose view and light
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
-/*
+
     // update world matrices for moving objects
     allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y);
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
@@ -302,7 +305,7 @@ function main() {
       var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
-     
+      
       gl.uniform3fv(eyePositionHandle, eyePositionTransformed);    
       gl.uniform3fv(materialDiffColorHandle, materialColor);
       gl.uniform3fv(lightColorHandleA, directionalLightColorA);
@@ -326,7 +329,7 @@ function main() {
       gl.bindVertexArray(vaos[i]);
       gl.drawElements(gl.TRIANGLES, allMeshes[i].indices.length, gl.UNSIGNED_SHORT, 0);
     }
-*/
+
     window.requestAnimationFrame(drawScene);
   }
   
@@ -335,18 +338,17 @@ function main() {
 
 
 // Global references to sounds
-var soundBumper;
-var soundSlingshot;
-var soundObstacle;
+var soundBumper1;
+var soundBumper2;
+var soundBumper3;
 var soundFlipperDown;
 var soundFlipperUp;
 var soundLaunch;
 var soundPuller;
 var soundReload;
-var soundWall;
-var soundTunnel;
-var soundBall;
-var soundSphere;
+var soundWall1;
+var soundWall2;
+var soundWall3;
 
 /**
  * 
@@ -358,8 +360,7 @@ function playSound(sound) {
 }
 
 async function init() {
-  console.log("dsiaacne");
-  /*soundBumper1 = document.getElementById("sound_bumper1");
+  soundBumper1 = document.getElementById("sound_bumper1");
   soundBumper2 = document.getElementById("sound_bumper2");
   soundBumper3 = document.getElementById("sound_bumper3");
   soundFlipperDown = document.getElementById("sound_flipper_down");
@@ -370,7 +371,7 @@ async function init() {
   soundWall1 = document.getElementById("sound_wall1");
   soundWall2 = document.getElementById("sound_wall2");
   soundWall3 = document.getElementById("sound_wall3");
-*/
+
   setupCanvas();
   loadShaders();
   await loadMeshes();
@@ -397,8 +398,7 @@ async function init() {
     var page = path.split("/").pop();
     baseDir = window.location.href.replace(page, '');
     shaderDir = baseDir + "shaders/";
-    modelsDir = baseDir + "models/";
-    console.log(modelsDir);
+    modelsDir = baseDir + "models/"
 
     // load vertex and fragment shaders from file
     await utils.loadFiles([shaderDir + 'vs.glsl', shaderDir + 'fs.glsl'], function (shaderText) {
@@ -432,6 +432,9 @@ async function init() {
     dr6Mesh = await utils.loadMesh(modelsDir + "DR6.obj");
     leftButtonMesh = await utils.loadMesh(modelsDir + "LeftButton.obj");
     leftFlipperMesh = await utils.loadMesh(modelsDir + "LeftFlipper.obj");
+    if(leftFlipperMesh){
+      console.log("diobo")
+    }
     pullerMesh = await utils.loadMesh(modelsDir + "Puller.obj");
     rightButtonMesh = await utils.loadMesh(modelsDir + "RightButton.obj");
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
@@ -439,6 +442,68 @@ async function init() {
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh];
   }
+
+  // displays the pinball controls
+  /*function displayControls() {
+    // displaying game controls
+    let gameControls = document.getElementById("gameControls");
+    let gc1 = document.createElement("li");
+    let gc2 = document.createElement("li");
+    let gc3 = document.createElement("li");
+
+    gc1.innerHTML = "Left Flipper: " + LEFT_FLIPPERS_KEY;
+    gc2.innerHTML = "Right Flipper: " + RIGHT_FLIPPERS_KEY;
+    gc3.innerHTML = "Launch Ball: " + (BALL_LAUNCH_KEY === " " ? "space" : BALL_LAUNCH_KEY);
+
+    gameControls.appendChild(gc1);
+    gameControls.appendChild(gc2);
+    gameControls.appendChild(gc3);
+
+    // displaying camera controls
+    let cameraControls = document.getElementById("cameraControls");
+    let cc1 = document.createElement("li");
+    let cc2 = document.createElement("li");
+    let cc3 = document.createElement("li");
+    let cc4 = document.createElement("li");
+    let cc5 = document.createElement("li");
+    let cc6 = document.createElement("li");
+    let cc7 = document.createElement("li");
+    let cc8 = document.createElement("li");
+    let cc9 = document.createElement("li");
+    let cc10 = document.createElement("li");
+
+    cc1.innerHTML = "Move Forward: " + (viewZIncreaseKey === "ArrowUp" ? "🡱" : viewZIncreaseKey);
+    cc2.innerHTML = "Move Backward: " + (viewZDecreaseKey === "ArrowDown" ? "🡳" : viewZDecreaseKey);
+    cc3.innerHTML = "Move Left: " + (viewXIncreaseKey === "ArrowLeft" ? "🡰" : viewXIncreaseKey);
+    cc4.innerHTML = "Move Right: " + (viewXDecreaseKey === "ArrowRight" ? "🡲" : viewXDecreaseKey);
+    cc5.innerHTML = "Move Up: " + viewYIncreaseKey;
+    cc6.innerHTML = "Move Down: " + viewYDecreaseKey;
+    cc7.innerHTML = "Tilt Up: " + viewPhiIncreaseKey;
+    cc8.innerHTML = "Tilt Down: " + viewPhiDecreaseKey;
+    cc9.innerHTML = "Pan Left: " + viewThetaIncreaseKey;
+    cc10.innerHTML = "Pan right: " + viewThetaDecreaseKey;
+
+    cameraControls.appendChild(cc1);
+    cameraControls.appendChild(cc2);
+    cameraControls.appendChild(cc3);
+    cameraControls.appendChild(cc4);
+    cameraControls.appendChild(cc5);
+    cameraControls.appendChild(cc6);
+    cameraControls.appendChild(cc7);
+    cameraControls.appendChild(cc8);
+    cameraControls.appendChild(cc9);
+    cameraControls.appendChild(cc10);
+
+    // preload ballsCounter, gameOver and loading elements
+    ballCounter = document.getElementById("ballCounter");
+    gameOverBg = document.getElementById("gameOverBg");
+    gameOverMsg = document.getElementById("gameOverMsg");
+    loadingBg = document.getElementById("loadingBg");
+    loadingMsg = document.getElementById("loadingMsg");
+    
+    updateBallCounter(lives, false);
+  }*/
+}
 
 function updateBallCounter(balls, gameOver) {
   ballCounter.innerHTML = "Balls " + balls;
@@ -448,5 +513,5 @@ function updateBallCounter(balls, gameOver) {
     gameOverMsg.style.opacity = 1.0;
   }
 }
-}
+
 window.onload = init;

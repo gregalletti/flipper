@@ -25,22 +25,25 @@ const BOARD_HEIGHT = 11;
 const BALL_RADIUS = 0.16;
 const BUMPER_RADIUS = 0.33;
 const SPHERE_RADIUS = 1.59;
-
+const FRICTION = .02;
+const DRAG = .012;
 //const FLIPPER_LENGTH = .9;
 const FLIPPER_LENGTH = 1;
 const FLIPPER_HEIGHT = 0.265;
 const BALL_DEFAULT_X = 4.6;
 const BALL_DEFAULT_Y = 2;
-
+const WALL_RESTITUTION = -.5;
 const FLIPPER_DOWN_ANGLE = -30;
 const FLIPPER_UP_ANGLE = 30;
-
+const BUMPER_RESTITUTION = -1.4;
+const FLIPPER_SWEEP_TIME = .12;
 const FLIPPER_BOOST = 1;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.5;
 const SLINGSHOT_BOOST = 1.5;
 const OBSTACLE_BOOST = 0.8;
-
+const CRITICAL_VELOCITY = BALL_RADIUS * FRAMERATE;
+const SAFE_VELOCITY = .5 * CRITICAL_VELOCITY * SUBSTEPS;
 const GRAVITATIONAL_ACCELERATION = 9.8;
 
 var score = 0;
@@ -89,6 +92,13 @@ class Vector {
      */
     scale(factor) {
         return new Vector(factor * this.x, factor * this.y);
+    }
+
+    /**
+     * Returns the normalization of the vector.
+     */
+    unit() {
+        return new Vector(Math.cos(this.phase), Math.sin(this.phase));
     }
 
     /**
@@ -297,8 +307,8 @@ class Ball {
             if(this.velocity.abs < 1 || this.position.y < 1.4 && Math.abs(this.velocity.y) < 1)
                 return;
             let i = Math.floor(3 * Math.random());
-            let sound = [soundWall1, soundWall2, soundWall3][i];
-            playSound(sound);
+            //let sound = [soundWall1, soundWall2, soundWall3][i];
+            //playSound(sound);
         }
     }
 
@@ -311,8 +321,8 @@ class Ball {
         if(hit) {
             score += Date.now() % 61;
             let i = Math.floor(3 * Math.random());
-            let sound = [soundBumper1, soundBumper2, soundBumper3][i];
-            playSound(sound);
+            //let sound = [soundBumper1, soundBumper2, soundBumper3][i];
+            //playSound(sound);
         }
     }
 
@@ -329,8 +339,8 @@ class Ball {
             if(this.velocity.abs < 1 || this.position.y < 1.4 && Math.abs(this.velocity.y) < 1)
                 return;
             let i = Math.floor(3 * Math.random());
-            let sound = [soundWall1, soundWall2, soundWall3][i];
-            playSound(sound);
+            //let sound = [soundWall1, soundWall2, soundWall3][i];
+            //playSound(sound);
         }
     }
 

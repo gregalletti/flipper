@@ -205,7 +205,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/boobs.jpg";
+  image.src = baseDir + "textures/parquet.jpg";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -432,7 +432,7 @@ async function init() {
     rightButtonMesh = await utils.loadMesh(modelsDir + "RightButton.obj");
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
-    slingshotRightMesh = await utils.loadMesh(modelsDir + "RightSlingshot.obj");
+    slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, slingshotLeftMesh, slingshotRightMesh];

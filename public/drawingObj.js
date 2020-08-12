@@ -433,9 +433,11 @@ async function init() {
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
+    obstacleLeftMesh = await utils.loadMesh(modelsDir + "LeftObstacle.obj");
+    obstacleRightMesh = await utils.loadMesh(modelsDir + "RightObstacle.obj");
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
-      dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, slingshotLeftMesh, slingshotRightMesh];
+      dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, slingshotLeftMesh, slingshotRightMesh, obstacleLeftMesh, obstacleRightMesh];
   }
 }
 

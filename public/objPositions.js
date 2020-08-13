@@ -64,7 +64,7 @@ var leftSlingshotMatrix     = utils.MakeWorld(1.1,    8.5,   -4.50626,   180,   
 var rightSlingshotMatrix    = utils.MakeWorld(-1.6,    8.5,   -4.50626,   90,     0,       0,     1);           //
 var leftObstacleMatrix      = utils.MakeWorld(1.1,    9,   -2.5,   180,     0,       0,     1);                 //
 var rightObstacleMatrix     = utils.MakeWorld(-1.6,    9,   -2.5,   180,     0,       0,     1);                //
-var bonusBallLocalMatrix    = utils.MakeWorld(1.1,    9,   -2.5,   180,     0,       0,     1);  // 
+var bonusBallLocalMatrix    = utils.MakeWorld( 0,         0,        0,           0,        0,       0,     5);  // 
 
 
 var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bumper2LocalMatrix, bumper3LocalMatrix, dl1LocalMatrix, dl2LocalMatrix, dl3LocalMatrix,

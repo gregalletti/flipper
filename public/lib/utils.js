@@ -265,6 +265,11 @@ var utils = {
 			if (e.keyCode == 83) {	// s
 				elevation -= delta * 10.0;
 			}
+			if (e.keyCode == 83) {	// s
+				while(true){
+					physicsMain();
+				}
+			}
 		}
 		// 'window' is a JavaScript object (if "canvas", it will not work)
 		window.addEventListener("keyup", keyFunction, false);

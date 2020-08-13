@@ -266,10 +266,8 @@ var utils = {
 				elevation -= delta * 10.0;
 			}
 			if (e.keyCode == 32) {	// spacebar
-				while(true){
-					console.log("fisica")
-					physicsMain();
-				}
+				console.log("fisica");
+				physicsMain();
 			}
 		}
 		// 'window' is a JavaScript object (if "canvas", it will not work)

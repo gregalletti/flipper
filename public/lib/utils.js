@@ -265,8 +265,9 @@ var utils = {
 			if (e.keyCode == 83) {	// s
 				elevation -= delta * 10.0;
 			}
-			if (e.keyCode == 83) {	// s
+			if (e.keyCode == 32) {	// spacebar
 				while(true){
+					console.log("fisica")
 					physicsMain();
 				}
 			}

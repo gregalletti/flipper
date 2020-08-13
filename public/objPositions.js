@@ -42,7 +42,7 @@ var ballLocalMatrix         = utils.MakeWorld( 0,         0,        0,          
 var bodyLocalMatrix         = utils.MakeWorld( 0,         0,        0,           0,        0,       0,     1);
 var bumper1LocalMatrix      = utils.MakeWorld( 1.1819,    9.1362,   0.020626,   -6.51,     0,       0,     1);
 var bumper2LocalMatrix      = utils.MakeWorld(-1.5055,    9.1362,   0.020626,   -6.51,     0,       0,     1);
-var bumper3LocalMatrix      = utils.MakeWorld(-0.11626,   9.1362,   -1.020626,   -6.51,     0,       0,     1);
+var bumper3LocalMatrix      = utils.MakeWorld(-0.11626,   9.1362,   -1.020626,  -6.51,     0,       0,     1);
 var dl1LocalMatrix          = utils.MakeWorld( 0.4366,   12.789,    4.1852,      0,     -101,       0,     1);
 var dl2LocalMatrix          = utils.MakeWorld( 0.713,    12.789,    4.1852,      0,     -101,       0,     1);
 var dl3LocalMatrix          = utils.MakeWorld( 0.9923,   12.789,    4.1852,      0,     -101,       0,     1);
@@ -64,7 +64,7 @@ var leftSlingshotMatrix     = utils.MakeWorld(1.1,    8.5,   -4.50626,   180,   
 var rightSlingshotMatrix    = utils.MakeWorld(-1.6,    8.5,   -4.50626,   90,     0,       0,     1);           //
 var leftObstacleMatrix      = utils.MakeWorld(1.1,    9,   -2.5,   180,     0,       0,     1);                 //
 var rightObstacleMatrix     = utils.MakeWorld(-1.6,    9,   -2.5,   180,     0,       0,     1);                //
-var bonusBallLocalMatrix    = utils.MakeWorld( 0,         0,        0,           0,        0,       0,     1);  // 
+var bonusBallLocalMatrix    = utils.MakeWorld(1.1,    9,   -2.5,   180,     0,       0,     1);  // 
 
 
 var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bumper2LocalMatrix, bumper3LocalMatrix, dl1LocalMatrix, dl2LocalMatrix, dl3LocalMatrix,

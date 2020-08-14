@@ -284,10 +284,10 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     // update world matrices for moving objects
-    allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y);
-    allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
+    allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
+    //allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
-    allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
+    //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
 
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {

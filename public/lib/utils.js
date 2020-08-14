@@ -265,9 +265,8 @@ var utils = {
 			if (e.keyCode == 83) {	// s
 				elevation -= delta * 10.0;
 			}
-			if (e.keyCode == 32) {	// spacebar
-				console.log("fisica");
-				physicsMain();
+			for(i = 0; i<allLocalMatrices.length; i++){ // could write this better
+			    allLocalMatrices[i] = utils.multiplyMatrices(utils.MakeView(cx,cy,cz,elevation,angle),allLocalMatrices[i])
 			}
 		}
 		// 'window' is a JavaScript object (if "canvas", it will not work)

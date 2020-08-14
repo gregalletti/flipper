@@ -71,7 +71,9 @@ var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bu
                         dl4LocalMatrix, dl5LocalMatrix, dl6LocalMatrix, dr1LocalMatrix, dr2LocalMatrix, dr3LocalMatrix, dr4LocalMatrix, dr5LocalMatrix, dr6LocalMatrix,
                         leftButtonLocalMatrix, leftFlipperLocalMatrix, pullerLocalMatrix, rightButtonLocalMatrix, rightFlipperLocalMatrix, leftSlingshotMatrix, 
                         rightSlingshotMatrix, leftObstacleMatrix, rightObstacleMatrix, bonusBallLocalMatrix];
-    
-// for(i = 0; i<allLocalMatrices.length; i++){ // could write this better
-//     allLocalMatrices[i] = utils.multiplyMatrices(utils.MakeView(cx,cy,cz,elevation),allLocalMatrices[i])
-// }
+console.log("World space.")
+
+for(i = 0; i<allLocalMatrices.length; i++){ // could write this better
+     allLocalMatrices[i] = utils.multiplyMatrices(utils.MakeView(cx,cy,cz,elevation),allLocalMatrices[i])
+ }
+console.log("Camera space.")

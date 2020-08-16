@@ -10,8 +10,10 @@
   <script type="text/javascript" src="lib/utils.js"></script>
   <script type="text/javascript" src="lib/webgl-obj-loader.min.js"></script>
 
+  
   <script type="text/javascript" src="physics/model.js"></script>
   <script type="text/javascript" src="physics/main.js"></script>
+  <script type="text/javascript" src="physics/controller.js"></script>
   
   <script type="text/javascript" src="objPositions.js"></script>
   <script type="text/javascript" src="drawingObj.js"></script>
@@ -20,12 +22,12 @@
   
 </head>
 
-<body style="background-image: url('textures/pinball.jpg'); overflow: hidden; margin: 0px; width: 100%; height: 100%;">
+<body style="background-image: url('textures/playroom.png'); overflow: hidden; margin: 0px; width: 100%; height: 100%;">
   <canvas id="canvas">
     Your browser does not support the HTML5 canvas element.
   </canvas> 
   <div
-    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 70px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(249,97,231); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
+    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 70px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(13,91,142); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
     <p id="ballCounter" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
       BALLS:  3
     </p>
@@ -34,14 +36,14 @@
     </p>
   </div>
   <div
-    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 240px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(249,97,231); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
+    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 240px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(13,91,142); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
     <p id="leaderboard" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
       <a href="javascript:alert('TOP SCORES!');">LEADERBOARD</a>
     </p>
   </div>
 
   <div
-  style="font-family: Arcade; position: absolute; right: 40px; bottom: 70px; background-color: black; border-width: 10px; border-style: dashed; border-color: rgb(249,97,231); opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
+  style="font-family: Arcade; position: absolute; right: 40px; bottom: 70px; background-color: black; border-width: 10px; border-style: dashed; border-color: rgb(13,91,142); opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
     <p style="font-size: 32px; color: rgb(226,188,10); text-align: center;">COMMANDS</p>
     <H2 style="color: white; font-size: 22px; text-align: center; margin-right: 20px;">GAME CONTROLS</H2>
     <ul id="gameControls" style="color: lightgray; list-style-type: none;">

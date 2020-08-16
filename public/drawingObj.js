@@ -158,19 +158,19 @@ function main() {
   Math.sin(dirLightAlpha),
   Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  var directionalLightColorA = [0.15, 0.35, 0.35];
+  var directionalLightColorA = [0.55, 0.55, 0.35];
 
   var directionalLightB = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
   Math.sin(dirLightAlpha),
   Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  var directionalLightColorB = [0.45, 0.95, 0.15];
+  var directionalLightColorB = [0.45, 0.35, 0.15];
 
   // define material color 
   var materialColor = [1.0, 1.0, 1.0];
 
   // define ambient light color and material
-  var ambientLight = [0.15, 0.1, 0.8];
+  var ambientLight = [0.15, 0.9, 0.8];
   var ambientMat = [0.4, 0.2, 0.6];
     
   //define specular component of color
@@ -205,7 +205,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/parquet.jpg";
+  image.src = baseDir + "textures/StarWarsPinball2.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -273,7 +273,6 @@ function main() {
     viewPhi += viewPhiSpeed * camera_dt;
     viewTheta += viewThetaSpeed * camera_dt;
 
-    // simulate one step of physics
     //physicsMain();
 
     // clear scene
@@ -291,7 +290,7 @@ function main() {
 
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
-      var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]);
+      var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]); //Camera Space  VIEW = CAMERA^-1
       var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
 
       var lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(allLocalMatrices[i]));
@@ -303,7 +302,7 @@ function main() {
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
       
-      gl.uniform3fv(eyePositionHandle, eyePositionTransformed);    
+      gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);
       gl.uniform3fv(lightColorHandleA, directionalLightColorA);
       gl.uniform3fv(lightDirectionHandleA, lightDirectionTransformedA);
@@ -431,8 +430,8 @@ async function init() {
     pullerMesh = await utils.loadMesh(modelsDir + "Puller.obj");
     rightButtonMesh = await utils.loadMesh(modelsDir + "RightButton.obj");
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
-    slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
-    slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
+    slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot1.obj");
+    slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot1.obj");
     obstacleLeftMesh = await utils.loadMesh(modelsDir + "LeftObstacle.obj");
     obstacleRightMesh = await utils.loadMesh(modelsDir + "RightObstacle.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "Ball.obj");

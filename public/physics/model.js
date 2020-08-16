@@ -36,6 +36,7 @@ const FLIPPER_UP_ANGLE = 30;
 const BUMPER_RESTITUTION = -1.4;
 const FLIPPER_SWEEP_TIME = .12;
 const FLIPPER_BOOST = 1;
+const BALL_LAUNCH_SPEED = 1;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.5;
 const SLINGSHOT_BOOST = 1.5;
@@ -286,7 +287,7 @@ class Ball {
                 this.launched = false;
                 lives--;
                 updateBallCounter(lives, false);
-                playSound(soundReload);
+                //playSound(soundReload);
             } else if(lives == 1)
                 updateBallCounter(0, true);
             this.velocity = Vector.NULL;
@@ -391,6 +392,6 @@ class Ball {
             return;
         this.velocity = new Vector(0, force * BALL_LAUNCH_SPEED);
         this.launched = true;
-        playSound(soundLaunch);
+        //playSound(soundLaunch);
     }
 }

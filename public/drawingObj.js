@@ -288,15 +288,25 @@ function main() {
     allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
     //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
 
+    // CAMERA SPACE TRANSFORMATION OF LIGHTS 
+
+    // Directional Light
+    var lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(viewMatrix));
+    var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
+    var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
+
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
       var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]); //Camera Space  VIEW = CAMERA^-1
       var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
 
-      var lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(allLocalMatrices[i]));
-      var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
-      var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
+      //le trasformazioni seguenti non sono in camera space perché fanno questa cosa per tutte le meshes, 
+      //per essere in camera space questa cosa va fatta solo una volta di fuori da questo ciclo (per tutte le luci)
+      //var lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(allLocalMatrices[i]));
+      //var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
+      //var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
 
+      // non penso che la eye position matrix (soprattutto trasformata) serva in camera space
       var eyePositionMatrix = utils.invertMatrix(allLocalMatrices[i]);
       var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
 

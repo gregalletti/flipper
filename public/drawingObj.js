@@ -197,6 +197,7 @@ function main() {
   var lightDirectionHandleB = gl.getUniformLocation(program, 'lightDirectionB');
   var lightColorHandleB = gl.getUniformLocation(program, 'lightColorB');
 
+  var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
 
   var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
   var vaos = new Array(allMeshes.length);
@@ -311,6 +312,7 @@ function main() {
       var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+      gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
       
       gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);

@@ -291,7 +291,7 @@ function main() {
     // CAMERA SPACE TRANSFORMATION OF LIGHTS 
 
     // Directional Light
-    var lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(viewMatrix));
+    var lightDirMatrix = utils.sub3x3from4x4(utils.invertMatrix(utils.transposeMatrix(viewMatrix)));
     var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
     var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
 
@@ -306,7 +306,7 @@ function main() {
       //var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
       //var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
 
-      // non penso che la eye position matrix (soprattutto trasformata) serva in camera space
+      // eye position per adesso non è usata per niente ma poi andrà spostata fuori ho idea
       var eyePositionMatrix = utils.invertMatrix(allLocalMatrices[i]);
       var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
 

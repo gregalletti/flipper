@@ -160,23 +160,7 @@ function main() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
 
-  // define directional light
-  var dirLightAlpha = utils.degToRad(-60);
-  var dirLightBeta = utils.degToRad(50);
-
-  var directionalLightA = [Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
-  Math.sin(dirLightAlpha),
-  Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
-  ];
-  //var directionalLightColorA = [0.55, 0.55, 0.35];
-  var directionalLightColorA = fromHexToRGBVec("#f2c64e");
-
-  var directionalLightB = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
-  Math.sin(dirLightAlpha),
-  Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
-  ];
-  //var directionalLightColorB = [0.45, 0.35, 0.15];
-  var directionalLightColorB = fromHexToRGBVec("#4508ff");
+ 
 
   // define material color 
   var materialColor = [1.0, 1.0, 1.0];
@@ -277,7 +261,7 @@ function main() {
   function drawScene() {
 
     // update uv coordinates of dynamic score system  
-    updateScoreTex();
+    //updateScoreTex();
 
     // adjust camera
     viewX += viewXSpeed * camera_dt;
@@ -300,6 +284,28 @@ function main() {
     //allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
     //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
+
+     // define directional light
+   // var dirLightAlpha = utils.degToRad(-60);
+    //var dirLightBeta = utils.degToRad(50);
+
+    var dirLightAlpha = utils.degToRad(document.getElementById("LCDirTheta").value);
+    console.log(dirLightAlpha)
+	  var dirLightBeta = utils.degToRad(document.getElementById("LCDirPhi").value);
+
+    var directionalLightA = [Math.cos(180 - dirLightAlpha) * Math.cos(dirLightBeta),
+    Math.sin(180 - dirLightAlpha),
+    Math.cos(180 - dirLightAlpha) * Math.sin(dirLightBeta)
+    ];
+    //var directionalLightColorA = [0.55, 0.55, 0.35];
+    var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);
+
+    var directionalLightB = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
+    Math.sin(dirLightAlpha),
+    Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
+    ];
+    //var directionalLightColorB = [0.45, 0.35, 0.15];
+    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
 
     // CAMERA SPACE TRANSFORMATION OF LIGHTS 
 
@@ -352,7 +358,7 @@ function main() {
       gl.bindVertexArray(vaos[i]);
       gl.drawElements(gl.TRIANGLES, allMeshes[i].indices.length, gl.UNSIGNED_SHORT, 0);
     }
-
+    
     window.requestAnimationFrame(drawScene);
   }
   
@@ -457,8 +463,8 @@ async function init() {
     pullerMesh = await utils.loadMesh(modelsDir + "Puller.obj");
     rightButtonMesh = await utils.loadMesh(modelsDir + "RightButton.obj");
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
-    slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot1.obj");
-    slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot1.obj");
+    slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
+    slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     obstacleLeftMesh = await utils.loadMesh(modelsDir + "LeftObstacle.obj");
     obstacleRightMesh = await utils.loadMesh(modelsDir + "RightObstacle.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "Ball.obj");

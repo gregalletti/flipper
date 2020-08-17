@@ -145,6 +145,16 @@ const numUVs = [[0.735309, 0.956854, 0.760579, 0.918019, 0.760579, 0.956854, 0.7
                 [0.684927, 0.956466, 0.710197, 0.917632, 0.710197, 0.956466, 0.684927, 0.917632],
                 [0.710118, 0.956466, 0.735388, 0.917632, 0.735388, 0.956466, 0.710118, 0.917632]];
 
+
+function fromHexToRGBVec(hex) {
+  col = hex.substring(1,7);
+    R = parseInt(col.substring(0,2) ,16) / 255;
+    G = parseInt(col.substring(2,4) ,16) / 255;
+    B = parseInt(col.substring(4,6) ,16) / 255;
+  return [R,G,B]
+}
+              
+
 function main() {
   gl.clearColor(0.85, 0.85, 0.85, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -158,13 +168,15 @@ function main() {
   Math.sin(dirLightAlpha),
   Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  var directionalLightColorA = [0.55, 0.55, 0.35];
+  //var directionalLightColorA = [0.55, 0.55, 0.35];
+  var directionalLightColorA = fromHexToRGBVec("#f2c64e");
 
   var directionalLightB = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
   Math.sin(dirLightAlpha),
   Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  var directionalLightColorB = [0.45, 0.35, 0.15];
+  //var directionalLightColorB = [0.45, 0.35, 0.15];
+  var directionalLightColorB = fromHexToRGBVec("#4508ff");
 
   // define material color 
   var materialColor = [1.0, 1.0, 1.0];
@@ -311,8 +323,11 @@ function main() {
       var eyePositionMatrix = utils.invertMatrix(allLocalMatrices[i]);
       var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
 
+      // matrix to transform normals, used by the Vertex Shader
+      var normalTransformationMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
+
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
-      gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(cubeNormalMatrix));
+      gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
       
       gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);

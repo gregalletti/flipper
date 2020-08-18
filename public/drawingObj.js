@@ -202,7 +202,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/StarWarsPinball2.png";
+  image.src = baseDir + "textures/supermario.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -378,15 +378,16 @@ var soundReload;
 var soundWall1;
 var soundWall2;
 var soundWall3;
+var soundStart;
 
 /**
  * 
  * @param {HTMLAudioElement} sound 
  */
-/*function playSound(sound) {
+function playSound(sound) {
   sound.currentTime = 0;
   sound.play();
-}*/
+}
 
 async function init() {
   /*soundBumper1 = document.getElementById("sound_bumper1");
@@ -400,6 +401,7 @@ async function init() {
   soundWall1 = document.getElementById("sound_wall1");
   soundWall2 = document.getElementById("sound_wall2");
   soundWall3 = document.getElementById("sound_wall3");*/
+  soundStart = document.getElementById("new_game");
 
   setupCanvas();
   loadShaders();
@@ -442,7 +444,7 @@ async function init() {
   // load meshes from obj files
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
-    bodyMesh = await utils.loadMesh(modelsDir + "Body.obj");
+    bodyMesh = await utils.loadMesh(modelsDir + "Body1.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper2.obj");
     bumper3Mesh = await utils.loadMesh(modelsDir + "bumper3.obj");

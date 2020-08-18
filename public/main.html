@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+  <link rel="icon" href="textures/icon.jpg">
+  <title>Flipper</title>
+  <script type="text/javascript" src="lib/utils.js"></script>
+  <script type="text/javascript" src="lib/webgl-obj-loader.min.js"></script>
+
+  
+  <script type="text/javascript" src="physics/model.js"></script>
+  <script type="text/javascript" src="physics/main.js"></script>
+  <script type="text/javascript" src="physics/controller.js"></script>
+  
+  <script type="text/javascript" src="objPositions.js"></script>
+  <script type="text/javascript" src="drawingObj.js"></script>
+  
+
+  
+</head>
+
+<body style="background-image: url('textures/playroom.png'); overflow: hidden; margin: 0px; width: 100%; height: 100%;">
+  <canvas id="canvas">
+    Your browser does not support the HTML5 canvas element.
+  </canvas> 
+  <div
+    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 70px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(13,91,142); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
+    <p id="ballCounter" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
+      BALLS:  3
+    </p>
+    <p id="activeBalls" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
+      ACTIVE:  1
+    </p>
+  </div>
+  <div
+    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 240px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(13,91,142); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
+    <p id="leaderboard" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
+      <a href="javascript:alert('TOP SCORES!');">LEADERBOARD</a>
+    </p>
+  </div>
+
+  <div style="font-family: Arcade; position: absolute; left:40px; bottom: 70px; background-color: black; border-width: 10px; border-style: dashed; border-color: rgb(13,91,142); opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
+      <div id="LC51">Dir &theta;</div>
+      <div id="ThetaValue"><input type="range" min="0" max="180" id="LCDirTheta"></div>
+      <div id="LA14"><input type="color" id="LAlightColor" value="#ffffff"></div>
+      <div>
+        <h2> </h2>
+      </div>
+      <div id="LA15"><input type="color" id="LBlightColor" value="#ffffff"></div>
+      <div id="LC61">Dir &phi;</div>
+      <div id="PhiValue"><input type="range" min="-180" max="180" id="LCDirPhi"></div>
+    
+  </div>
+
+  <div
+  style="font-family: Arcade; position: absolute; right: 40px; bottom: 70px; background-color: black; border-width: 10px; border-style: dashed; border-color: rgb(13,91,142); opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
+    <p style="font-size: 32px; color: rgb(226,188,10); text-align: center;">COMMANDS</p>
+    <H2 style="color: white; font-size: 22px; text-align: center; margin-right: 20px;">GAME CONTROLS</H2>
+    <ul id="gameControls" style="color: lightgray; list-style-type: none;">
+      <li>START GAME:  SPACEBAR</li>
+      <li>LEFT FLIPPER:  Z</li>
+      <li>RIGHT FLIPPER:  M</li>
+    </ul>
+    <h2 style="color: white; font-size: 22px; text-align: center;">CAMERA CONTROLS</h2>
+    <ul id="cameraControls" style="color: lightgray; list-style-type: none;">
+      <li>MOVE FORWARD:  🡱</li>
+      <li>MOVE BACKWARD:  🡳</li>
+      <li>MOVE LEFT:  🡰</li>
+      <li>MOVE RIGHT:  🡲</li>
+      <li>MOVE UP:  W</li>
+      <li>MOVE DOWN:  S</li>
+      <li>TILT UP:  R</li>
+      <li>TILT DOWN:  F</li>
+      <li>PAN LEFT:  Q</li>
+      <li>PAN RIGHT:  E</li>
+    </ul>
+  </div>
+<!--
+  <audio id="sound_bumper" type="audio/wav" src="sounds/bumper.wav"></audio>
+  <audio id="sound_slingshot" type="audio/wav" src="sounds/slingshot.wav"></audio>
+  <audio id="sound_flipper_down" type="audio/wav" src="sounds/flipper_down.wav"></audio>
+  <audio id="sound_flipper_up" type="audio/wav" src="sounds/flipper_up.wav"></audio>
+  <audio id="sound_launch" type="audio/wav" src="sounds/launch.wav"></audio>
+  <audio id="sound_puller" type="audio/wav" src="sounds/puller.wav"></audio>
+  <audio id="sound_reload" type="audio/wav" src="sounds/reload.wav"></audio>
+  <audio id="sound_tunnel" type="audio/wav" src="sounds/tunnel.wav"></audio>
+  <audio id="sound_wall" type="audio/wav" src="sounds/wall.wav"></audio>
+  <audio id="sound_obstacle" type="audio/wav" src="sounds/obstacle.wav"></audio>
+  <audio id="sound_sphere" type="audio/wav" src="sounds/sphere.wav"></audio>
+  <audio id="sound_bonus" type="audio/wav" src="sounds/bonus.wav"></audio>
+  <audio id="sound_ball" type="audio/wav" src="sounds/ball.wav"></audio>
+-->
+<audio id="new_game" type="audio/mp3" src="sounds/newgame.mp3"></audio>
+</body>
+
+</html>

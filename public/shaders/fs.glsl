@@ -20,6 +20,11 @@ uniform vec3 ambientLightCol;
 uniform vec3 ambientMat;
 uniform sampler2D in_texture;
 
+uniform vec3 pLPos;
+uniform vec3 pLCol;
+uniform float pLTagret;
+uniform float pLDecay;
+
 void main() {
     
   vec4 texelCol = texture(in_texture, fsUV);
@@ -32,6 +37,10 @@ void main() {
   //computing Lambert diffuse color
   vec3 diffA = clamp(dot(-lDirA,nNormal), 0.0, 1.0) * lightColorA;
   vec3 diffB = clamp(dot(-lDirB,nNormal), 0.0, 1.0) * lightColorB;
+
+  vec3 lPos = normalize(pLPos - fs_pos);
+	vec3 lCol = pLCol * pow(pLTagret / length(lPos - fs_pos), pLDecay);
+
   vec3 lambertColor = mDiffColor * (diffA + diffB);
   
   //computing ambient color

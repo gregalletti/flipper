@@ -195,6 +195,11 @@ function main() {
 
   var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
 
+  var pointLightPositionHandle = gl.getUniformLocation(program, 'pLPos');
+  var pointLightColorHandle = gl.getUniformLocation(program, 'pLCol');
+  var pointLightTargetHandle = gl.getUniformLocation(program, 'pLTarget');
+  var pointLightDecayHandle = gl.getUniformLocation(program, 'pLDecay');
+
   var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
   var vaos = new Array(allMeshes.length);
 
@@ -285,12 +290,14 @@ function main() {
     allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
     //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
 
-     // define directional light
-   // var dirLightAlpha = utils.degToRad(-60);
+    // ---------------------------------------- LIGHTS DEFINITION
+
+    // DIRECTIONAL LIGHTS
+    // var dirLightAlpha = utils.degToRad(-60);
     //var dirLightBeta = utils.degToRad(50);
 
     var dirLightAlpha = utils.degToRad(document.getElementById("LCDirTheta").value);
-    console.log(dirLightAlpha)
+
 	  var dirLightBeta = utils.degToRad(document.getElementById("LCDirPhi").value);
 
     var directionalLightA = [Math.cos(180 - dirLightAlpha) * Math.cos(dirLightBeta),
@@ -305,15 +312,27 @@ function main() {
     Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
     ];
     //var directionalLightColorB = [0.45, 0.35, 0.15];
-    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    //var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    var directionalLightColorB = fromHexToRGBVec("#ffffff");
 
     // CAMERA SPACE TRANSFORMATION OF LIGHTS 
 
-    // Directional Light
+    // Directional Lights direction transformation to Camera Space
     var lightDirMatrix = utils.sub3x3from4x4(utils.invertMatrix(utils.transposeMatrix(viewMatrix)));
     var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
     var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
+    
+    // POINT LIGHT(s)
 
+    var pointLigthPos = [ parseFloat(document.getElementById("x").value),
+                          parseFloat(document.getElementById("y").value),
+                          parseFloat(document.getElementById("z").value)];
+    var pointLigthColor = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    var pointLightTarget = parseFloat(document.getElementById("Target").value);
+    var pointLightDecay = parseFloat(document.getElementById("Decay").value);
+
+    var pointLigthPosTransformed =  utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, pointLigthPos));
+    //console.log(pointLigthPosTransformed)
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
       var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]); //Camera Space  VIEW = CAMERA^-1
@@ -334,7 +353,12 @@ function main() {
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
       gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
-      
+
+      gl.uniform3fv(pointLightPositionHandle, pointLigthPosTransformed);
+      gl.uniform3fv(pointLightColorHandle, pointLigthColor);
+      gl.uniform1f(pointLightTargetHandle, pointLightTarget);
+      gl.uniform1f(pointLightDecayHandle, pointLightDecay);
+
       gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);
       gl.uniform3fv(lightColorHandleA, directionalLightColorA);

@@ -285,7 +285,7 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     // update world matrices for moving objects
-    allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
+    //allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
     //allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
     //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
@@ -324,14 +324,24 @@ function main() {
     
     // POINT LIGHT(s)
 
-    var pointLigthPos = [ parseFloat(document.getElementById("x").value),
-                          parseFloat(document.getElementById("y").value),
-                          parseFloat(document.getElementById("z").value)];
-    var pointLigthColor = fromHexToRGBVec(document.getElementById("LBlightColor").value);
-    var pointLightTarget = parseFloat(document.getElementById("Target").value);
-    var pointLightDecay = parseFloat(document.getElementById("Decay").value);
+    var pointLightPos = [ parseFloat(document.getElementById("x").value/1000),
+                          parseFloat(document.getElementById("y").value/1000),
+                          parseFloat(document.getElementById("z").value/1000)];
 
-    var pointLigthPosTransformed =  utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, pointLigthPos));
+    allLocalMatrices[0] = utils.MakeWorld(pointLightPos[0],pointLightPos[1],pointLightPos[2],0,0,0,1)
+
+    //pointLightPos = [0,0,10]
+    var pointLightColor = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    //pointLightColor = fromHexToRGBVec("#ffffff");
+    var pointLightTarget = parseFloat(document.getElementById("Target").value/1000);
+    //var pointLightTarget = parseFloat(10.0);
+    var pointLightDecay = parseInt(document.getElementById("Decay").value);
+    if(pointLightDecay === 0){
+      pointLightDecay = 0.0;
+    }
+
+    var pointLightPosTransformed =  pointLightPos;//utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, pointLightPos));
+    //pointLigthPosTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(perspectiveMatrix, pointLigthPosTransformed));
     //console.log(pointLigthPosTransformed)
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
@@ -354,8 +364,8 @@ function main() {
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
       gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
 
-      gl.uniform3fv(pointLightPositionHandle, pointLigthPosTransformed);
-      gl.uniform3fv(pointLightColorHandle, pointLigthColor);
+      gl.uniform3fv(pointLightPositionHandle, pointLightPosTransformed);
+      gl.uniform3fv(pointLightColorHandle, pointLightColor);
       gl.uniform1f(pointLightTargetHandle, pointLightTarget);
       gl.uniform1f(pointLightDecayHandle, pointLightDecay);
 

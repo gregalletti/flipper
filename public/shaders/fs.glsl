@@ -25,6 +25,14 @@ uniform vec3 pLCol;
 uniform float pLTagret;
 uniform float pLDecay;
 
+vec3 compDiffuse(vec3 lightDir, vec3 lightCol, vec3 normalVec) {
+	// Diffuse
+	// --> Lambert
+	vec3 diffuseLambert = lightCol * clamp(dot(normalVec, lightDir),0.0,1.0);
+	// ----> Select final component
+	return diffuseLambert;
+}
+
 void main() {
     
   vec4 texelCol = texture(in_texture, fsUV);
@@ -38,10 +46,23 @@ void main() {
   vec3 diffA = clamp(dot(-lDirA,nNormal), 0.0, 1.0) * lightColorA;
   vec3 diffB = clamp(dot(-lDirB,nNormal), 0.0, 1.0) * lightColorB;
 
-  vec3 lPos = normalize(pLPos - fs_pos);
-	vec3 lCol = pLCol * pow(pLTagret / length(lPos - fs_pos), pLDecay);
+  //computing position and color of point light
+  vec3 lDir = normalize(pLPos - fs_pos);
+	vec3 lCol = pLCol * pow(2.0 / length(pLPos - fs_pos), 2.0);
 
-  vec3 lambertColor = mDiffColor * (diffA + diffB);
+  //spot
+  float LAConeOut = 60.0;
+  float LAConeIn = 45.0;
+  float LCosOut = cos(radians(LAConeOut / 2.0));
+	float LCosIn = cos(radians(LAConeOut * LAConeIn / 2.0));
+	//lightDirA = normalize(LAPos - fs_pos);
+	float CosAngle = dot(lDir, lDirA);
+	lCol = pLCol * pow(2.0 / length(pLPos - fs_pos), 1.0) * clamp((CosAngle - LCosOut) / (LCosIn - LCosOut), 0.0, 1.0);
+
+  vec3 diffuseLambertPoint = compDiffuse(lDir,lCol,nNormal);
+
+  //vec3 lambertColor = mDiffColor * (diffA + diffB) + mDiffColor * diffuseLambertPoint;
+  vec3 lambertColor = mDiffColor * diffuseLambertPoint;
   
   //computing ambient color
   vec3 ambient = ambientLightCol * ambientMat;

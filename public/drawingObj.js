@@ -125,6 +125,11 @@ var leftCoinMesh;
 var rightCoinMesh;
 var objects;
 
+var fungo1Mesh;
+var fungo2Mesh;
+var fungo3Mesh;
+
+
 var texture;
 
 // SCORE SYSTEM
@@ -209,7 +214,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/SuperMarioPinballTemp2.png";
+  image.src = baseDir + "textures/SuperMarioPinballTemp4.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -504,13 +509,17 @@ async function init() {
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     tube = await utils.loadMesh(modelsDir + "kuboVero.obj")
-    leftCoinMesh = await utils.loadMesh(modelsDir + "coin.obj");
-    rightCoinMesh = await utils.loadMesh(modelsDir + "coin.obj");
+    leftCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
+    rightCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
+    fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
+    fungo2Mesh = await utils.loadMesh(modelsDir + "fungo2.obj");
+    fungo3Mesh = await utils.loadMesh(modelsDir + "fungo3.obj");
+
 
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, tube, leftCoinMesh, rightCoinMesh];
+      slingshotLeftMesh, slingshotRightMesh, tube, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh];
   }
   
 }

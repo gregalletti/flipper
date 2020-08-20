@@ -347,8 +347,7 @@ function main() {
       pointLightDecay = 0.0;
     }
 
-    var pointLightPosTransformed =  pointLightPos;//utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, pointLightPos));
-    //pointLigthPosTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(perspectiveMatrix, pointLigthPosTransformed));
+    var pointLightPosTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(viewMatrix, pointLightPos));
     //console.log(pointLigthPosTransformed)
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {

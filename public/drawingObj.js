@@ -129,6 +129,7 @@ var fungo1Mesh;
 var fungo2Mesh;
 var fungo3Mesh;
 
+var tuboMesh;
 
 var texture;
 
@@ -282,7 +283,7 @@ function main() {
     viewPhi += viewPhiSpeed * camera_dt;
     viewTheta += viewThetaSpeed * camera_dt;
 
-    //physicsMain();
+    physicsMain();
 
     // clear scene
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -292,9 +293,9 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     // update world matrices for moving objects
-    //allLocalMatrices[0] = getBallLocalMatrix(ball.position.x, ball.position.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
+    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
     //allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
-    allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
+    //allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
     //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
 
     // ---------------------------------------- LIGHTS DEFINITION
@@ -335,7 +336,7 @@ function main() {
                           parseFloat(document.getElementById("y").value/1000),
                           parseFloat(document.getElementById("z").value/1000)];
 
-    allLocalMatrices[0] = utils.MakeWorld(pointLightPos[0],pointLightPos[1],pointLightPos[2],0,0,0,1)
+    //allLocalMatrices[0] = utils.MakeWorld(pointLightPos[0],pointLightPos[1],pointLightPos[2],0,0,0,1)
 
     //pointLightPos = [0,0,10]
     var pointLightColor = fromHexToRGBVec(document.getElementById("LBlightColor").value);
@@ -484,7 +485,7 @@ async function init() {
   // load meshes from obj files
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
-    bodyMesh = await utils.loadMesh(modelsDir + "Body1.obj");
+    bodyMesh = await utils.loadMesh(modelsDir + "Body2.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper2.obj");
     bumper3Mesh = await utils.loadMesh(modelsDir + "bumper3.obj");
@@ -513,12 +514,12 @@ async function init() {
     fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
     fungo2Mesh = await utils.loadMesh(modelsDir + "fungo2.obj");
     fungo3Mesh = await utils.loadMesh(modelsDir + "fungo3.obj");
-
+    tuboMesh = await utils.loadMesh(modelsDir + "tubega.obj");
 
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, tube, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh];
+      slingshotLeftMesh, slingshotRightMesh, tube, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh];
   }
   
 }

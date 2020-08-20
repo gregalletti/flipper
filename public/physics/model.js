@@ -19,38 +19,82 @@ ALL THE MEASUREMENTS HAVE BEEN DONE THROUGH BLENDER
 
 const FRAMERATE = 60;
 const SUBSTEPS = 6;
+
 const BOARD_WIDTH = 5;
 const BOARD_HEIGHT = 11;
 const BALL_RADIUS = 0.16;
 const BUMPER_RADIUS = 0.33;
-const SPHERE_RADIUS = 1.59;
-const FRICTION = .02;
-const DRAG = .012;
+const PIPE_RADIUS = 0.19;
+const CUBE_EDGE = 1;
+
+//const FLIPPER_LENGTH = .9;
 const FLIPPER_LENGTH = 1;
 const FLIPPER_HEIGHT = 0.265;
 const BALL_DEFAULT_X = 4.6;
 const BALL_DEFAULT_Y = 2;
-const WALL_RESTITUTION = -.5;
+
 const FLIPPER_DOWN_ANGLE = -30;
 const FLIPPER_UP_ANGLE = 30;
-const BUMPER_RESTITUTION = -1.4;
-const FLIPPER_SWEEP_TIME = .12;
+
 const FLIPPER_BOOST = 1;
-const BALL_LAUNCH_SPEED = 1;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.5;
 const SLINGSHOT_BOOST = 1.5;
 const OBSTACLE_BOOST = 0.8;
-const CRITICAL_VELOCITY = BALL_RADIUS * FRAMERATE;
-const SAFE_VELOCITY = .5 * CRITICAL_VELOCITY * SUBSTEPS;
-const GRAVITATIONAL_ACCELERATION = 9.8;
+
+const BALL_MAX_SPEED = 20;
+
+var T = 1 / FRAMERATE / SUBSTEPS;
+
+const DIGIT_UVS = [
+    [1510,87, 1562,87, 1510,168, 1562,168],
+
+    [1302,6, 1354,6, 1302,87, 1354,87], //digit larga 52, alta 81
+    [1354,6, 1406,6, 1354,87, 1406,87],
+    [1406,6, 1458,6, 1406,87, 1458,87],
+    [1458,6, 1510,6, 1458,87, 1510,87],
+    [1510,6, 1562,6, 1510,87, 1562,87],
+
+    [1302,87, 1354,87, 1302,168, 1354,168], 
+    [1354,87, 1406,87, 1354,168, 1406,168],
+    [1406,87, 1458,87, 1406,168, 1458,168],
+    [1458,87, 1510,87, 1458,168, 1510,168]
+];
+
+//lato del cubo = 73
+
+const DEFAULT_CUBE_UVS = [
+    [1431,284, 1504,284, 1431,356, 1504,356],
+    [],
+    [],
+    [],
+    [],
+    []
+];
+const HEART_CUBE_UVS = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+];
+const STAR_CUBE_UVS = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+];
+
 
 var score = 0;
 var lives = 3;
 var balls = 1;
 
-//position, velocity, ...
-class Vector {
+//coords, velocity, acceleration...
+class Vec {
 
     constructor(x, y) {
         this.x = x;
@@ -67,67 +111,282 @@ class Vector {
         return Math.atan2(this.y, this.x);
     }
 
-    static NULL = new Vector(0, 0);
+    static NULL = new Vec(0, 0);
 
-    /**
-     * Creates a unit vector whose phase is given.
-     * @param {number} angle the phase of the vector
-     */
     static unit(angle) {
-        return new Vector(Math.cos(angle), Math.sin(angle));
+        return new Vec(Math.cos(angle), Math.sin(angle));
     }
 
-    /**
-     * Returns the result of component-wise (euclidean) addition with another vector.
-     * @param {Vector} vector the other vector
-     */
+
     add(vector) {
-        return new Vector(this.x + vector.x, this.y + vector.y);
+        return new Vec(this.x + vector.x, this.y + vector.y);
     }
 
-    /**
-     * Returns the scaling of the vector by a given factor.
-     * @param {number} factor the scaling factor
-     */
+   
     scale(factor) {
-        return new Vector(factor * this.x, factor * this.y);
+        return new Vec(factor * this.x, factor * this.y);
     }
 
-    /**
-     * Returns the normalization of the vector.
-     */
-    unit() {
-        return new Vector(Math.cos(this.phase), Math.sin(this.phase));
-    }
-
-    /**
-     * Returns the result of component-wise (euclidean) subtraction with another vector.
-     * @param {Vector} vector the other vector
-     */
     sub(vector) {
         return this.add(vector.scale(-1));
     }
 
-    /**
-     * Returns the normalization of the vector.
-     */
     normalize() {
-        return new Vector(Math.cos(this.phase), Math.sin(this.phase));
+        
+        return new Vec(Math.cos(this.getPhase()), Math.sin(this.getPhase()));
     }
 
-    /**
-     * Returns the dot product with another vector.
-     * @param {Vector} vector the other vector.
-     */
     dot(vector) {
         return this.x * vector.x + this.y * vector.y;
     }
 
-    /**
-     * Returns the counterclockwise normal of the vector.
-     */
     normal() {
-        return new Vector(-this.y, this.x);
+        return new Vec(-this.y, this.x);
+    }
+}
+
+//circle
+class Ball {
+
+    constructor(coords, ready, number) {
+
+        this.coords = coords;
+        this.ready = ready;
+        this.number = number;
+    }
+
+    speed = new Vec(0, 0);
+
+    move() {
+
+        var G = new Vec(0, 1);
+
+        //apply gravity (for the time interval) to the ball speed
+        this.speed = this.speed.add(G.scale(T));
+
+        //limit the ball speed to avoid crazy things
+        if(this.speed.getAbs() > BALL_MAX_SPEED)
+            this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
+        
+        //apply velocity (for the time interval) to the ball coords
+        this.coords = this.coords.add(this.speed.scale(T));
+
+        //check if the ball falls out
+        if(this.coords.y < -2) {
+            if(balls > 1) {
+                //just remove the ball and go on
+                balls--;
+                //rimuovere in qualche modo la pallina
+            }
+            else if(balls == 1) {
+                if(lives > 1) {
+                    //prepare the next ball and update lives
+                    lives--;
+                    this.coords = new Vec(BALL_DEFAULT_X, BALL_DEFAULT_Y);
+                    this.ready = false;                    
+                }
+                else if(lives == 1)
+                    console.log("game over")    
+            }         
+        }
+        
+        
+    }
+
+    checkWallCollision(wall) {
+
+        // get dot product of the line and circle
+        let dot = (((this.coords.x - wall.start.x)*(wall.end.x - wall.start.x)) + ((this.coords.y - wall.start.y)*(wall.end.y - wall.start.y)) ) / Math.pow(wall.length, 2);
+    
+        // find the closest point on the line
+        let closestX = wall.start.x + (dot * (wall.end.x - wall.start.x));
+        let closestY = wall.start.y + (dot * (wall.end.y - wall.start.y));
+    
+        // get distance to closest point
+        let distX = closestX - this.coords.x;
+        let distY = closestY - this.coords.y;
+        let distance = Math.sqrt((distX * distX) + (distY * distY));
+    
+        if (distance <= BALL_RADIUS) {
+            this.handleWallCollision(wall);
+        }
+        return;
+  
+    }
+
+    handleWallCollision(wall) {
+        console.log("WALL")
+        
+    }
+
+
+    checkBumperCollision(bumper) {
+        // get distance between the circle's centers
+        // use the Pythagorean Theorem to compute the distance
+        let distX = this.coords.x - bumper.position.x;
+        let distY = this.coords.y - bumper.position.y;
+        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
+
+        // if the distance is less than the sum of the circle's
+        // radii, the circles are touching!
+        if (distance <= BALL_RADIUS + BUMPER_RADIUS) {
+            this.handleBumperCollision(bumper);
+        }
+        return;
+    }
+
+    handleBumperCollision(bumper) {
+        console.log("BUMPER")
+
+     }
+
+
+    checkPipeCollision(pipe) { 
+        // get distance between the circle's centers
+        // use the Pythagorean Theorem to compute the distance
+        let distX = this.coords.x - pipe.position.x;
+        let distY = this.coords.y - pipe.position.y;
+        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
+
+        // if the distance is less than the sum of the circle's
+        // radii, the circles are touching!
+        if (distance <= BALL_RADIUS + PIPE_RADIUS) {
+            this.handlePipeCollision(pipe);
+        }
+        return;
+    }
+
+    handlePipeCollision(pipe) {
+        console.log("PIPE")
+
+     }
+
+
+    checkCubeCollision(cube) { 
+        //p1 is the TOP LEFT point of the square
+        // temporary variables to set edges for testing
+        let testX = this.coords.x;
+        let testY = this.coords.y;
+
+        // which edge is closest?
+        if (this.coords.x < cube.p1.x)         
+            testX = cube.p1.x;      // test left edge
+        else if (this.coords.x > cube.p1.x + CUBE_EDGE) 
+            testX = cube.p1.x + CUBE_EDGE;   // right edge
+
+        if (this.coords.y > cube.p1.y)         
+            testY = cube.p1.y;      // top edge
+        else if (this.coords.y < cube.p1.y - CUBE_EDGE) 
+            testY = cube.p1.y - CUBE_EDGE;   // bottom edge
+
+        // get distance from closest edges
+        let distX = this.coords.x - testX;
+        let distY = this.coords.y - testY;
+        let distance = Math.sqrt( (distX*distX) + (distY*distY) );
+
+        // if the distance is less than the radius, collision!
+        if (distance <= BALL_RADIUS) {
+            this.handleCubeCollision(cube);
+        }
+        return;
+    }
+
+    handleCubeCollision(cube) { 
+        console.log("CUBE")
+        this.speed = this.speed.scale(-1);
+
+    }
+
+
+    checkSlingshotCollision(slingshot) { 
+
+        //semplicemente controllo collisione con 3 linee: una di queste è l'ipotenusa quindi deve bounceare
+
+        //P1-P2
+        let dot = (((this.coords.x - slingshot.p1.x)*(slingshot.p2.x - slingshot.p1.x)) + ((this.coords.y - slingshot.p1.y)*(slingshot.p2.y - slingshot.p1.y)) ) / Math.pow(slingshot.p12_length, 2);
+    
+        let closestX = slingshot.p1.x + (dot * (slingshot.p2.x - slingshot.p1.x));
+        let closestY = slingshot.p1.y + (dot * (slingshot.p2.y - slingshot.p1.y));
+    
+        let distX = closestX - this.coords.x;
+        let distY = closestY - this.coords.y;
+        let distance = Math.sqrt((distX * distX) + (distY * distY));
+    
+        if (distance <= BALL_RADIUS) {
+            this.handleSlingshotCollision(slingshot, true); //bounce
+        }
+        
+        //P2-P3
+        dot = (((this.coords.x - slingshot.p2.x)*(slingshot.p3.x - slingshot.p2.x)) + ((this.coords.y - slingshot.p2.y)*(slingshot.p3.y - slingshot.p2.y)) ) / Math.pow(slingshot.p23_length, 2);
+    
+        closestX = slingshot.p2.x + (dot * (slingshot.p3.x - slingshot.p2.x));
+        closestY = slingshot.p2.y + (dot * (slingshot.p3.y - slingshot.p2.y));
+    
+        distX = closestX - this.coords.x;
+        distY = closestY - this.coords.y;
+        distance = Math.sqrt((distX * distX) + (distY * distY));
+    
+        if (distance <= BALL_RADIUS) {
+            this.handleSlingshotCollision(slingshot, false); //no bounce
+        }
+        
+        //P1-P3
+        dot = (((this.coords.x - slingshot.p1.x)*(slingshot.p3.x - slingshot.p1.x)) + ((this.coords.y - slingshot.p1.y)*(slingshot.p3.y - slingshot.p1.y)) ) / Math.pow(slingshot.p13_length, 2);
+    
+        closestX = slingshot.p1.x + (dot * (slingshot.p3.x - slingshot.p1.x));
+        closestY = slingshot.p1.y + (dot * (slingshot.p3.y - slingshot.p1.y));
+    
+        distX = closestX - this.coords.x;
+        distY = closestY - this.coords.y;
+        distance = Math.sqrt((distX * distX) + (distY * distY));
+    
+        if (distance <= BALL_RADIUS) {
+            this.handleSlingshotCollision(slingshot, false); //no bounce
+        }
+        return;
+    }
+
+    handleSlingshotCollision(slingshot, bounce) { 
+        console.log("SLING")
+
+    }
+
+
+    checkBallCollision(ball) { 
+        // get distance between the circle's centers
+        // use the Pythagorean Theorem to compute the distance
+        let distX = this.coords.x - ball.coords.x;
+        let distY = this.coords.y - ball.coords.y;
+        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
+
+        // if the distance is less than the sum of the circle's
+        // radii, the circles are touching!
+        if (distance <= BALL_RADIUS * 2) {
+            this.handleBallCollision(ball);
+        }
+        return;
+    }
+
+    handleBallCollision(ball) { 
+        console.log("BALL")
+
+    }
+
+     
+    checkFlipperCollision(flipper) { }
+
+    handleFlipperCollision() {
+        console.log("FLIPPER")
+
+     }
+
+
+
+    launch(force) {
+        if (!this.ready)
+            return;
+        this.speed = new Vec(0, force * BALL_LAUNCH_SPEED);
+        this.ready = false;
     }
 }
 
@@ -148,11 +407,10 @@ class Wall {
 
 //circle
 class Bumper {
-   
-    constructor(position, radius) {
+
+    constructor(position) {
 
         this.position = position;
-        this.radius = radius;
 
         Bumper.list.push(this);
     }
@@ -160,9 +418,20 @@ class Bumper {
     static list = [];
 }
 
+//circle
+class Pipe {
+
+    constructor(position) {
+
+        this.position = position;
+
+    }
+
+}
+
 //triangle
 class Slingshot {
-   
+
     constructor(p1, p2, p3) {
 
         this.p1 = p1;
@@ -171,10 +440,10 @@ class Slingshot {
 
         this.p12_length = p2.sub(p1).abs;
         this.p12_direction = p2.sub(p1).normalize();
-        
+
         this.p13_length = p3.sub(p1).abs;
         this.p13_direction = p3.sub(p1).normalize();
-        
+
         this.p23_length = p3.sub(p2).abs;
         this.p23_direction = p3.sub(p2).normalize();
 
@@ -185,8 +454,8 @@ class Slingshot {
 }
 
 //rectangle
-class Obstacle {
-   
+class Cube {
+
     constructor(p1, p2, p3, p4) {
 
         this.p1 = p1;
@@ -194,22 +463,16 @@ class Obstacle {
         this.p3 = p3;
         this.p4 = p4;
 
-        this.p12_length = p2.sub(p1).abs;
         this.p12_direction = p2.sub(p1).normalize();
-        
-        this.p23_length = p3.sub(p2).abs;
+
         this.p23_direction = p3.sub(p2).normalize();
-        
-        this.p34_length = p4.sub(p3).abs;
+
         this.p34_direction = p4.sub(p3).normalize();
-      
-        this.p41_length = p1.sub(p4).abs;
+
         this.p41_direction = p1.sub(p4).normalize();
 
-        Obstacle.list.push(this);
     }
 
-    static list = [];
 }
 
 
@@ -256,142 +519,5 @@ class Flipper {
             this.isMoving = true;
         }
         else this.isMoving = false;
-    }
-}
-
-//circle
-class Ball {
-
-    position = new Vector(BALL_DEFAULT_X, BALL_DEFAULT_Y);
-
-    velocity = new Vector(0, 0);
-
-    launched = false;
-
-    update(gravity, dt) {
-        const CENTER_SEEKING_FORCE = .4;
-        this.velocity = this.velocity.add(gravity.scale(dt)).sub(this.velocity.unit().scale(FRICTION * dt)).sub(this.velocity.scale(this.velocity.abs * DRAG * dt));
-        if(this.position.x < 1.52 && this.launched)
-            this.velocity = this.velocity.add(new Vector(CENTER_SEEKING_FORCE, 0).scale(dt));
-        else if(this.position.x > 3.5 && this.launched)
-            this.velocity = this.velocity.sub(new Vector(CENTER_SEEKING_FORCE, 0).scale(dt));
-
-        if(this.velocity.abs > SAFE_VELOCITY)
-            this.velocity = this.velocity.unit().scale(SAFE_VELOCITY);
-
-        this.position = this.position.add(this.velocity.scale(dt));
-
-        if(this.position.y < -2 * BALL_RADIUS) {
-            if(lives > 1) {
-                this.position = new Vector(BALL_DEFAULT_X, BALL_DEFAULT_Y);
-                this.launched = false;
-                lives--;
-                updateBallCounter(lives, false);
-                //playSound(soundReload);
-            } else if(lives == 1)
-                updateBallCounter(0, true);
-            this.velocity = Vector.NULL;
-        }
-    }
-
-    checkWallCollision(wall) {
-        let relativeToStart = this.position.sub(wall.start);
-        let wallAbscissa = relativeToStart.dot(wall.direction);
-        wallAbscissa = Math.max(0, Math.min(wallAbscissa, wall.length)); // clamp wallAbscissa in [0, length]
-        let impactPoint = wall.direction.scale(wallAbscissa).add(wall.start);
-
-        let hit = this.handleCollision(impactPoint, Vector.NULL, WALL_RESTITUTION, 0);
-
-        if(hit) {
-            if(this.velocity.abs < 1 || this.position.y < 1.4 && Math.abs(this.velocity.y) < 1)
-                return;
-            let i = Math.floor(3 * Math.random());
-            //let sound = [soundWall1, soundWall2, soundWall3][i];
-            //playSound(sound);
-        }
-    }
-
-    checkBumperCollision(bumper) {
-        let bumperCenterToBall = this.position.sub(bumper.position);
-        let bumperCenterToImpactPoint = bumperCenterToBall.unit().scale(BUMPER_RADIUS);
-        let impactPoint = bumperCenterToImpactPoint.add(bumper.position);
-
-        let hit = this.handleCollision(impactPoint, Vector.NULL, BUMPER_RESTITUTION, 0);
-        if(hit) {
-            score += Date.now() % 61;
-            let i = Math.floor(3 * Math.random());
-            //let sound = [soundBumper1, soundBumper2, soundBumper3][i];
-            //playSound(sound);
-        }
-    }
-
-    checkFlipperCollision(flipper) {
-        let relativeToHinge = this.position.sub(flipper.position);
-        let flipperAbscissa = relativeToHinge.dot(flipper.direction);
-        flipperAbscissa = Math.max(0, Math.min(flipperAbscissa, FLIPPER_LENGTH)); // clamp flipperAbscissa in [0, length]
-        let impactPoint = flipper.direction.scale(flipperAbscissa).add(flipper.position);
-        let impactPointVelocity = flipper.direction.normal().scale(flipperAbscissa * flipper.pulse); // apply rivals theorem: new basis rotating with flipper
-
-        let hit = this.handleCollision(impactPoint, impactPointVelocity, FLIPPER_RESTITUTION, FLIPPER_ENERGY_TRANSFER_EFFICIENCY);
-
-        if(hit) {
-            if(this.velocity.abs < 1 || this.position.y < 1.4 && Math.abs(this.velocity.y) < 1)
-                return;
-            let i = Math.floor(3 * Math.random());
-            //let sound = [soundWall1, soundWall2, soundWall3][i];
-            //playSound(sound);
-        }
-    }
-
-    checkObstacleCollision(obstacle) {}
-    checkSlingshotCollision(slingshot) {}
-
-    handleWallCollision() {}
-    handleBumperCollision() {}
-    handleFlipperCollision() {}
-    handleObstacleCollision() {}
-    handleSlingshotCollision() {}
-
-
-
-    /**
-     * Updates the ball's position and velocity considering a collision with a flat surface in a neighbourhood of a given impact point
-     * @param {Vector} impactPoint the position of the point of impact
-     * @param {Vector} impactPointVelocity the velocity of the point of impact on the moving surface (null vector if stationary)
-     * @param {number} restitution the ratio between the ball's velocity's normal-to-the-surface component before vs. after the impact
-     * @param {number} energyTransferEfficiency the portion of the kinetic energy transferred from the surface to the ball, if the surface is moving
-     */
-    handleCollision(impactPoint, impactPointVelocity, restitution, energyTransferEfficiency) {
-        let relativePosition = this.position.sub(impactPoint);
-        let distance = relativePosition.abs;
-
-        if (distance >= BALL_RADIUS)
-            return false;
-
-        // "bounce" the ball out of the surface along a line connecting the impact point to the center of the ball (i.e. normal to the surface)
-        let normal = relativePosition.unit();
-        let penetration = BALL_RADIUS - distance;
-        distance = BALL_RADIUS + penetration;
-        relativePosition = normal.scale(distance);
-        this.position = impactPoint.add(relativePosition);
-
-        // adjust velocity ~ restitution and energy transfer efficiency only apply to the normal component of the relative velocity
-        let relativeVelocity = this.velocity.sub(impactPointVelocity);
-        let tangent = normal.normal(); // sounds dodgy but it's true
-        let velocityTangent = relativeVelocity.dot(tangent);
-        let velocityNormal = relativeVelocity.dot(normal);
-        velocityNormal *= restitution;
-        velocityNormal += 2 * impactPointVelocity.abs * energyTransferEfficiency;
-        relativeVelocity = normal.scale(velocityNormal).add(tangent.scale(velocityTangent));
-        this.velocity = impactPointVelocity.add(relativeVelocity);
-        return true;
-    }
-
-    launch(force) {
-        if(this.launched)
-            return;
-        this.velocity = new Vector(0, force * BALL_LAUNCH_SPEED);
-        this.launched = true;
-        //playSound(soundLaunch);
     }
 }

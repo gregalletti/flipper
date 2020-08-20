@@ -70,9 +70,9 @@ var rightCoinLocalMatrix = utils.MakeWorld( -1.4,       9,        -2.5,         
 var fungo1LocalMatrix      = bumper1LocalMatrix;
 var fungo2LocalMatrix      = bumper2LocalMatrix;
 var fungo3LocalMatrix      = bumper3LocalMatrix;
-
+var tuboLocalMatrix      = utils.MakeWorld(-0.3,    8.9,   -3.50626,   90,     -5.4,       0,     0.2);
 
 var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bumper2LocalMatrix, bumper3LocalMatrix, dl1LocalMatrix, dl2LocalMatrix, dl3LocalMatrix,
                         dl4LocalMatrix, dl5LocalMatrix, dl6LocalMatrix, dr1LocalMatrix, dr2LocalMatrix, dr3LocalMatrix, dr4LocalMatrix, dr5LocalMatrix, dr6LocalMatrix,
                         leftButtonLocalMatrix, leftFlipperLocalMatrix, pullerLocalMatrix, rightButtonLocalMatrix, rightFlipperLocalMatrix, leftSlingshotMatrix, 
-                        rightSlingshotMatrix, bonusBallLocalMatrix, leftCoinLocalMatrix, rightCoinLocalMatrix, fungo1LocalMatrix, fungo2LocalMatrix, fungo3LocalMatrix];
+                        rightSlingshotMatrix, bonusBallLocalMatrix, leftCoinLocalMatrix, rightCoinLocalMatrix, fungo1LocalMatrix, fungo2LocalMatrix, fungo3LocalMatrix, tuboLocalMatrix];

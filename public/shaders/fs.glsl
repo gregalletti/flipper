@@ -46,20 +46,23 @@ void main() {
   vec3 diffA = clamp(dot(-lDirA,nNormal), 0.0, 1.0) * lightColorA;
   vec3 diffB = clamp(dot(-lDirB,nNormal), 0.0, 1.0) * lightColorB;
 
+  vec3 fsposnorm = normalize(fs_pos);
+
   //computing position and color of point light
-  vec3 lDir = normalize(pLPos - fs_pos);
-	vec3 lCol = pLCol * pow(2.0 / length(pLPos - fs_pos), 2.0);
+  vec3 lDir = normalize(pLPos - fsposnorm);
+	vec3 lCol = pLCol * pow(0.5 / length(pLPos - fsposnorm), 1.0);
 
   //spot
+  /*
   float LAConeOut = 60.0;
   float LAConeIn = 45.0;
   float LCosOut = cos(radians(LAConeOut / 2.0));
 	float LCosIn = cos(radians(LAConeOut * LAConeIn / 2.0));
 	//lightDirA = normalize(LAPos - fs_pos);
 	float CosAngle = dot(lDir, lDirA);
-	lCol = pLCol * pow(2.0 / length(pLPos - fs_pos), 1.0) * clamp((CosAngle - LCosOut) / (LCosIn - LCosOut), 0.0, 1.0);
+	lCol = pLCol * pow(2.0 / length(pLPos - fs_pos), 1.0) * clamp((CosAngle - LCosOut) / (LCosIn - LCosOut), 0.0, 1.0);*/
 
-  vec3 diffuseLambertPoint = compDiffuse(lDir,lCol,nNormal);
+  vec3 diffuseLambertPoint = compDiffuse(-lDir,lCol,nNormal);
 
   //vec3 lambertColor = mDiffColor * (diffA + diffB) + mDiffColor * diffuseLambertPoint;
   vec3 lambertColor = mDiffColor * diffuseLambertPoint;

@@ -4,9 +4,9 @@ const SUBSTEPS = 6;
 const BOARD_WIDTH = 5;
 const BOARD_HEIGHT = 11;
 const BALL_RADIUS = 0.16;
-const BUMPER_RADIUS = 0.33;
-const PIPE_RADIUS = 0.19;
-const COIN_RADIUS = 0.19;
+const BUMPER_RADIUS = 0.49;
+const PIPE_RADIUS = 0.153;
+const COIN_RADIUS = 0.249;
 const CUBE_EDGE = 1;
 
 //const FLIPPER_LENGTH = .9;
@@ -18,11 +18,11 @@ const FLIPPER_UP_ANGLE = 30;
 
 const FLIPPER_BOOST = 1;
 const BUMPER_BOOST = 1.5;
-const WALL_BOOST = 0.5;
+const WALL_BOOST = 0.7;
 const SLINGSHOT_BOOST = 1.5;
 const OBSTACLE_BOOST = 0.8;
 
-const BALL_MAX_SPEED = 20;
+const BALL_MAX_SPEED = 15;
 
 const T = 1 / FRAMERATE / SUBSTEPS;
 

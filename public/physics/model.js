@@ -68,6 +68,14 @@ class Vec {
     normal() {
         return new Vec(-this.y, this.x);
     }
+
+    invertX() {
+        return new Vec(- this.x, this.y);
+    }
+
+    invertY() {
+        return new Vec(this.x, - this.y);
+    }
 }
 
 //circle
@@ -91,8 +99,7 @@ class Ball {
 
     move() {
 
-        var G = new Vec(0, -2);
-
+        var G = new Vec(-2, -3);
         //apply gravity (for the time interval) to the ball speed
         this.speed = this.speed.add(G.scale(T));
 
@@ -117,6 +124,8 @@ class Ball {
                     this.speed = new Vec(0,0);
                     this.coords = new Vec(4.6, 2);
                     this.ready = true;
+                    //play(gameoverSound);  
+
                 }
                 else if(lives == 1)
                     console.log("game over")    
@@ -141,56 +150,98 @@ class Ball {
         let distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            this.handleWallCollision(wall);
+                this.handleWallCollision(wall, closestX, closestY);
         }
         return;
   
     }
 
-    handleWallCollision(wall) {
-        console.log("WALL")
+    handleWallCollision(wall, closestX, closestY) {
         
+        if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
+            if(isBetweenX(wall, closestX, closestY))
+                this.speed = this.speed.invertY();
+        }
+        else {
+            if(isBetweenY(wall, closestX, closestY))
+                this.speed = this.speed.invertX();
+        } 
+
     }
 
 
     checkBumperCollision(bumper) {
-        // get distance between the circle's centers
-        // use the Pythagorean Theorem to compute the distance
-        let distX = this.coords.x - bumper.position.x;
-        let distY = this.coords.y - bumper.position.y;
-        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
-
-        // if the distance is less than the sum of the circle's
-        // radii, the circles are touching!
-        if (distance <= BALL_RADIUS + BUMPER_RADIUS) {
-            this.handleBumperCollision(bumper);
+        let distance = this.coords.sub(bumper.position);        
+        
+        if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
+            console.log(distance.getAbs())
+            this.handleBumperCollision(bumper, distance);
         }
         return;
     }
 
-    handleBumperCollision(bumper) {
-        console.log("BUMPER")
+    handleBumperCollision(bumper, distance) {
+        
+        let impactPoint = (distance.normalize().scale(BUMPER_RADIUS)).add(bumper.position);
+
+        //calculate normal and tangent vector 
+        let N = this.coords.sub(impactPoint).normalize();
+        let T = N.normal();
+
+        //speed is composed by the 2 components
+        let vT = this.speed.dot(T);
+        let vN = this.speed.dot(N);
+
+
+        
+        this.speed = T.scale(vT).add(N.scale(vN));
+        console.log(this.speed)
+       //this.speed = this.speed.scale(-0.5)
+
 
      }
 
 
     checkPipeCollision(pipe) { 
-        // get distance between the circle's centers
-        // use the Pythagorean Theorem to compute the distance
-        let distX = this.coords.x - pipe.position.x;
-        let distY = this.coords.y - pipe.position.y;
-        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
 
-        // if the distance is less than the sum of the circle's
-        // radii, the circles are touching!
-        if (distance <= BALL_RADIUS + PIPE_RADIUS) {
-            this.handlePipeCollision(pipe);
+        let distance = this.coords.sub(pipe.position);
+        
+        if (distance.getAbs() <= BALL_RADIUS + PIPE_RADIUS) {
+            this.handlePipeCollision(pipe, distance);
         }
         return;
     }
 
-    handlePipeCollision(pipe) {
-        console.log("PIPE")
+    handlePipeCollision(pipe, distance) {
+
+        let impactPoint = (distance.normalize().scale(PIPE_RADIUS)).add(pipe.position);
+
+        //calculate normal and tangent vector 
+        let N = this.coords.sub(impactPoint).normalize();
+        let T = N.normal();
+
+        //speed is composed by the 2 components
+        let vT = this.speed.dot(T);
+        let vN = this.speed.dot(N);
+
+        this.speed = T.scale(vT).add(N.scale(vN));
+
+
+/*      
+        OLD VERSION(TOO BAD)
+        let a = (Math.pow(BALL_RADIUS, 2) - Math.pow(PIPE_RADIUS,2) + Math.pow(BALL_RADIUS + PIPE_RADIUS,2) ) / (2 * (BALL_RADIUS + PIPE_RADIUS))
+        let h_squared = Math.pow(BALL_RADIUS, 2) - Math.pow(a, 2);
+
+        let tempX = this.coords.x + a * ( pipe.position.x - this.coords.x ) / (BALL_RADIUS + PIPE_RADIUS);
+        let tempY = this.coords.y + a * ( pipe.position.y - this.coords.y ) / (BALL_RADIUS + PIPE_RADIUS);
+
+        let impactX = tempX + Math.sqrt(h_squared) * ( pipe.position.y - this.coords.y ) / (BALL_RADIUS + PIPE_RADIUS);
+        let impactY = tempY + Math.sqrt(h_squared) * ( pipe.position.x - this.coords.x ) / (BALL_RADIUS + PIPE_RADIUS);
+
+        let impactAngle = impactPoint.getPhase();
+*/
+        console.log("PIPE: x: " + impactPoint.x + ",y: " + impactPoint.y);
+        //this.speed = this.speed.invertY();
 
      }
 
@@ -338,11 +389,12 @@ class Ball {
 
 //line
 class Wall {
-    constructor(start, end) {
+    constructor(start, end, number) {
 
         this.start = start;
         this.end = end;
-        this.length = end.sub(start).abs;
+        this.number = number;
+        this.length = end.sub(start).getAbs();
         this.direction = end.sub(start).normalize();
 
     }
@@ -373,7 +425,6 @@ class Coin {
     scale = 0.5;
 
     rotate() { 
-        console.log(this.rotationAngle)
         this.rotationAngle = this.rotationAngle + 0.02;
     }
 

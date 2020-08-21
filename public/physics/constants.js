@@ -20,7 +20,7 @@ const FLIPPER_BOOST = 1;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.7;
 const SLINGSHOT_BOOST = 1.5;
-const OBSTACLE_BOOST = 0.8;
+const PIPE_BOOST = 0.8;
 
 const BALL_MAX_SPEED = 15;
 

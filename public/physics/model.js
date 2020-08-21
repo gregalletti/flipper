@@ -157,6 +157,8 @@ class Ball {
     }
 
     handleWallCollision(wall, closestX, closestY) {
+
+        
         
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
             if(isBetweenX(wall, closestX, closestY))
@@ -181,22 +183,23 @@ class Ball {
     }
 
     handleBumperCollision(bumper, distance) {
-        
         let impactPoint = (distance.normalize().scale(BUMPER_RADIUS)).add(bumper.position);
 
         //calculate normal and tangent vector 
         let N = this.coords.sub(impactPoint).normalize();
         let T = N.normal();
 
+        let error = BALL_RADIUS + BUMPER_RADIUS - distance.getAbs();
+        let offset = N.scale(BALL_RADIUS + error);
+        this.coords = impactPoint.add(offset);
+
+
         //speed is composed by the 2 components
-        let vT = this.speed.dot(T);
-        let vN = this.speed.dot(N);
+        let oldSpeed = this.speed.scale(BUMPER_BOOST);
+        let vT = oldSpeed.dot(T);
+        let vN = oldSpeed.dot(N);
 
-
-        
-        this.speed = T.scale(vT).add(N.scale(vN));
-        console.log(this.speed)
-       //this.speed = this.speed.scale(-0.5)
+        this.speed = (T.scale(vT).sub(N.scale(vN)));
 
 
      }
@@ -220,11 +223,16 @@ class Ball {
         let N = this.coords.sub(impactPoint).normalize();
         let T = N.normal();
 
-        //speed is composed by the 2 components
-        let vT = this.speed.dot(T);
-        let vN = this.speed.dot(N);
+        let error = BALL_RADIUS + PIPE_RADIUS - distance.getAbs();
+        let offset = N.scale(BALL_RADIUS + error);
+        this.coords = impactPoint.add(offset);
 
-        this.speed = T.scale(vT).add(N.scale(vN));
+        //speed is composed by the 2 components
+        let oldSpeed = this.speed.scale(PIPE_BOOST);
+        let vT = oldSpeed.dot(T);
+        let vN = oldSpeed.dot(N);
+
+        this.speed = (T.scale(vT).sub(N.scale(vN)));
 
 
 /*      
@@ -240,8 +248,6 @@ class Ball {
 
         let impactAngle = impactPoint.getPhase();
 */
-        console.log("PIPE: x: " + impactPoint.x + ",y: " + impactPoint.y);
-        //this.speed = this.speed.invertY();
 
      }
 

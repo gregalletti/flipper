@@ -18,7 +18,7 @@ var cube = new Cube(new Vec(4.1, 10.5), new Vec(5.1, 10.5), new Vec(5.1, 9.5), n
 
 var pipe = new Pipe(new Vec(2.2 + 0.3 , 6.7 -3.50626 ));
 
-var wall1 = new Wall(new Vec(0,1.22), new Vec(1.5, 1.22), 1);   //bottom-left little wall
+var wall1 = new Wall(new Vec(0, 1.22), new Vec(1.4, 1.22), 1);   //bottom-left little wall
 var wall2 = new Wall(new Vec(0, 0), new Vec(0, BOARD_HEIGHT), 2);  //left board wall
 var wall3 = new Wall(new Vec(0, BOARD_HEIGHT), new Vec(BOARD_WIDTH, BOARD_HEIGHT), 3);   //top board wall
 var wall4 = new Wall(new Vec(BOARD_WIDTH, BOARD_HEIGHT), new Vec(BOARD_WIDTH, 0), 4);   //right board wall

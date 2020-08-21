@@ -17,17 +17,27 @@ function getBallLocalMatrix(physX, physY) {
 }
 
 function getLeftFlipperLocalMatrix(angle) {
-    let degrees = angle / Math.PI * 180;
-    return utils.MakeWorld(0.6906, 8.4032, -5.6357, -degrees, -3.24, -5.64, 1);
+        return utils.MakeWorld(0.6906, 8.4032, -5.6357, -angle, -3.24, -5.64, 1);
 }
 
 function getRightFlipperLocalMatrix(angle) {
-    let degrees = angle / Math.PI * 180;
-    return utils.MakeWorld(-1.307, 8.4032, -5.6357, -degrees, -3.24, -5.64, 1);
+    return utils.MakeWorld(-1.307, 8.4032, -5.6357, -angle, -3.24, -5.64, 1);
 }
 
 function getPullerLocalMatrix(run) {
     return utils.MakeWorld(-2.5264, 8.3925, -7.1 - run, 0, -90, 0, 1);
+}
+
+function getRightCoinLocalMatrix(angle) {
+    let deg = angle / Math.PI * 180;
+
+    return utils.MakeWorld( -1.4,       9,        -2.5,           0,       90,       deg,     0.5); 
+}
+
+function getLeftCoinLocalMatrix(angle) {
+    let deg = angle / Math.PI * 180;
+
+    return utils.MakeWorld( 1,       9,        -2.5,           0,       90,       deg,     0.5); 
 }
 
 /* 

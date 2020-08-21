@@ -283,7 +283,7 @@ function main() {
     viewPhi += viewPhiSpeed * camera_dt;
     viewTheta += viewThetaSpeed * camera_dt;
 
-    physicsMain();
+    controller();
 
     // clear scene
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -294,9 +294,12 @@ function main() {
 
     // update world matrices for moving objects
     allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
-    //allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
+    allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     //allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
-    //allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
+    allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
+    allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle);
+    allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90);
+
 
     // ---------------------------------------- LIGHTS DEFINITION
 
@@ -447,7 +450,6 @@ async function init() {
   setupCanvas();
   loadShaders();
   await loadMeshes();
-  //displayControls();
   main();
 
   // prepare canvas and body styles

@@ -17,81 +17,6 @@ WALL = BOARD
 ALL THE MEASUREMENTS HAVE BEEN DONE THROUGH BLENDER
 */
 
-const FRAMERATE = 60;
-const SUBSTEPS = 6;
-
-const BOARD_WIDTH = 5;
-const BOARD_HEIGHT = 11;
-const BALL_RADIUS = 0.16;
-const BUMPER_RADIUS = 0.33;
-const PIPE_RADIUS = 0.19;
-const CUBE_EDGE = 1;
-
-//const FLIPPER_LENGTH = .9;
-const FLIPPER_LENGTH = 1;
-const FLIPPER_HEIGHT = 0.265;
-const BALL_DEFAULT_X = 4.6;
-const BALL_DEFAULT_Y = 2;
-
-const FLIPPER_DOWN_ANGLE = -30;
-const FLIPPER_UP_ANGLE = 30;
-
-const FLIPPER_BOOST = 1;
-const BUMPER_BOOST = 1.5;
-const WALL_BOOST = 0.5;
-const SLINGSHOT_BOOST = 1.5;
-const OBSTACLE_BOOST = 0.8;
-
-const BALL_MAX_SPEED = 20;
-
-var T = 1 / FRAMERATE / SUBSTEPS;
-
-const DIGIT_UVS = [
-    [1510,87, 1562,87, 1510,168, 1562,168],
-
-    [1302,6, 1354,6, 1302,87, 1354,87], //digit larga 52, alta 81
-    [1354,6, 1406,6, 1354,87, 1406,87],
-    [1406,6, 1458,6, 1406,87, 1458,87],
-    [1458,6, 1510,6, 1458,87, 1510,87],
-    [1510,6, 1562,6, 1510,87, 1562,87],
-
-    [1302,87, 1354,87, 1302,168, 1354,168], 
-    [1354,87, 1406,87, 1354,168, 1406,168],
-    [1406,87, 1458,87, 1406,168, 1458,168],
-    [1458,87, 1510,87, 1458,168, 1510,168]
-];
-
-//lato del cubo = 73
-
-const DEFAULT_CUBE_UVS = [
-    [1431,284, 1504,284, 1431,356, 1504,356],
-    [],
-    [],
-    [],
-    [],
-    []
-];
-const HEART_CUBE_UVS = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-];
-const STAR_CUBE_UVS = [
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-];
-
-
-var score = 0;
-var lives = 3;
-var balls = 1;
 
 //coords, velocity, acceleration...
 class Vec {
@@ -157,9 +82,16 @@ class Ball {
 
     speed = new Vec(0, 0);
 
+    launch() {
+        if (!this.ready)
+            return;
+        this.speed = new Vec(0, power);
+        this.ready = false;
+    }
+
     move() {
 
-        var G = new Vec(0, 1);
+        var G = new Vec(0, -2);
 
         //apply gravity (for the time interval) to the ball speed
         this.speed = this.speed.add(G.scale(T));
@@ -182,8 +114,9 @@ class Ball {
                 if(lives > 1) {
                     //prepare the next ball and update lives
                     lives--;
-                    this.coords = new Vec(BALL_DEFAULT_X, BALL_DEFAULT_Y);
-                    this.ready = false;                    
+                    this.speed = new Vec(0,0);
+                    this.coords = new Vec(4.6, 2);
+                    this.ready = true;
                 }
                 else if(lives == 1)
                     console.log("game over")    
@@ -381,12 +314,25 @@ class Ball {
      }
 
 
+     checkCoinCollision(coin) { 
+        // get distance between the circle's centers
+        // use the Pythagorean Theorem to compute the distance
+        let distX = this.coords.x - coin.position.x;
+        let distY = this.coords.y - coin.position.y;
+        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
 
-    launch(force) {
-        if (!this.ready)
-            return;
-        this.speed = new Vec(0, force * BALL_LAUNCH_SPEED);
-        this.ready = false;
+        // if the distance is less than the sum of the circle's
+        // radii, the circles are touching!
+        if (distance <= BALL_RADIUS + COIN_RADIUS) {
+            this.handleCoinCollision(coin);
+        }
+        return;
+    }
+
+    handleCoinCollision(coin) { 
+        console.log("COIN")
+        coin.scale = 0;
+
     }
 }
 
@@ -399,10 +345,8 @@ class Wall {
         this.length = end.sub(start).abs;
         this.direction = end.sub(start).normalize();
 
-        Wall.list.push(this);
     }
 
-    static list = [];
 }
 
 //circle
@@ -412,10 +356,27 @@ class Bumper {
 
         this.position = position;
 
-        Bumper.list.push(this);
     }
 
-    static list = [];
+}
+
+//circle
+class Coin {
+
+    constructor(position) {
+
+        this.position = position;
+
+    }
+
+    rotationAngle = 0;
+    scale = 0.5;
+
+    rotate() { 
+        console.log(this.rotationAngle)
+        this.rotationAngle = this.rotationAngle + 0.02;
+    }
+
 }
 
 //circle
@@ -447,10 +408,8 @@ class Slingshot {
         this.p23_length = p3.sub(p2).abs;
         this.p23_direction = p3.sub(p2).normalize();
 
-        Slingshot.list.push(this);
     }
 
-    static list = [];
 }
 
 //rectangle
@@ -477,18 +436,14 @@ class Cube {
 
 
 class Flipper {
-    constructor(position, number) {
+    constructor(position, number, angle) {
         this.position = position;
         this.number = number;
-
-        Flipper.list.push(this);
+        this.angle = angle;
     }
-
-    static list = [];
 
     up = false;
     moving = false;
-    angleRatio = 0;
 
     getCurrentAngle() {
         let leftAngle = FLIPPER_RESTING_ANGLE + (FLIPPER_ACTIVE_ANGLE - FLIPPER_RESTING_ANGLE) * this.angleRatio;
@@ -511,9 +466,9 @@ class Flipper {
         return FLIPPER_PULSE;
     }
 
-    update(dt) {
+    rotate() {
         let pulseDirection = this.active ? 1 : -1;
-        let rawAngleRatio = this.angleRatio + pulseDirection * dt / FLIPPER_SWEEP_TIME;
+        let rawAngleRatio = this.angleRatio + pulseDirection * T / 1;
         if (rawAngleRatio >= 0 && rawAngleRatio <= 1) {
             this.angleRatio = rawAngleRatio;
             this.isMoving = true;

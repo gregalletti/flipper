@@ -112,11 +112,13 @@ class Ball {
         if(this.coords.y < -2) {
             if(balls > 1) {
                 //just remove the ball and go on
+                play(fallenBallSound);
                 balls--;
                 //rimuovere in qualche modo la pallina
             }
             else if(balls == 1) {
                 if(lives > 1) {
+                    play(fallenBallSound);
                     //prepare the next ball and update lives
                     lives--;
                     this.speed = new Vec(0,0);
@@ -125,8 +127,10 @@ class Ball {
                     //play(gameoverSound);  
 
                 }
-                else if(lives == 1)
+                else if(lives == 1){
                     console.log("game over")    
+                    //play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
+                }
             }         
         }
         
@@ -173,6 +177,7 @@ class Ball {
         
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
             console.log(distance.getAbs())
+            play(bumperSound);
             this.handleBumperCollision(bumper, distance);
         }
         return;
@@ -209,6 +214,7 @@ class Ball {
         let distance = this.coords.sub(pipe.position);
         
         if (distance.getAbs() <= BALL_RADIUS + PIPE_RADIUS) {
+            play(pipeSound);
             this.handlePipeCollision(pipe, distance);
         }
         return;
@@ -382,8 +388,9 @@ class Ball {
     }
 
     handleCoinCollision(coin) { 
-        
+        play(coinSound);
         coin.scaleAndElevate();
+        
         //coin.scale = 0;
 
     }

@@ -424,7 +424,17 @@ function main() {
 
 var startSound;
 var gameoverSound;
+var flipperSound;
+var flipperDown;
+var coinSound;
+var bumperSound;
+var pipeSound;
+var fallenBallSound;
 
+/**
+ * 
+ * @param {HTMLAudioElement} sound 
+ */
 function play(sound) {
   sound.currentTime = 0;
   sound.play();
@@ -434,6 +444,12 @@ async function init() {
  
   startSound = document.getElementById("new_game");
   gameoverSound = document.getElementById("game_over");
+  flipperSound = document.getElementById("flipper_sound");
+  flipperDown = document.getElementById("flipper_down");
+  coinSound = document.getElementById("coin_sound");
+  bumperSound = document.getElementById("bumper_sound");
+  pipeSound = document.getElementById("pipe_sound");
+  fallenBallSound = document.getElementById("fallen_ball");
 
   setupCanvas();
   loadShaders();

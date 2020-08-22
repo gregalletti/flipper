@@ -59,15 +59,22 @@ function controller() {
             power += 0.05;
 
         //handle flippers movement
-        if(rightFlipper.moving)
+        if(rightFlipper.moving){
             rightFlipper.angle = Math.max(rightFlipper.angle - 1, 150);
-        else
+            play(flipperSound);
+        }
+        else{
             rightFlipper.angle = Math.min(rightFlipper.angle + 1, 210);
-
-        if(leftFlipper.moving)
+            //play(flipperDown);
+        }
+        if(leftFlipper.moving){
             leftFlipper.angle = Math.min(leftFlipper.angle + 1, 30);
-        else
+            play(flipperSound);
+        }
+        else{
             leftFlipper.angle = Math.max(leftFlipper.angle - 1, -30);
+            //play(flipperDown);
+        }
 
         //rotate the coins on the board
         rightCoin.rotate();

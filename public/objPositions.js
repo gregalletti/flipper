@@ -28,16 +28,16 @@ function getPullerLocalMatrix(run) {
     return utils.MakeWorld(-2.5264, 8.3925, -7.1 - run, 0, -90, 0, 1);
 }
 
-function getRightCoinLocalMatrix(angle) {
+function getRightCoinLocalMatrix(angle, scale, z) {
     let deg = angle / Math.PI * 180;
 
-    return utils.MakeWorld( -1.4,       9,        -2.5,           0,       90,       deg,     0.5); 
+    return utils.MakeWorld( -1.4,       z,        -2.5,           0,       90,       deg,     scale); 
 }
 
-function getLeftCoinLocalMatrix(angle) {
+function getLeftCoinLocalMatrix(angle, scale, z) {
     let deg = angle / Math.PI * 180;
 
-    return utils.MakeWorld( 1,       9,        -2.5,           0,       90,       deg,     0.5); 
+    return utils.MakeWorld( 1,       z,        -2.5,           0,       90,       deg,    scale); 
 }
 
 /* 

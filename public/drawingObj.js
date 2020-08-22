@@ -141,6 +141,7 @@ var gameOverBg;
 var gameOverMsg;
 var loadingBg;
 var loadingMsg;
+var cubeOutcome = 0;
 
 const numUVs = [[0.735309, 0.956854, 0.760579, 0.918019, 0.760579, 0.956854, 0.735309, 0.918019],
                 [0.636297, 0.996017, 0.661567, 0.957183, 0.661567, 0.996017, 0.636297, 0.957183],
@@ -257,23 +258,35 @@ function main() {
   for (let i in allMeshes)
     addMeshToScene(i);
     
-
-  function updateScoreTex() {
-    if (actualScore != score) {
-      actualScore = score;
-      let scoreArr = Array.from(String(actualScore), Number).reverse();
-      let scoreMeshes = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];
-      for (let i = 0; i < scoreArr.length; i++) {
-        let digit = scoreArr[i];
-        scoreMeshes[i].textures = numUVs[digit];
-        addMeshToScene(i + 11);
+    function changeCubeTexture() {
+      let newCubeMesh = tube;
+      
+      if(cubeOutcome == 1)
+        newCubeMesh.textures = HEART_CUBE_UVS;
+      if(cubeOutcome == 2)
+        newCubeMesh.textures = STAR_CUBE_UVS;
+      
+      addMeshToScene(24);    
+      
+    }  
+    
+    function changeDigitTexture() {
+      if (actualScore != score) {
+        actualScore = score;
+        let scoreArr = Array.from(String(actualScore), Number).reverse();
+        let scoreMeshes = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];
+        for (let i = 0; i < scoreArr.length; i++) {
+          let digit = scoreArr[i];
+          scoreMeshes[i].textures = numUVs[digit];
+          addMeshToScene(i + 11);
+        }
       }
-    }
-  }  
+    } 
   
   function drawScene() {
 
     // update uv coordinates of dynamic score system  
+    changeCubeTexture();
     //updateScoreTex();
 
     // adjust camera
@@ -297,8 +310,8 @@ function main() {
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     //allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
     allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
-    allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle);
-    allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90);
+    allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
+    allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
 
 
     // ---------------------------------------- LIGHTS DEFINITION
@@ -499,7 +512,7 @@ async function init() {
       slingshotLeftMesh, slingshotRightMesh, tube, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh];
   }
   
-}
+} 
 
 function updateBallCounter(balls, gameOver) {
   ballCounter.innerHTML = "Balls " + balls;

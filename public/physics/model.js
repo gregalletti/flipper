@@ -36,7 +36,6 @@ class Vec {
         return Math.atan2(this.y, this.x);
     }
 
-    static NULL = new Vec(0, 0);
 
     static unit(angle) {
         return new Vec(Math.cos(angle), Math.sin(angle));
@@ -99,9 +98,8 @@ class Ball {
 
     move() {
 
-        var G = new Vec(-2, -3);
-        //apply gravity (for the time interval) to the ball speed
-        this.speed = this.speed.add(G.scale(T));
+        //apply some gravity to the ball speed
+        this.speed = this.speed.add(new Vec(-0.0005, -0.005));
 
         //limit the ball speed to avoid crazy things
         if(this.speed.getAbs() > BALL_MAX_SPEED)
@@ -157,8 +155,6 @@ class Ball {
     }
 
     handleWallCollision(wall, closestX, closestY) {
-
-        
         
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
             if(isBetweenX(wall, closestX, closestY))
@@ -173,7 +169,7 @@ class Ball {
 
 
     checkBumperCollision(bumper) {
-        let distance = this.coords.sub(bumper.position);        
+        let distance = this.coords.sub(bumper.position);
         
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
             console.log(distance.getAbs())
@@ -200,7 +196,10 @@ class Ball {
         let vN = oldSpeed.dot(N);
 
         this.speed = (T.scale(vT).sub(N.scale(vN)));
-
+        
+        //limit the ball speed to avoid crazy things
+        if(this.speed.getAbs() > BALL_MAX_SPEED)
+        this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
 
      }
 
@@ -282,9 +281,11 @@ class Ball {
     }
 
     handleCubeCollision(cube) { 
-        console.log("CUBE")
+        //invert ball speed (corners?)
         this.speed = this.speed.scale(-1);
 
+        //must change texture of the cube (handled in drawingobj)
+        cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
     }
 
 
@@ -372,26 +373,23 @@ class Ball {
 
 
      checkCoinCollision(coin) { 
-        // get distance between the circle's centers
-        // use the Pythagorean Theorem to compute the distance
-        let distX = this.coords.x - coin.position.x;
-        let distY = this.coords.y - coin.position.y;
-        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
-
-        // if the distance is less than the sum of the circle's
-        // radii, the circles are touching!
-        if (distance <= BALL_RADIUS + COIN_RADIUS) {
-            this.handleCoinCollision(coin);
+        let distance = this.coords.sub(coin.position);
+        
+        if (distance.getAbs() <= BALL_RADIUS + COIN_RADIUS) {
+            this.handleCoinCollision(coin, distance);
         }
         return;
     }
 
     handleCoinCollision(coin) { 
-        console.log("COIN")
-        coin.scale = 0;
+        
+        coin.scaleAndElevate();
+        //coin.scale = 0;
 
     }
 }
+
+
 
 //line
 class Wall {
@@ -429,9 +427,29 @@ class Coin {
 
     rotationAngle = 0;
     scale = 0.5;
+    z = 9;
+    taken = false;
 
     rotate() { 
         this.rotationAngle = this.rotationAngle + 0.02;
+    }
+      
+    async scaleAndElevate() {
+
+        //a quanto pare un FOR non va bene
+        //gradually increase z of the coin and decrease scale (arcade feels on purpose with non-fluid transformations)
+        setTimeout(() => {this.z = 9.1; this.taken = true;}, 150);
+        setTimeout(() => {this.z = 9.2;}, 300);
+        setTimeout(() => {this.z = 9.2;}, 450);
+        setTimeout(() => {this.z = 9.3;}, 600);
+        setTimeout(() => {this.scale = 0.4; this.z = 9.4;}, 750);
+        setTimeout(() => {this.scale = 0.3; this.z = 9.5;}, 900);
+        setTimeout(() => {this.scale = 0.2; this.z = 9.6;}, 1050);
+        setTimeout(() => {this.scale = 0.1; this.z = 9.7;}, 1200);
+        setTimeout(() => {this.scale = 0; this.z = 9.8;}, 1350);
+
+        //after 2 seconds the coin must reappear
+        setTimeout(() => {this.scale = 0.5; this.z = 9; this.taken = false;}, 3350);
     }
 
 }

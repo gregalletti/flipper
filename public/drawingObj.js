@@ -259,35 +259,38 @@ function main() {
     addMeshToScene(i);
     
     function changeCubeTexture() {
+
       let newCubeMesh = tube;
       
-      if(cubeOutcome == 1)
+      /*if(cubeOutcome == 1)
         newCubeMesh.textures = HEART_CUBE_UVS;
       if(cubeOutcome == 2)
         newCubeMesh.textures = STAR_CUBE_UVS;
-      
+      */
+     newCubeMesh.textures = HEART_CUBE_UVS;
+
       addMeshToScene(24);    
       
     }  
     
     function changeDigitTexture() {
-      if (actualScore != score) {
-        actualScore = score;
-        let scoreArr = Array.from(String(actualScore), Number).reverse();
-        let scoreMeshes = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];
-        for (let i = 0; i < scoreArr.length; i++) {
-          let digit = scoreArr[i];
-          scoreMeshes[i].textures = numUVs[digit];
-          addMeshToScene(i + 11);
-        }
+
+      let scoreArr = Array.from(String("129023"), Number).reverse();
+      let scoreMeshes = [dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh];
+      for (let i = 0; i < scoreArr.length; i++) {
+        let digit = scoreArr[i];
+        scoreMeshes[i].textures = DIGIT_UVS[digit];
+        addMeshToScene(i + 5);
       }
+        
+      
     } 
   
   function drawScene() {
 
     // update uv coordinates of dynamic score system  
     changeCubeTexture();
-    //updateScoreTex();
+    //changeDigitTexture();
 
     // adjust camera
     viewX += viewXSpeed * camera_dt;

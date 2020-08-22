@@ -161,11 +161,11 @@ class Ball {
     handleWallCollision(wall, closestX, closestY) {
         
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
-            if(isBetweenX(wall, closestX, closestY))
+            if(isBetweenX(wall.start, wall.end, closestX, closestY))
                 this.speed = this.speed.invertY();
         }
         else {
-            if(isBetweenY(wall, closestX, closestY))
+            if(isBetweenY(wall.start, wall.end, closestX, closestY))
                 this.speed = this.speed.invertX();
         } 
 
@@ -288,14 +288,14 @@ class Ball {
 
     handleCubeCollision(cube) { 
         //invert ball speed (corners?)
-        this.speed = this.speed.scale(-1);
+        this.speed = this.speed.normal().scale(1);
 
         //must change texture of the cube (handled in drawingobj)
         cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
     }
 
 
-    checkSlingshotCollision(slingshot) { 
+    checkSlingshotCollision(slingshot, pos) { 
 
         //semplicemente controllo collisione con 3 linee: una di queste è l'ipotenusa quindi deve bounceare
 
@@ -310,7 +310,15 @@ class Ball {
         let distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            this.handleSlingshotCollision(slingshot, true); //bounce
+            console.log("12")
+            if(pos == 1){
+                if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
+                    this.handleSlingshotCollision(slingshot, true, 0); //bounce
+            }
+            else {
+                if((closestX >= slingshot.p2.x && closestX <= slingshot.p1.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
+                    this.handleSlingshotCollision(slingshot, true, 0); //bounce
+            }
         }
         
         //P2-P3
@@ -324,7 +332,9 @@ class Ball {
         distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            this.handleSlingshotCollision(slingshot, false); //no bounce
+            console.log("23")
+                if((closestY <= slingshot.p2.y && closestY >= slingshot.p3.y))
+                    this.handleSlingshotCollision(slingshot, false, 1); //no bounce
         }
         
         //P1-P3
@@ -338,27 +348,42 @@ class Ball {
         distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            this.handleSlingshotCollision(slingshot, false); //no bounce
+            console.log("13")
+            if(pos == 1){
+                if((closestX >= slingshot.p1.x && closestX <= slingshot.p3.x))
+                    this.handleSlingshotCollision(slingshot, false, 2); //no bounce
+            }
+            else {
+                if((closestX <= slingshot.p1.x && closestX >= slingshot.p3.x))
+                    this.handleSlingshotCollision(slingshot, false, 2); //no bounce
+            }
         }
         return;
     }
 
-    handleSlingshotCollision(slingshot, bounce) { 
-        console.log("SLING")
 
+    handleSlingshotCollision(slingshot, bounce, num) { 
+
+        if(bounce){
+            this.speed = this.speed.normal().scale(SLINGSHOT_BOOST);
+        }
+        else {
+            if(num == 1)
+                this.speed = this.speed.invertX();
+            else
+                this.speed = this.speed.invertY();
+        }
+
+        //limit the ball speed to avoid crazy things
+        if(this.speed.getAbs() > BALL_MAX_SPEED)
+            this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
     }
 
 
     checkBallCollision(ball) { 
-        // get distance between the circle's centers
-        // use the Pythagorean Theorem to compute the distance
-        let distX = this.coords.x - ball.coords.x;
-        let distY = this.coords.y - ball.coords.y;
-        let distance = Math.sqrt( (distX * distX) + (distY * distY) );
-
-        // if the distance is less than the sum of the circle's
-        // radii, the circles are touching!
-        if (distance <= BALL_RADIUS * 2) {
+        let distance = this.coords.sub(ball.coords);
+        
+        if (distance.getAbs() <= BALL_RADIUS * 2) {
             this.handleBallCollision(ball);
         }
         return;
@@ -481,13 +506,13 @@ class Slingshot {
         this.p2 = p2;
         this.p3 = p3;
 
-        this.p12_length = p2.sub(p1).abs;
+        this.p12_length = p2.sub(p1).getAbs();
         this.p12_direction = p2.sub(p1).normalize();
 
-        this.p13_length = p3.sub(p1).abs;
+        this.p13_length = p3.sub(p1).getAbs();
         this.p13_direction = p3.sub(p1).normalize();
 
-        this.p23_length = p3.sub(p2).abs;
+        this.p23_length = p3.sub(p2).getAbs();
         this.p23_direction = p3.sub(p2).normalize();
 
     }

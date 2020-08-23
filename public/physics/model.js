@@ -104,6 +104,7 @@ class Ball {
         //apply some gravity to the ball speed
         this.speed = this.speed.add(new Vec(0, - 0.008));
 
+        
         if(this.coords.x > 4.5)
             this.speed = this.speed.add(new Vec(- 0.002, 0));
 
@@ -178,9 +179,12 @@ class Ball {
     handleWallCollision(wall, closestX, closestY, distance) {
         let error = BALL_RADIUS - distance;
         
+        
+
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
             if(isBetweenX(wall.start, wall.end, closestX, closestY)){
                 this.speed = this.speed.invertY().scale(WALL_BOOST);
+               
                 if((wall.number == 1 || wall.number == 5))
                     this.coords = this.coords.add(new Vec(0, error));
                 else
@@ -190,6 +194,7 @@ class Ball {
         else {
             if(isBetweenY(wall.start, wall.end, closestX, closestY)){
                 this.speed = this.speed.invertX().scale(WALL_BOOST);
+                
                 if(wall.number == 2)
                     this.coords = this.coords.add(new Vec(error, 0));
                 else
@@ -236,7 +241,6 @@ class Ball {
         this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
 
         currentScore += BUMPER_SCORE;
-
      }
 
 
@@ -376,13 +380,15 @@ class Ball {
             if(slingshot.side == 0){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y)){
                     play(slingshotSound);
-                    this.handleSlingshotCollision(slingshot, 0, distance); //bounce
+                    if(this.coords.y >= slingshot.p1.y)
+                        this.handleSlingshotCollision(slingshot, 0, distance); //bounce
                 }
             }
             else {
                 if((closestX >= slingshot.p2.x && closestX <= slingshot.p1.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y)){
                     play(slingshotSound);
-                    this.handleSlingshotCollision(slingshot, 0, distance); //bounce
+                    if(this.coords.y >= slingshot.p1.y)
+                        this.handleSlingshotCollision(slingshot, 0, distance); //bounce
                 }
             }
         }
@@ -411,9 +417,10 @@ class Ball {
         distX = closestX - this.coords.x;
         distY = closestY - this.coords.y;
         distance = Math.sqrt((distX * distX) + (distY * distY));
-    
+        
         if (distance <= BALL_RADIUS) {
             if(slingshot.side == 0){
+                
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p3.x))
                     this.handleSlingshotCollision(slingshot, 2, distance); //no bounce
             }
@@ -431,6 +438,7 @@ class Ball {
         let error = BALL_RADIUS - distance;
 
         if(num == 0)    {
+
             this.speed = this.speed.normal().scale(SLINGSHOT_HYP_BOOST);
             currentScore += SLINGSHOT_HYP_SCORE;
 
@@ -442,6 +450,7 @@ class Ball {
             this.coords = slingshot.side == 0 ? this.coords.add(new Vec(error, 0)) : this.coords.add(new Vec(- error, 0));
         }
         else    {
+
             this.speed = (this.speed.invertY().scale(SLINGSHOT_BOOST));
             this.coords = this.coords.add(new Vec(0, - error));
         }
@@ -462,6 +471,7 @@ class Ball {
     }
 
     handleBallCollision(ball) { 
+
         let speed1 = this.speed;
         let speed2 = ball.speed;
 
@@ -475,33 +485,39 @@ class Ball {
      
     checkFlipperCollision(flipper) { 
 
-        let relativeToHinge = this.coords.sub(flipper.position);
-        let flipperAbscissa = relativeToHinge.dot(flipper.getCurrentDirection());
-        flipperAbscissa = Math.max(0, Math.min(flipperAbscissa, FLIPPER_LENGTH)); // clamp flipperAbscissa in [0, length]
+        let distance = this.coords.sub(flipper.position);
+        let projectionX = distance.dot(flipper.getCurrentDirection());
+        projectionX = Math.max(0, Math.min(projectionX, FLIPPER_LENGTH)); // clamp flipperAbscissa in [0, length]
 
-        let impactPoint = flipper.getCurrentDirection().scale(flipperAbscissa).add(flipper.position);
+        let impactPoint = flipper.getCurrentDirection().scale(projectionX).add(flipper.position);
 
-        let distance = this.coords.sub(impactPoint);
-        if (distance.getAbs() <= BALL_RADIUS)
-            this.handleFlipperCollision(flipper, distance, impactPoint);
+        let realDistance = this.coords.sub(impactPoint);
+        if (realDistance.getAbs() <= BALL_RADIUS)
+            this.handleFlipperCollision(flipper, realDistance, impactPoint, projectionX);
     }
 
-    handleFlipperCollision(flipper, distance, impactPoint) {
+    handleFlipperCollision(flipper, realDistance, impactPoint, projectionX) {
 
-        let N = distance.normalize();
-        let T = N.normal();
-
-        let error = BALL_RADIUS - distance.getAbs();
+        let impactPointSpeed = flipper.getCurrentDirection().normal().scale(projectionX * flipper.getAngularSpeed()); //alan facchinetti way
+        let N = realDistance.normalize();
+        
+        let error = BALL_RADIUS - realDistance.getAbs();
         let offset = N.scale(BALL_RADIUS + error);
         this.coords = impactPoint.add(offset);
 
-        //speed is composed by the 2 components
-        let oldSpeed = 0;
-        if(flipper.moving)
-            oldSpeed = this.speed.scale(FLIPPER_BOOST);
-        else
-            oldSpeed = this.speed;
+        let newSpeed = this.speed.sub(impactPointSpeed);
+        let T = N.normal(); 
+        let vT = newSpeed.dot(T);
+        let vN = newSpeed.dot(N);
+        
+        vN += impactPointSpeed.getAbs();
+        newSpeed = N.scale(vN).add(T.scale(vT));
 
+        this.speed = newSpeed.add(impactPointSpeed);
+
+            //this.speed = new Vec(0,200);
+
+/*      INSTABILE, COMMENTATA PER ORA
         let vT = oldSpeed.dot(T);
         let vN = oldSpeed.dot(N);
 
@@ -510,6 +526,7 @@ class Ball {
         //limit the ball speed to avoid crazy things
         if(this.speed.getAbs() > BALL_MAX_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
+            */
     }
 
 
@@ -661,19 +678,19 @@ class Flipper {
         this.angle = angle;
     }
 
-    up = false;
+    stall = true;
     moving = false;
 
     getCurrentDirection() {
         return Vec.unit(utils.degToRad(this.angle));
     }
 
-    getVelocity() {
-        if (!this.moving)
+    getAngularSpeed() {
+        if (this.stall)
             return 0;
         if (this.number == 1)
-            return -FLIPPER_ANGULAR_SPEED;
-        return FLIPPER_ANGULAR_SPEED;
+            return utils.degToRad(-FLIPPER_ANGULAR_SPEED);
+        return utils.degToRad(FLIPPER_ANGULAR_SPEED);
     }
 
     

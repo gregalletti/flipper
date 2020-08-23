@@ -46,11 +46,11 @@ var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bu
 
 
 function getBallLocalMatrix(ballX, ballY, speed) {
-    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), speed.x * 100, speed.y * 100, 0, 1);
+    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), speed.y * 100, 0, speed.x * 100, 1);
 }
 
 function getBonusBallLocalMatrix(ballX, ballY, active, speed) {
-    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), speed.x * 100, speed.y * 100, 0, active ? 1 : 0);
+    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), speed.x * 10, speed.y * 10, 0, active ? 1 : 0);
 }
 
 function fromPlaneToSpace(ballX, ballY) {

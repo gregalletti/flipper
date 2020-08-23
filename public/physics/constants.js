@@ -16,8 +16,7 @@ const PIPE_RADIUS = 0.153;
 const COIN_RADIUS = 0.249;
 const CUBE_EDGE = 1;
 
-//const FLIPPER_LENGTH = .9;
-const FLIPPER_LENGTH = 1;
+const FLIPPER_LENGTH = 0.9;
 const FLIPPER_HEIGHT = 0.265;
 
 const FLIPPER_ANGULAR_SPEED = 180; //   degrees / seconds
@@ -32,7 +31,7 @@ const SLINGSHOT_BOOST = 0.8;
 const PIPE_BOOST = 0.8;
 const CUBE_BOOST = 0.8;
 
-const BALL_MIN_SPEED = 0.5;
+const BALL_MIN_SPEED = 0.3;
 const BALL_MAX_SPEED = 8;
 
 const BUMPER_SCORE = 10;

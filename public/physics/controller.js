@@ -1,11 +1,11 @@
 var ball = new Ball(new Vec(4.6, 2), true, 0);
-var ball2 = new Ball(new Vec(3.4, 2), true, 1);
+var ball2 = new Ball(new Vec(20, 2), true, 1);
 
-var rightFlipper = new Flipper(new Vec(3.6, 1.22), 0, 210);
-var leftFlipper = new Flipper(new Vec(1.4, 1.22), 1, -30);
+var rightFlipper = new Flipper(new Vec(3.6, 1.2), 0, 210);
+var leftFlipper = new Flipper(new Vec(1.4, 1.2), 1, -30);
 
-var rightSlingshot = new Slingshot(new Vec(3.4, 1.7), new Vec(4.4, 2.7), new Vec(4.3, 1.7), 0);
-var leftSlingshot = new Slingshot(new Vec(1.5, 1.7), new Vec(0.5, 2.7), new Vec(0.5, 1.7), 1);
+var rightSlingshot = new Slingshot(new Vec(3.4, 1.7), new Vec(4.3, 2.7), new Vec(4.3, 1.7), 0);
+var leftSlingshot = new Slingshot(new Vec(1.4, 1.7), new Vec(0.5, 2.7), new Vec(0.5, 1.7), 1);
 
 var rightCoin = new Coin(new Vec(3.6, 4,2));
 var leftCoin = new Coin(new Vec(1.2, 4.2));
@@ -52,18 +52,34 @@ function controller() {
         if(rightFlipper.moving){
             rightFlipper.angle = Math.max(rightFlipper.angle - 2, 150);
             play(flipperSound);
+            if(rightFlipper.angle == 150)
+                rightFlipper.stall = true;
+            else
+                rightFlipper.stall = false;
         }
         else{
             rightFlipper.angle = Math.min(rightFlipper.angle + 2, 210);
+            if(rightFlipper.angle == 210)
+                rightFlipper.stall = true;
+            else
+                rightFlipper.stall = false;
             //play(flipperDown);
         }
         if(leftFlipper.moving){
             leftFlipper.angle = Math.min(leftFlipper.angle + 2, 30);
             play(flipperSound);
+            if(leftFlipper.angle == 30)
+                leftFlipper.stall = true;
+            else
+                leftFlipper.stall = false;
         }
         else{
             leftFlipper.angle = Math.max(leftFlipper.angle - 2, -30);
             //play(flipperDown);
+            if(leftFlipper.angle == -30)
+                leftFlipper.stall = true;
+            else
+                leftFlipper.stall = false;
         }
 
         //rotate the coins on the board
@@ -100,6 +116,7 @@ function controller() {
 
             for (let wall of wallsList)
                 ball.checkWallCollision(wall);
+                
         }
         //if there is the bonus ball
         if(ball2.active)   {
@@ -144,7 +161,7 @@ window.addEventListener("keyup", onKeyReleased);
 function onKeyPressed(event) {
     if (event.key === "x") {
         leftFlipper.moving = true;
-        ball2.active = true;
+        //ball2.active = true;
            // playSound(soundFlipperUp);
     }
     if (event.key === "n") {

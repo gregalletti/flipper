@@ -142,7 +142,7 @@ window.addEventListener("keydown", onKeyPressed);
 window.addEventListener("keyup", onKeyReleased);
 
 function onKeyPressed(event) {
-    if (event.key === "z") {
+    if (event.key === "x") {
         leftFlipper.moving = true;
         ball2.active = true;
            // playSound(soundFlipperUp);
@@ -153,11 +153,11 @@ function onKeyPressed(event) {
     }
     if (event.key === " ") {
         pulling = true;
-        //startSound.play();
+        
     }
 }
 function onKeyReleased(event) {
-    if (event.key === "z") {
+    if (event.key === "x") {
         leftFlipper.moving = false;
        // playSound(soundFlipperDown);
     }
@@ -168,6 +168,7 @@ function onKeyReleased(event) {
     if (event.key === " ") {
         pulling = false;
         ball.launch();
+        play(letsGo);
         power = 0;
       //  playSound(soundPuller);
     }

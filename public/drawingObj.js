@@ -448,6 +448,9 @@ var coinSound;
 var bumperSound;
 var pipeSound;
 var fallenBallSound;
+var magicCubeSound;
+var slingshotSound;
+var letsGo;
 
 /**
  * 
@@ -469,6 +472,9 @@ async function init() {
   pipeSound = document.getElementById("pipe_sound");
   fallenBallSound = document.getElementById("fallen_ball");
   ballsCollisionSound = document.getElementById("balls_collision");
+  magicCubeSound = document.getElementById("magic_cube");
+  slingshotSound = document.getElementById("slingshot");
+  letsGo = document.getElementById("lets_go");
 
   setupCanvas();
   loadShaders();

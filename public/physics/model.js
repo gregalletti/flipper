@@ -127,14 +127,14 @@ class Ball {
             //if both balls were on the board then no problem
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
-                play(fallenBallSound);
+                //play(fallenBallSound);
                 this.active = false;
                 this.ready = true;
             }
             else {
                 //if there was only one ball on the board
                 if(lives > 1) {
-                    play(fallenBallSound);
+                    //play(fallenBallSound);
                     //prepare the next ball and update lives
                     lives--;
                     this.speed = new Vec(0,0);
@@ -322,6 +322,7 @@ class Ball {
 
         // if the distance is less than the radius, collision!
         if (distance <= BALL_RADIUS) {
+            play(magicCubeSound);
             this.handleCubeCollision(cube, edge, distance);
         }
         return;
@@ -373,12 +374,16 @@ class Ball {
     
         if (distance <= BALL_RADIUS) {
             if(slingshot.side == 0){
-                if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
+                if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y)){
+                    play(slingshotSound);
                     this.handleSlingshotCollision(slingshot, 0, distance); //bounce
+                }
             }
             else {
-                if((closestX >= slingshot.p2.x && closestX <= slingshot.p1.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
+                if((closestX >= slingshot.p2.x && closestX <= slingshot.p1.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y)){
+                    play(slingshotSound);
                     this.handleSlingshotCollision(slingshot, 0, distance); //bounce
+                }
             }
         }
         

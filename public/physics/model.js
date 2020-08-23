@@ -113,6 +113,10 @@ class Ball {
         if(this.speed.getAbs() > BALL_MAX_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
         
+        //increase the ball speed to avoid blocking
+        if(this.speed.getAbs() < BALL_MIN_SPEED)
+            this.speed = this.speed.normalize().scale(BALL_MIN_SPEED);
+        
         //apply velocity (for the time interval) to the ball coords
         this.coords = this.coords.add(this.speed.scale(T));
 

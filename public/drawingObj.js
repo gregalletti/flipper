@@ -7,8 +7,8 @@ var modelsDir;
 // CAMERA STATUS AND CONTROLS:
 var viewX = 0;
 var viewY = 13.5;
-var viewZ = -9.5;
-var viewPhi = -30;
+var viewZ = - 9.5;
+var viewPhi = - 30;
 var viewTheta = 180;
 
 var viewXSpeed = 0;

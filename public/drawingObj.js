@@ -140,6 +140,9 @@ var score = 0;
 var currentScore = 0;
 
 //global variables
+var cubeTex = DEFAULT_CUBE_UVS;
+var currentCubeTex = DEFAULT_CUBE_UVS;
+var shouldChangeCubeTexture = true;
 var cubeOutcome = 0;
 var lives = 3;
 var pulling = false;
@@ -248,16 +251,14 @@ function main() {
     
     function changeCubeTexture() {
 
-      let newCubeMesh = cubeMesh;
-      
-      if(cubeOutcome == 1)
-        newCubeMesh.textures = HEART_CUBE_UVS;
+      if(currentCubeTex != cubeTex) {
+        let newCubeMesh = cubeMesh;      
+        newCubeMesh.textures = currentCubeTex;
 
-      if(cubeOutcome == 2)
-        newCubeMesh.textures = STAR_CUBE_UVS;
-      
-       //newCubeMesh.textures = DEFAULT_CUBE_UVS;
-
+        cubeTex = currentCubeTex;
+        setTimeout(() => {shouldChangeCubeTexture = true; currentCubeTex = DEFAULT_CUBE_UVS;}, 5000);
+        
+      }
       addMeshToScene(24);    
       
     }  

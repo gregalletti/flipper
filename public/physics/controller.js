@@ -1,5 +1,5 @@
 var ball = new Ball(new Vec(4.6, 2), true, 0);
-var ball2 = new Ball(new Vec(20, 2), true, 1);
+var ball2 = new Ball(new Vec(2.3, 9.3), true, 1);
 
 var rightFlipper = new Flipper(new Vec(3.6, 1.2), 0, 210);
 var leftFlipper = new Flipper(new Vec(1.4, 1.2), 1, -30);

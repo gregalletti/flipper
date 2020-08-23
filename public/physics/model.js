@@ -124,7 +124,6 @@ class Ball {
 
         //check if the ball falls out
         if(this.coords.y < 0.5) {
-            console.log("ball " + (this.number + 1) + "fallen");
             //if both balls were on the board then no problem
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
@@ -133,6 +132,7 @@ class Ball {
                 this.ready = true;
             }
             else {
+                currentCubeTex = DEFAULT_CUBE_UVS;
                 //if there was only one ball on the board
                 if(lives > 1) {
                     //play(fallenBallSound);
@@ -336,9 +336,6 @@ class Ball {
 
         let error = BALL_RADIUS - distance;
 
-        //invert ball speed (corners?)
-        //this.speed = this.speed.normal();
-
         if(edge == 0)   {
             this.coords = this.coords.add(new Vec(- error, 0));
             this.speed = this.speed.invertX();
@@ -358,8 +355,23 @@ class Ball {
 
         currentScore += CUBE_SCORE;
 
-        //must change texture of the cube (handled in drawingobj)
-        cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
+        if(shouldChangeCubeTexture)    {
+            //must change texture of the cube (handled in drawingobj)
+            cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
+            if(cubeOutcome == 1){
+                currentCubeTex = HEART_CUBE_UVS;
+                lives++;
+            }
+            else{
+                currentCubeTex = STAR_CUBE_UVS;
+                if(ball2.active)
+                    currentScore += 100;
+                else
+                    ball2.active = true;
+            }
+
+            shouldChangeCubeTexture = false;
+        }
     }
 
 
@@ -636,13 +648,10 @@ class Slingshot {
         this.side = side;
 
         this.p12_length = p2.sub(p1).getAbs();
-        //this.p12_direction = p2.sub(p1).normalize();
 
         this.p13_length = p3.sub(p1).getAbs();
-        //this.p13_direction = p3.sub(p1).normalize();
 
         this.p23_length = p3.sub(p2).getAbs();
-        //this.p23_direction = p3.sub(p2).normalize();
 
     }
 
@@ -657,15 +666,6 @@ class Cube {
         this.p2 = p2;
         this.p3 = p3;
         this.p4 = p4;
-
-        this.p12_direction = p2.sub(p1).normalize();
-
-        this.p23_direction = p3.sub(p2).normalize();
-
-        this.p34_direction = p4.sub(p3).normalize();
-
-        this.p41_direction = p1.sub(p4).normalize();
-
     }
 
 }

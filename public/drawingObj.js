@@ -6,8 +6,8 @@ var modelsDir;
 
 // CAMERA STATUS AND CONTROLS:
 var viewX = 0;
-var viewY = 13;
-var viewZ = -8.5;
+var viewY = 13.5;
+var viewZ = -9.5;
 var viewPhi = -30;
 var viewTheta = 180;
 
@@ -120,7 +120,7 @@ var bigSphereMesh;
 var tunnelRightMesh;
 var tunnelLeftMesh;
 var tunnelUpMesh;
-var tube;
+var cubeMesh;
 var leftCoinMesh;
 var rightCoinMesh;
 var objects;
@@ -143,18 +143,6 @@ var loadingBg;
 var loadingMsg;
 var cubeOutcome = 0;
 
-const numUVs = [[0.735309, 0.956854, 0.760579, 0.918019, 0.760579, 0.956854, 0.735309, 0.918019],
-                [0.636297, 0.996017, 0.661567, 0.957183, 0.661567, 0.996017, 0.636297, 0.957183],
-                [0.660956, 0.996505, 0.686226, 0.957671, 0.686226, 0.996505, 0.660956, 0.957671],
-                [0.685614, 0.996261, 0.710884, 0.957427, 0.710884, 0.996261, 0.685614, 0.957427],
-                [0.710760, 0.996749, 0.736030, 0.957915, 0.736030, 0.996749, 0.710760, 0.957915],
-                [0.735907, 0.996749, 0.761177, 0.957915, 0.761177, 0.996749, 0.735907, 0.957915],
-                [0.635321, 0.956466, 0.660591, 0.917632, 0.660591, 0.956466, 0.635321, 0.917632],
-                [0.660705, 0.956272, 0.685975, 0.917438, 0.685975, 0.956272, 0.660705, 0.917438],
-                [0.684927, 0.956466, 0.710197, 0.917632, 0.710197, 0.956466, 0.684927, 0.917632],
-                [0.710118, 0.956466, 0.735388, 0.917632, 0.735388, 0.956466, 0.710118, 0.917632]];
-
-
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
     R = parseInt(col.substring(0,2) ,16) / 255;
@@ -167,9 +155,7 @@ function fromHexToRGBVec(hex) {
 function main() {
   gl.clearColor(0.85, 0.85, 0.85, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  gl.enable(gl.DEPTH_TEST);
-
- 
+  gl.enable(gl.DEPTH_TEST); 
 
   // define material color 
   var materialColor = [1.0, 1.0, 1.0];
@@ -260,14 +246,14 @@ function main() {
     
     function changeCubeTexture() {
 
-      let newCubeMesh = tube;
+      let newCubeMesh = cubeMesh;
       
       /*if(cubeOutcome == 1)
         newCubeMesh.textures = HEART_CUBE_UVS;
       if(cubeOutcome == 2)
         newCubeMesh.textures = STAR_CUBE_UVS;
       */
-     newCubeMesh.textures = HEART_CUBE_UVS;
+     newCubeMesh.textures = DEFAULT_CUBE_UVS;
 
       addMeshToScene(24);    
       
@@ -311,7 +297,7 @@ function main() {
     // update world matrices for moving objects
     allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
-    //allLocalMatrices[19] = getPullerLocalMatrix(pullerRun);
+    allLocalMatrices[19] = getPullerLocalMatrix(Math.min(power / 50, 0.6));
     allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
     allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
     allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
@@ -517,7 +503,7 @@ async function init() {
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
-    tube = await utils.loadMesh(modelsDir + "kuboVero.obj")
+    cubeMesh = await utils.loadMesh(modelsDir + "kuboVero.obj")
     leftCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     rightCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
@@ -528,7 +514,7 @@ async function init() {
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, tube, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh];
+      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh];
   }
   
 } 

@@ -1,45 +1,3 @@
-const elevation = 8.5335; // y
-const elevation_reference = -5.9728; // at which z the elevation was measured
-const slope = 0.11411241041; // tan(6.51 deg)
-
-function ballYgivenZ(z) {
-    return elevation + slope * (z - elevation_reference);
-}
-
-function ballCoordinates(physX, physY) {
-    let x = 2.2 - physX;
-    let z = physY - 6.7;
-    return [x, ballYgivenZ(z), z];
-}
-
-function getBallLocalMatrix(physX, physY) {
-    return utils.MakeWorld(...ballCoordinates(physX, physY), 0, 0, 0, 1);
-}
-
-function getLeftFlipperLocalMatrix(angle) {
-        return utils.MakeWorld(0.6906, 8.4032, -5.6357, -angle, -3.24, -5.64, 1);
-}
-
-function getRightFlipperLocalMatrix(angle) {
-    return utils.MakeWorld(-1.307, 8.4032, -5.6357, -angle, -3.24, -5.64, 1);
-}
-
-function getPullerLocalMatrix(run) {
-    return utils.MakeWorld(-2.5264, 8.3925, -7.1 - run, 0, -90, 0, 1);
-}
-
-function getRightCoinLocalMatrix(angle, scale, z) {
-    let deg = angle / Math.PI * 180;
-
-    return utils.MakeWorld( -1.4,       z,        -2.5,           0,       90,       deg,     scale); 
-}
-
-function getLeftCoinLocalMatrix(angle, scale, z) {
-    let deg = angle / Math.PI * 180;
-
-    return utils.MakeWorld( 1,       z,        -2.5,           0,       90,       deg,    scale); 
-}
-
 /* 
     MakeWorld: function (tx, ty, tz, rx, ry, rz, s)
 
@@ -72,17 +30,50 @@ var rightButtonLocalMatrix  = utils.MakeWorld(-2.97,      8.7853,  -6.6902,     
 var rightFlipperLocalMatrix = utils.MakeWorld(-1.307,     8.4032,  -5.6357,    150,       -3.24,   -5.64,  1);  // #21
 var leftSlingshotMatrix     = utils.MakeWorld(1.1,    8.5,   -4.50626,   180,     0,       0,     1);           //
 var rightSlingshotMatrix    = utils.MakeWorld(-1.6,    8.5,   -4.50626,   90,     0,       0,     1);           //
-//var leftObstacleMatrix      = utils.MakeWorld(1.1,    9,   -2.5,   180,     0,       0,     1);                 //
-//var rightObstacleMatrix     = utils.MakeWorld(-1.6,    9,   -2.5,   180,     0,       0,     1);                //
-var bonusBallLocalMatrix    = utils.MakeWorld( 1,       9.7,        2.5,           0,       -5.8,       0,     0.5);  // 
-var leftCoinLocalMatrix = utils.MakeWorld( 1,       9,        -2.5,           0,       90,       0,     0.5); 
-var rightCoinLocalMatrix = utils.MakeWorld( -1.4,       9,        -2.5,           0,       90,       0,     0.5); 
-var fungo1LocalMatrix      = bumper1LocalMatrix;
-var fungo2LocalMatrix      = bumper2LocalMatrix;
-var fungo3LocalMatrix      = bumper3LocalMatrix;
-var tuboLocalMatrix      = utils.MakeWorld(-0.3,    8.9,   -3.50626,   90,     -5.4,       0,     0.2);
+var cubeLocalMatrix         = utils.MakeWorld( 1,       9.7,        2.5,           0,       -5.8,       0,     0.5);  // 
+var leftCoinLocalMatrix     = utils.MakeWorld( 1,       9,        -2.5,           0,       90,       0,     0.5); 
+var rightCoinLocalMatrix    = utils.MakeWorld( -1.4,       9,        -2.5,           0,       90,       0,     0.5); 
+var fungo1LocalMatrix       = bumper1LocalMatrix;
+var fungo2LocalMatrix       = bumper2LocalMatrix;
+var fungo3LocalMatrix       = bumper3LocalMatrix;
+var tuboLocalMatrix         = utils.MakeWorld(-0.3,    8.9,   -3.50626,   90,     -5.4,       0,     0.2);
 
 var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bumper2LocalMatrix, bumper3LocalMatrix, dl1LocalMatrix, dl2LocalMatrix, dl3LocalMatrix,
                         dl4LocalMatrix, dl5LocalMatrix, dl6LocalMatrix, dr1LocalMatrix, dr2LocalMatrix, dr3LocalMatrix, dr4LocalMatrix, dr5LocalMatrix, dr6LocalMatrix,
                         leftButtonLocalMatrix, leftFlipperLocalMatrix, pullerLocalMatrix, rightButtonLocalMatrix, rightFlipperLocalMatrix, leftSlingshotMatrix, 
-                        rightSlingshotMatrix, bonusBallLocalMatrix, leftCoinLocalMatrix, rightCoinLocalMatrix, fungo1LocalMatrix, fungo2LocalMatrix, fungo3LocalMatrix, tuboLocalMatrix];
+                        rightSlingshotMatrix, cubeLocalMatrix, leftCoinLocalMatrix, rightCoinLocalMatrix, fungo1LocalMatrix, fungo2LocalMatrix, fungo3LocalMatrix, tuboLocalMatrix];
+
+
+function getBallLocalMatrix(ballX, ballY) {
+    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), 0, 0, 0, 1);
+}
+
+function fromPlaneToSpace(ballX, ballY) {
+    let realZ = ballY - Y_OFFSET;
+
+    return [
+        X_OFFSET - ballX, 
+        BASE_Y + Math.tan(utils.degToRad(PLANE_INCLINATION)) * (realZ - BASE_Z), 
+        realZ
+    ];
+}
+
+function getLeftFlipperLocalMatrix(angle) {
+        return utils.MakeWorld(0.6906,      8.4032,     -5.6357,       - angle,      -3.24,      -5.64,      1);
+}
+
+function getRightFlipperLocalMatrix(angle) {
+    return utils.MakeWorld(-1.307, 8.4032, -5.6357, - angle, -3.24, -5.64, 1);
+}
+
+function getPullerLocalMatrix(power) {
+    return utils.MakeWorld(-2.5264, 8.3925, -7.1 - power, 0, -90, 0, 1);
+}
+
+function getRightCoinLocalMatrix(angle, scale, z) {
+    return utils.MakeWorld( -1.4,       z,        -2.5,           0,       90,       utils.radToDeg(angle),     scale); 
+}
+
+function getLeftCoinLocalMatrix(angle, scale, z) {
+    return utils.MakeWorld( 1,       z,        -2.5,           0,       90,       utils.radToDeg(angle),    scale); 
+}

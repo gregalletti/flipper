@@ -87,6 +87,7 @@ class Ball {
         this.number = number;
     }
 
+    active = false;
     speed = new Vec(0, 0);
 
     launch() {
@@ -94,12 +95,19 @@ class Ball {
             return;
         this.speed = new Vec(0, power);
         this.ready = false;
+        this.active = true;
     }
 
     move() {
 
         //apply some gravity to the ball speed
-        this.speed = this.speed.add(new Vec(-0.0005, -0.005));
+        this.speed = this.speed.add(new Vec(0, - 0.008));
+
+        if(this.coords.x > 4.5)
+            this.speed = this.speed.add(new Vec(- 0.002, 0));
+
+        if(this.coords.x < 0.5)
+            this.speed = this.speed.add(new Vec(0.002, 0));
 
         //limit the ball speed to avoid crazy things
         if(this.speed.getAbs() > BALL_MAX_SPEED)
@@ -109,11 +117,12 @@ class Ball {
         this.coords = this.coords.add(this.speed.scale(T));
 
         //check if the ball falls out
-        if(this.coords.y < -2) {
+        if(this.coords.y < 0.5) {
             if(balls > 1) {
                 //just remove the ball and go on
                 play(fallenBallSound);
                 balls--;
+                this.active = false;
                 //rimuovere in qualche modo la pallina
             }
             else if(balls == 1) {
@@ -124,6 +133,7 @@ class Ball {
                     this.speed = new Vec(0,0);
                     this.coords = new Vec(4.6, 2);
                     this.ready = true;
+                    this.active = false;
                     //play(gameoverSound);  
 
                 }
@@ -176,7 +186,6 @@ class Ball {
         let distance = this.coords.sub(bumper.position);
         
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
-            console.log(distance.getAbs())
             play(bumperSound);
             this.handleBumperCollision(bumper, distance);
         }
@@ -288,7 +297,7 @@ class Ball {
 
     handleCubeCollision(cube) { 
         //invert ball speed (corners?)
-        this.speed = this.speed.normal().scale(1);
+        this.speed = this.speed.normal();
 
         //must change texture of the cube (handled in drawingobj)
         cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
@@ -310,7 +319,6 @@ class Ball {
         let distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            console.log("12")
             if(pos == 1){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
                     this.handleSlingshotCollision(slingshot, true, 0); //bounce
@@ -332,7 +340,6 @@ class Ball {
         distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            console.log("23")
                 if((closestY <= slingshot.p2.y && closestY >= slingshot.p3.y))
                     this.handleSlingshotCollision(slingshot, false, 1); //no bounce
         }
@@ -348,7 +355,6 @@ class Ball {
         distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            console.log("13")
             if(pos == 1){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p3.x))
                     this.handleSlingshotCollision(slingshot, false, 2); //no bounce
@@ -395,12 +401,36 @@ class Ball {
     }
 
      
-    checkFlipperCollision(flipper) { }
+    checkFlipperCollision(flipper) { 
+        let relativeToHinge = this.coords.sub(flipper.position);
+        let flipperAbscissa = relativeToHinge.dot(flipper.getCurrentDirection());
+        if (flipperAbscissa > FLIPPER_LENGTH)
+            return;
+        let impactPoint = flipper.getCurrentDirection().scale(flipperAbscissa).add(flipper.position);
 
-    handleFlipperCollision() {
+        let distance = this.coords.sub(impactPoint);
+        if (distance.getAbs() <= BALL_RADIUS)
+            this.handleFlipperCollision(flipper, distance);
+    }
+
+    handleFlipperCollision(flipper, distance) {
         console.log("FLIPPER")
 
-     }
+        let N = distance.normalize();
+        let T = N.normal();
+
+        //speed is composed by the 2 components
+        let oldSpeed = 0;
+        if(flipper.moving)
+            oldSpeed = this.speed.scale(FLIPPER_BOOST);
+        else
+            oldSpeed = this.speed;
+
+        let vT = oldSpeed.dot(T);
+        let vN = oldSpeed.dot(N);
+
+        this.speed = (T.scale(vT).sub(N.scale(vN)));     
+    }
 
 
      checkCoinCollision(coin) { 
@@ -545,41 +575,24 @@ class Cube {
 class Flipper {
     constructor(position, number, angle) {
         this.position = position;
-        this.number = number;
+        this.number = number;   //0 = right, 1 = left
         this.angle = angle;
     }
 
     up = false;
     moving = false;
 
-    getCurrentAngle() {
-        let leftAngle = FLIPPER_RESTING_ANGLE + (FLIPPER_ACTIVE_ANGLE - FLIPPER_RESTING_ANGLE) * this.angleRatio;
-        return this.isLeft ? leftAngle : Math.PI - leftAngle;
-    }
-
     getCurrentDirection() {
-        return Vector.unit(this.angle);
-    }
-
-    getExtremityDirection() {
-        return this.direction.scale(FLIPPER_LENGTH).add(this.position);
+        return Vec.unit(utils.degToRad(this.angle));
     }
 
     getVelocity() {
-        if (!this.isMoving)
+        if (!this.moving)
             return 0;
-        if (this.isLeft ^ this.active)
-            return -FLIPPER_PULSE;
-        return FLIPPER_PULSE;
+        if (this.number == 1)
+            return -FLIPPER_ANGULAR_SPEED;
+        return FLIPPER_ANGULAR_SPEED;
     }
 
-    rotate() {
-        let pulseDirection = this.active ? 1 : -1;
-        let rawAngleRatio = this.angleRatio + pulseDirection * T / 1;
-        if (rawAngleRatio >= 0 && rawAngleRatio <= 1) {
-            this.angleRatio = rawAngleRatio;
-            this.isMoving = true;
-        }
-        else this.isMoving = false;
-    }
+    
 }

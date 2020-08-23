@@ -1,8 +1,8 @@
-var ball = new Ball(new Vec(4.6, 2), true, 0);
+var ball = new Ball(new Vec(3, 2), true, 0);
 var bonusBall = new Ball(new Vec(4.6, 2), false, 0);
 
-var rightFlipper = new Flipper(new Vec(4.6, 6.7), 0, 210);
-var leftFlipper = new Flipper(new Vec(3.7, 6.7), 1, -30);
+var rightFlipper = new Flipper(new Vec(3.6, 1.22), 0, 210);
+var leftFlipper = new Flipper(new Vec(1.4, 1.22), 1, -30);
 
 var rightSlingshot = new Slingshot(new Vec(3.4, 1.7), new Vec(4.4, 2.7), new Vec(4.3, 1.7));
 var leftSlingshot = new Slingshot(new Vec(1.5, 1.7), new Vec(0.5, 2.7), new Vec(0.5, 1.7));
@@ -15,8 +15,6 @@ var middleBumper = new Bumper(new Vec(2.2 + 1.5055, 6.7 + 0.020626));
 var leftBumper = new Bumper(new Vec(2.2 + 0.11626, 6.7 -1.020626 ));  
 
 var cube = new Cube(new Vec(0.7, 9.8), new Vec(1.7, 9.8), new Vec(1.7, 8.8), new Vec(0.7, 8.8));
-
-//var cube = new Cube(new Vec(4.1, 10.5), new Vec(5.1, 10.5), new Vec(5.1, 9.5), new Vec(4.1, 9.5));
 
 var pipe = new Pipe(new Vec(2.2 + 0.3 , 6.7 -3.50626 ));
 
@@ -80,16 +78,16 @@ function controller() {
         leftCoin.rotate();
 
         //if the ball has been launched
-        if(!ball.ready) {
+        if(ball.active) {
 
             //handle ball movement
             ball.move();          
             
             //check for all collisions (handled in model)  
-/*
+
             ball.checkFlipperCollision(rightFlipper);
             ball.checkFlipperCollision(leftFlipper);
-*/
+
             ball.checkSlingshotCollision(rightSlingshot, 1);
             ball.checkSlingshotCollision(leftSlingshot, 0);
 
@@ -111,10 +109,41 @@ function controller() {
                 ball.checkWallCollision(wall);
 
             //if there is the bonus ball
-            if(balls > 1)
-                ball.checkBallCollision(bonusBall);
-        }
+            if(balls > 1)   {
+                if(bonusBall.active) {
+
+                    //handle ball movement
+                    bonusBall.move();          
+                    
+                    //check for all collisions (handled in model)  
+        /*
+                    ball.checkFlipperCollision(rightFlipper);
+                    ball.checkFlipperCollision(leftFlipper);
+        */
+                    bonusBall.checkSlingshotCollision(rightSlingshot, 1);
+                    bonusBall.checkSlingshotCollision(leftSlingshot, 0);
         
+                    if(!rightCoin.taken)
+                        bonusBall.checkCoinCollision(rightCoin);
+                    
+                    if(!leftCoin.taken)
+                        bonusBall.checkCoinCollision(leftCoin);            
+        
+                    bonusBall.checkBumperCollision(rightBumper);
+                    bonusBall.checkBumperCollision(middleBumper);
+                    bonusBall.checkBumperCollision(leftBumper);
+        
+                    bonusBall.checkCubeCollision(cube);
+        
+                    bonusBall.checkPipeCollision(pipe);
+        
+                    for (let wall of wallsList)
+                        bonusBall.checkWallCollision(wall);
+
+                ball.checkBallCollision(bonusBall);
+                }   
+            }
+        }
     }    
 }
 

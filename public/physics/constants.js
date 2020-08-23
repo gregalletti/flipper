@@ -1,6 +1,13 @@
 const FRAMERATE = 60;
 const SUBSTEPS = 6;
 
+const X_OFFSET = 2.2;
+const Y_OFFSET = 6.7;
+const LEFT_OFFSET = - 0.18;
+const BASE_Y = 8.53;
+const BASE_Z = - 5.97;
+const PLANE_INCLINATION = 6.51;
+
 const BOARD_WIDTH = 5;
 const BOARD_HEIGHT = 11;
 const BALL_RADIUS = 0.16;
@@ -13,10 +20,11 @@ const CUBE_EDGE = 1;
 const FLIPPER_LENGTH = 1;
 const FLIPPER_HEIGHT = 0.265;
 
-const FLIPPER_DOWN_ANGLE = -30;
+const FLIPPER_ANGULAR_SPEED = 180; //   degrees / seconds
+const FLIPPER_DOWN_ANGLE = - 30;
 const FLIPPER_UP_ANGLE = 30;
 
-const FLIPPER_BOOST = 1;
+const FLIPPER_BOOST = 1.5;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.7;
 const SLINGSHOT_BOOST = 1.5;

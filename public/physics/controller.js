@@ -1,11 +1,11 @@
-var ball = new Ball(new Vec(3, 2), true, 0);
+var ball = new Ball(new Vec(4.6, 2), true, 0);
 var bonusBall = new Ball(new Vec(4.6, 2), false, 0);
 
 var rightFlipper = new Flipper(new Vec(3.6, 1.22), 0, 210);
 var leftFlipper = new Flipper(new Vec(1.4, 1.22), 1, -30);
 
-var rightSlingshot = new Slingshot(new Vec(3.4, 1.7), new Vec(4.4, 2.7), new Vec(4.3, 1.7));
-var leftSlingshot = new Slingshot(new Vec(1.5, 1.7), new Vec(0.5, 2.7), new Vec(0.5, 1.7));
+var rightSlingshot = new Slingshot(new Vec(3.4, 1.7), new Vec(4.4, 2.7), new Vec(4.3, 1.7), 0);
+var leftSlingshot = new Slingshot(new Vec(1.5, 1.7), new Vec(0.5, 2.7), new Vec(0.5, 1.7), 1);
 
 var rightCoin = new Coin(new Vec(3.6, 4,2));
 var leftCoin = new Coin(new Vec(1.2, 4.2));
@@ -57,19 +57,19 @@ function controller() {
 
         //handle flippers movement
         if(rightFlipper.moving){
-            rightFlipper.angle = Math.max(rightFlipper.angle - 1, 150);
+            rightFlipper.angle = Math.max(rightFlipper.angle - 2, 150);
             play(flipperSound);
         }
         else{
-            rightFlipper.angle = Math.min(rightFlipper.angle + 1, 210);
+            rightFlipper.angle = Math.min(rightFlipper.angle + 2, 210);
             //play(flipperDown);
         }
         if(leftFlipper.moving){
-            leftFlipper.angle = Math.min(leftFlipper.angle + 1, 30);
+            leftFlipper.angle = Math.min(leftFlipper.angle + 2, 30);
             play(flipperSound);
         }
         else{
-            leftFlipper.angle = Math.max(leftFlipper.angle - 1, -30);
+            leftFlipper.angle = Math.max(leftFlipper.angle - 2, -30);
             //play(flipperDown);
         }
 
@@ -88,8 +88,8 @@ function controller() {
             ball.checkFlipperCollision(rightFlipper);
             ball.checkFlipperCollision(leftFlipper);
 
-            ball.checkSlingshotCollision(rightSlingshot, 1);
-            ball.checkSlingshotCollision(leftSlingshot, 0);
+            ball.checkSlingshotCollision(rightSlingshot);
+            ball.checkSlingshotCollision(leftSlingshot);
 
             if(!rightCoin.taken)
                 ball.checkCoinCollision(rightCoin);

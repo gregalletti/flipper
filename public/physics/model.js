@@ -162,27 +162,41 @@ class Ball {
         let distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-                this.handleWallCollision(wall, closestX, closestY);
+                this.handleWallCollision(wall, closestX, closestY, distance);
         }
         return;
   
     }
 
-    handleWallCollision(wall, closestX, closestY) {
+    handleWallCollision(wall, closestX, closestY, distance) {
+
+        let error = BALL_RADIUS - distance;
         
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
-            if(isBetweenX(wall.start, wall.end, closestX, closestY))
-                this.speed = this.speed.invertY();
+            if(isBetweenX(wall.start, wall.end, closestX, closestY)){
+                this.speed = this.speed.invertY().scale(WALL_BOOST);
+                if((wall.number == 1 || wall.number == 5))
+                    this.coords = this.coords.add(new Vec(0, error));
+                else
+                    this.coords = this.coords.add(new Vec(0, - error));
+
+            }
         }
         else {
-            if(isBetweenY(wall.start, wall.end, closestX, closestY))
-                this.speed = this.speed.invertX();
+            if(isBetweenY(wall.start, wall.end, closestX, closestY)){
+                this.speed = this.speed.invertX().scale(WALL_BOOST);
+                if(wall.number == 2)
+                    this.coords = this.coords.add(new Vec(error, 0));
+                else
+                    this.coords = this.coords.add(new Vec(- error, 0));  
+            }
         } 
 
     }
 
 
     checkBumperCollision(bumper) {
+
         let distance = this.coords.sub(bumper.position);
         
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
@@ -193,6 +207,7 @@ class Ball {
     }
 
     handleBumperCollision(bumper, distance) {
+
         let impactPoint = (distance.normalize().scale(BUMPER_RADIUS)).add(bumper.position);
 
         //calculate normal and tangent vector 
@@ -272,16 +287,26 @@ class Ball {
         let testX = this.coords.x;
         let testY = this.coords.y;
 
-        // which edge is closest?
-        if (this.coords.x < cube.p1.x)         
-            testX = cube.p1.x;      // test left edge
-        else if (this.coords.x > cube.p1.x + CUBE_EDGE) 
-            testX = cube.p1.x + CUBE_EDGE;   // right edge
+        let edge = 0;
 
-        if (this.coords.y > cube.p1.y)         
+        // which edge is closest?
+        if (this.coords.x < cube.p1.x) { 
+            edge = 0;       
+            testX = cube.p1.x;      // test left edge
+        }
+        else if (this.coords.x > cube.p1.x + CUBE_EDGE) {
+            edge = 2;       
+            testX = cube.p1.x + CUBE_EDGE;   // right edge
+        }
+
+        if (this.coords.y > cube.p1.y) {    
+            edge = 1;       
             testY = cube.p1.y;      // top edge
-        else if (this.coords.y < cube.p1.y - CUBE_EDGE) 
+        }
+        else if (this.coords.y < cube.p1.y - CUBE_EDGE) {
+            edge = 3;       
             testY = cube.p1.y - CUBE_EDGE;   // bottom edge
+        }
 
         // get distance from closest edges
         let distX = this.coords.x - testX;
@@ -290,24 +315,35 @@ class Ball {
 
         // if the distance is less than the radius, collision!
         if (distance <= BALL_RADIUS) {
-            this.handleCubeCollision(cube);
+            this.handleCubeCollision(cube, edge, distance);
         }
         return;
     }
 
-    handleCubeCollision(cube) { 
+    handleCubeCollision(cube, edge, distance) { 
+
+        let error = BALL_RADIUS - distance;
+
         //invert ball speed (corners?)
         this.speed = this.speed.normal();
+
+        if(edge == 0)
+            this.coords = this.coords.add(new Vec(- error, 0));
+        else if (edge == 1)
+            this.coords = this.coords.add(new Vec(0, error));  
+        else if (edge == 2)
+            this.coords = this.coords.add(new Vec(error, 0));  
+        else if (edge == 3)
+            this.coords = this.coords.add(new Vec(0, - error));  
 
         //must change texture of the cube (handled in drawingobj)
         cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
     }
 
 
-    checkSlingshotCollision(slingshot, pos) { 
+    checkSlingshotCollision(slingshot) { 
 
         //semplicemente controllo collisione con 3 linee: una di queste è l'ipotenusa quindi deve bounceare
-
         //P1-P2
         let dot = (((this.coords.x - slingshot.p1.x)*(slingshot.p2.x - slingshot.p1.x)) + ((this.coords.y - slingshot.p1.y)*(slingshot.p2.y - slingshot.p1.y)) ) / Math.pow(slingshot.p12_length, 2);
     
@@ -319,13 +355,13 @@ class Ball {
         let distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            if(pos == 1){
+            if(slingshot.side == 0){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
-                    this.handleSlingshotCollision(slingshot, true, 0); //bounce
+                    this.handleSlingshotCollision(slingshot, true, 0, distance); //bounce
             }
             else {
                 if((closestX >= slingshot.p2.x && closestX <= slingshot.p1.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
-                    this.handleSlingshotCollision(slingshot, true, 0); //bounce
+                    this.handleSlingshotCollision(slingshot, true, 0, distance); //bounce
             }
         }
         
@@ -341,7 +377,7 @@ class Ball {
     
         if (distance <= BALL_RADIUS) {
                 if((closestY <= slingshot.p2.y && closestY >= slingshot.p3.y))
-                    this.handleSlingshotCollision(slingshot, false, 1); //no bounce
+                    this.handleSlingshotCollision(slingshot, false, 1, distance); //no bounce
         }
         
         //P1-P3
@@ -355,29 +391,35 @@ class Ball {
         distance = Math.sqrt((distX * distX) + (distY * distY));
     
         if (distance <= BALL_RADIUS) {
-            if(pos == 1){
+            if(slingshot.side == 0){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p3.x))
-                    this.handleSlingshotCollision(slingshot, false, 2); //no bounce
+                    this.handleSlingshotCollision(slingshot, false, 2, distance); //no bounce
             }
             else {
                 if((closestX <= slingshot.p1.x && closestX >= slingshot.p3.x))
-                    this.handleSlingshotCollision(slingshot, false, 2); //no bounce
+                    this.handleSlingshotCollision(slingshot, false, 2, distance); //no bounce
             }
         }
         return;
     }
 
 
-    handleSlingshotCollision(slingshot, bounce, num) { 
+    handleSlingshotCollision(slingshot, bounce, num, distance) { 
 
-        if(bounce){
-            this.speed = this.speed.normal().scale(SLINGSHOT_BOOST);
+        let error = BALL_RADIUS - distance;
+
+        if(num == 0)    {
+            this.speed = this.speed.normal().scale(SLINGSHOT_HYP_BOOST);
+            //let errorXY = error * Math.sqrt(2) / 2;
+            //this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
         }
-        else {
-            if(num == 1)
-                this.speed = this.speed.invertX();
-            else
-                this.speed = this.speed.invertY();
+        else if(num == 1)   {
+            this.speed = (this.speed.invertX().scale(SLINGSHOT_BOOST));
+            this.coords = slingshot.side == 0 ? this.coords.add(new Vec(error, 0)) : this.coords.add(new Vec(- error, 0));
+        }
+        else    {
+            this.speed = (this.speed.invertY().scale(SLINGSHOT_BOOST));
+            this.coords = this.coords.add(new Vec(0, - error));
         }
 
         //limit the ball speed to avoid crazy things
@@ -402,22 +444,26 @@ class Ball {
 
      
     checkFlipperCollision(flipper) { 
+
         let relativeToHinge = this.coords.sub(flipper.position);
         let flipperAbscissa = relativeToHinge.dot(flipper.getCurrentDirection());
-        if (flipperAbscissa > FLIPPER_LENGTH)
-            return;
+        flipperAbscissa = Math.max(0, Math.min(flipperAbscissa, FLIPPER_LENGTH)); // clamp flipperAbscissa in [0, length]
+
         let impactPoint = flipper.getCurrentDirection().scale(flipperAbscissa).add(flipper.position);
 
         let distance = this.coords.sub(impactPoint);
         if (distance.getAbs() <= BALL_RADIUS)
-            this.handleFlipperCollision(flipper, distance);
+            this.handleFlipperCollision(flipper, distance, impactPoint);
     }
 
-    handleFlipperCollision(flipper, distance) {
-        console.log("FLIPPER")
+    handleFlipperCollision(flipper, distance, impactPoint) {
 
         let N = distance.normalize();
         let T = N.normal();
+
+        let error = BALL_RADIUS - distance.getAbs();
+        let offset = N.scale(BALL_RADIUS + error);
+        this.coords = impactPoint.add(offset);
 
         //speed is composed by the 2 components
         let oldSpeed = 0;
@@ -430,6 +476,10 @@ class Ball {
         let vN = oldSpeed.dot(N);
 
         this.speed = (T.scale(vT).sub(N.scale(vN)));     
+
+        //limit the ball speed to avoid crazy things
+        if(this.speed.getAbs() > BALL_MAX_SPEED)
+            this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
     }
 
 
@@ -445,9 +495,6 @@ class Ball {
     handleCoinCollision(coin) { 
         play(coinSound);
         coin.scaleAndElevate();
-        
-        //coin.scale = 0;
-
     }
 }
 
@@ -530,20 +577,21 @@ class Pipe {
 //triangle
 class Slingshot {
 
-    constructor(p1, p2, p3) {
+    constructor(p1, p2, p3, side) {
 
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
+        this.side = side;
 
         this.p12_length = p2.sub(p1).getAbs();
-        this.p12_direction = p2.sub(p1).normalize();
+        //this.p12_direction = p2.sub(p1).normalize();
 
         this.p13_length = p3.sub(p1).getAbs();
-        this.p13_direction = p3.sub(p1).normalize();
+        //this.p13_direction = p3.sub(p1).normalize();
 
         this.p23_length = p3.sub(p2).getAbs();
-        this.p23_direction = p3.sub(p2).normalize();
+        //this.p23_direction = p3.sub(p2).normalize();
 
     }
 
@@ -595,4 +643,4 @@ class Flipper {
     }
 
     
-}
+}   

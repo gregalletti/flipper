@@ -24,15 +24,16 @@ const FLIPPER_ANGULAR_SPEED = 180; //   degrees / seconds
 const FLIPPER_DOWN_ANGLE = - 30;
 const FLIPPER_UP_ANGLE = 30;
 
-const FLIPPER_BOOST = 1.5;
+const FLIPPER_BOOST = 1.2;
 const BUMPER_BOOST = 1.5;
-const WALL_BOOST = 0.7;
-const SLINGSHOT_BOOST = 1.5;
+const WALL_BOOST = 0.6;
+const SLINGSHOT_HYP_BOOST = 1.5;
+const SLINGSHOT_BOOST = 0.8;
 const PIPE_BOOST = 0.8;
 const CUBE_BOOST = 0.8;
 
 
-const BALL_MAX_SPEED = 7;
+const BALL_MAX_SPEED = 8;
 
 const T = 1 / FRAMERATE / SUBSTEPS;
 

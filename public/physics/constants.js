@@ -35,6 +35,11 @@ const CUBE_BOOST = 0.8;
 const BALL_MIN_SPEED = 0.5;
 const BALL_MAX_SPEED = 8;
 
+const BUMPER_SCORE = 10;
+const SLINGSHOT_HYP_SCORE = 15;
+const COIN_SCORE = 1000;
+const CUBE_SCORE = 10;
+
 const T = 1 / FRAMERATE / SUBSTEPS;
 
 const DIGIT_UVS = [[0.736, 0.956, 0.761, 0.918, 0.761, 0.956, 0.736, 0.918],

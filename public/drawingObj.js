@@ -133,15 +133,17 @@ var tuboMesh;
 
 var texture;
 
-// SCORE SYSTEM
-var actualScore = 0;
-var livesCounter;
-var ballCounter;
-var gameOverBg;
-var gameOverMsg;
-var loadingBg;
-var loadingMsg;
+//score variables
+var firstLoop = true;
+var record = "002010";
+var score = 0;
+var currentScore = 0;
+
+//global variables
 var cubeOutcome = 0;
+var lives = 3;
+var pulling = false;
+var power = 0;
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -261,14 +263,41 @@ function main() {
     
     function changeDigitTexture() {
 
-      let scoreArr = Array.from(String("129023"), Number).reverse();
-      let scoreMeshes = [dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh];
-      for (let i = 0; i < scoreArr.length; i++) {
-        let digit = scoreArr[i];
-        scoreMeshes[i].textures = DIGIT_UVS[digit];
-        addMeshToScene(i + 5);
+    let rightDigitMeshesArray = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];
+    let leftDigitMeshesArray = [dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh];
+
+    if(firstLoop)  {
+
+      let recordArray = Array.from(String(record), Number).reverse();
+      
+        for (let i = 0; i < recordArray.length; i++) {
+          leftDigitMeshesArray[i].textures = DIGIT_UVS[recordArray[i]];
+          addMeshToScene(i + 5);
+        }
+
+        for (let i = 0; i < 6; i++) {
+          rightDigitMeshesArray[i].textures = DIGIT_UVS[0];
+          addMeshToScene(i + 11);
+        }
+
+        firstLoop = false;
+    }
+
+    if(currentScore > score)  {
+
+      let currentScoreArray = Array.from(String(currentScore), Number).reverse();
+      for (let i = 0; i < currentScoreArray.length; i++) {
+        rightDigitMeshesArray[i].textures = DIGIT_UVS[currentScoreArray[i]];
+        addMeshToScene(i + 11);
       }
-        
+      if(currentScore > record)  {
+        for (let i = 0; i < currentScoreArray.length; i++) {
+          leftDigitMeshesArray[i].textures = DIGIT_UVS[currentScoreArray[i]];
+          addMeshToScene(i + 5);
+        }
+      }
+      score = currentScore;
+    }
       
     } 
   
@@ -276,7 +305,7 @@ function main() {
 
     // update uv coordinates of dynamic score system  
     changeCubeTexture();
-    //changeDigitTexture();
+    changeDigitTexture();
 
     // adjust camera
     viewX += viewXSpeed * camera_dt;
@@ -295,13 +324,13 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     // update world matrices for moving objects
-    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y); // !!!! this is why i can't move the small ball even though it's placed in 0,0,0 (and it's OK)
+    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y);
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     allLocalMatrices[19] = getPullerLocalMatrix(Math.min(power / 50, 0.6));
     allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
     allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
     allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
-
+    allLocalMatrices[31] = getBonusBallLocalMatrix(ball2.coords.x, ball2.coords.y, ball2.active); 
 
     // ---------------------------------------- LIGHTS DEFINITION
 
@@ -439,6 +468,7 @@ async function init() {
   bumperSound = document.getElementById("bumper_sound");
   pipeSound = document.getElementById("pipe_sound");
   fallenBallSound = document.getElementById("fallen_ball");
+  ballsCollisionSound = document.getElementById("balls_collision");
 
   setupCanvas();
   loadShaders();
@@ -480,6 +510,7 @@ async function init() {
   // load meshes from obj files
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
+    bonusBallMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bodyMesh = await utils.loadMesh(modelsDir + "Body2.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper2.obj");
@@ -514,7 +545,7 @@ async function init() {
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh];
+      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh];
   }
   
 } 

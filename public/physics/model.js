@@ -96,6 +96,7 @@ class Ball {
         this.speed = new Vec(0, power);
         this.ready = false;
         this.active = true;
+        //ball2.active = true;
     }
 
     move() {
@@ -122,14 +123,16 @@ class Ball {
 
         //check if the ball falls out
         if(this.coords.y < 0.5) {
-            if(balls > 1) {
+            console.log("ball " + (this.number + 1) + "fallen");
+            //if both balls were on the board then no problem
+            if(ball.active && ball2.active) {
                 //just remove the ball and go on
                 play(fallenBallSound);
-                balls--;
                 this.active = false;
-                //rimuovere in qualche modo la pallina
+                this.ready = true;
             }
-            else if(balls == 1) {
+            else {
+                //if there was only one ball on the board
                 if(lives > 1) {
                     play(fallenBallSound);
                     //prepare the next ball and update lives
@@ -173,7 +176,6 @@ class Ball {
     }
 
     handleWallCollision(wall, closestX, closestY, distance) {
-
         let error = BALL_RADIUS - distance;
         
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
@@ -183,7 +185,6 @@ class Ball {
                     this.coords = this.coords.add(new Vec(0, error));
                 else
                     this.coords = this.coords.add(new Vec(0, - error));
-
             }
         }
         else {
@@ -233,6 +234,8 @@ class Ball {
         //limit the ball speed to avoid crazy things
         if(this.speed.getAbs() > BALL_MAX_SPEED)
         this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
+
+        currentScore += BUMPER_SCORE;
 
      }
 
@@ -329,16 +332,26 @@ class Ball {
         let error = BALL_RADIUS - distance;
 
         //invert ball speed (corners?)
-        this.speed = this.speed.normal();
+        //this.speed = this.speed.normal();
 
-        if(edge == 0)
+        if(edge == 0)   {
             this.coords = this.coords.add(new Vec(- error, 0));
-        else if (edge == 1)
+            this.speed = this.speed.invertX();
+        }
+        else if (edge == 1)    {
             this.coords = this.coords.add(new Vec(0, error));  
-        else if (edge == 2)
-            this.coords = this.coords.add(new Vec(error, 0));  
-        else if (edge == 3)
+            this.speed = this.speed.invertY();
+        }
+        else if (edge == 2)    {
+            this.coords = this.coords.add(new Vec(error, 0)); 
+            this.speed = this.speed.invertX();
+        } 
+        else if (edge == 3)    {
             this.coords = this.coords.add(new Vec(0, - error));  
+            this.speed = this.speed.invertY();
+        }
+
+        currentScore += CUBE_SCORE;
 
         //must change texture of the cube (handled in drawingobj)
         cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
@@ -361,11 +374,11 @@ class Ball {
         if (distance <= BALL_RADIUS) {
             if(slingshot.side == 0){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p2.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
-                    this.handleSlingshotCollision(slingshot, true, 0, distance); //bounce
+                    this.handleSlingshotCollision(slingshot, 0, distance); //bounce
             }
             else {
                 if((closestX >= slingshot.p2.x && closestX <= slingshot.p1.x) && (closestY >= slingshot.p1.y && closestY <= slingshot.p2.y))
-                    this.handleSlingshotCollision(slingshot, true, 0, distance); //bounce
+                    this.handleSlingshotCollision(slingshot, 0, distance); //bounce
             }
         }
         
@@ -381,7 +394,7 @@ class Ball {
     
         if (distance <= BALL_RADIUS) {
                 if((closestY <= slingshot.p2.y && closestY >= slingshot.p3.y))
-                    this.handleSlingshotCollision(slingshot, false, 1, distance); //no bounce
+                    this.handleSlingshotCollision(slingshot, 1, distance); //no bounce
         }
         
         //P1-P3
@@ -397,25 +410,27 @@ class Ball {
         if (distance <= BALL_RADIUS) {
             if(slingshot.side == 0){
                 if((closestX >= slingshot.p1.x && closestX <= slingshot.p3.x))
-                    this.handleSlingshotCollision(slingshot, false, 2, distance); //no bounce
+                    this.handleSlingshotCollision(slingshot, 2, distance); //no bounce
             }
             else {
                 if((closestX <= slingshot.p1.x && closestX >= slingshot.p3.x))
-                    this.handleSlingshotCollision(slingshot, false, 2, distance); //no bounce
+                    this.handleSlingshotCollision(slingshot, 2, distance); //no bounce
             }
         }
         return;
     }
 
 
-    handleSlingshotCollision(slingshot, bounce, num, distance) { 
+    handleSlingshotCollision(slingshot, num, distance) { 
 
         let error = BALL_RADIUS - distance;
 
         if(num == 0)    {
             this.speed = this.speed.normal().scale(SLINGSHOT_HYP_BOOST);
-            //let errorXY = error * Math.sqrt(2) / 2;
-            //this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
+            currentScore += SLINGSHOT_HYP_SCORE;
+
+            let errorXY = error * Math.sqrt(2) / 2;
+            this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
         }
         else if(num == 1)   {
             this.speed = (this.speed.invertX().scale(SLINGSHOT_BOOST));
@@ -442,7 +457,13 @@ class Ball {
     }
 
     handleBallCollision(ball) { 
-        console.log("BALL")
+        let speed1 = this.speed;
+        let speed2 = ball.speed;
+
+        this.speed = speed2;
+        ball.speed = speed1;
+
+        play(ballsCollisionSound);
 
     }
 
@@ -497,6 +518,9 @@ class Ball {
     }
 
     handleCoinCollision(coin) { 
+        coin.taken = true;
+
+        currentScore += COIN_SCORE;
         play(coinSound);
         coin.scaleAndElevate();
     }
@@ -563,6 +587,7 @@ class Coin {
 
         //after 2 seconds the coin must reappear
         setTimeout(() => {this.scale = 0.5; this.z = 9; this.taken = false;}, 3350);
+        
     }
 
 }

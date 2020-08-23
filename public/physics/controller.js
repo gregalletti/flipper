@@ -1,5 +1,5 @@
 var ball = new Ball(new Vec(4.6, 2), true, 0);
-var bonusBall = new Ball(new Vec(4.6, 2), false, 0);
+var ball2 = new Ball(new Vec(3.4, 2), true, 1);
 
 var rightFlipper = new Flipper(new Vec(3.6, 1.22), 0, 210);
 var leftFlipper = new Flipper(new Vec(1.4, 1.22), 1, -30);
@@ -25,13 +25,7 @@ var wall3 = new Wall(new Vec(-0.16, BOARD_HEIGHT), new Vec(BOARD_WIDTH, BOARD_HE
 var wall4 = new Wall(new Vec(BOARD_WIDTH, BOARD_HEIGHT), new Vec(BOARD_WIDTH, 0), 4);   //right board wall
 var wall5 = new Wall(new Vec(3.6, 1.22), new Vec(5, 1.22), 5);   //bottom-right little wall
 
-wallsList = [wall1, wall2, wall3, wall4, wall5];
-
-var score = 0;
-var lives = 3;
-var balls = 1;
-var pulling = false;
-var power = 0;
+var wallsList = [wall1, wall2, wall3, wall4, wall5];
 
 function isBetweenX(p1, p2, x, y) {
     if((x >= p1.x && x <= p2.x) || (x <= p1.x && x >= p2.x))
@@ -46,7 +40,6 @@ function isBetweenY(p1, p2, x, y) {
     
     return false;
 }
-
 
 function controller() {
     for (let i = 0; i < SUBSTEPS; i++) {
@@ -81,7 +74,7 @@ function controller() {
         if(ball.active) {
 
             //handle ball movement
-            ball.move();          
+            ball.move();
             
             //check for all collisions (handled in model)  
 
@@ -107,42 +100,40 @@ function controller() {
 
             for (let wall of wallsList)
                 ball.checkWallCollision(wall);
+        }
+        //if there is the bonus ball
+        if(ball2.active)   {
 
-            //if there is the bonus ball
-            if(balls > 1)   {
-                if(bonusBall.active) {
+            //handle ball movement
+            ball2.move();          
+            
+            //check for all collisions (handled in model)  
 
-                    //handle ball movement
-                    bonusBall.move();          
-                    
-                    //check for all collisions (handled in model)  
-        /*
-                    ball.checkFlipperCollision(rightFlipper);
-                    ball.checkFlipperCollision(leftFlipper);
-        */
-                    bonusBall.checkSlingshotCollision(rightSlingshot, 1);
-                    bonusBall.checkSlingshotCollision(leftSlingshot, 0);
-        
-                    if(!rightCoin.taken)
-                        bonusBall.checkCoinCollision(rightCoin);
-                    
-                    if(!leftCoin.taken)
-                        bonusBall.checkCoinCollision(leftCoin);            
-        
-                    bonusBall.checkBumperCollision(rightBumper);
-                    bonusBall.checkBumperCollision(middleBumper);
-                    bonusBall.checkBumperCollision(leftBumper);
-        
-                    bonusBall.checkCubeCollision(cube);
-        
-                    bonusBall.checkPipeCollision(pipe);
-        
-                    for (let wall of wallsList)
-                        bonusBall.checkWallCollision(wall);
+            ball2.checkFlipperCollision(rightFlipper);
+            ball2.checkFlipperCollision(leftFlipper);
 
-                ball.checkBallCollision(bonusBall);
-                }   
-            }
+            ball2.checkSlingshotCollision(rightSlingshot);
+            ball2.checkSlingshotCollision(leftSlingshot);
+                
+            if(!rightCoin.taken)
+                ball2.checkCoinCollision(rightCoin);
+            
+            if(!leftCoin.taken)
+                ball2.checkCoinCollision(leftCoin);            
+
+            ball2.checkBumperCollision(rightBumper);
+            ball2.checkBumperCollision(middleBumper);
+            ball2.checkBumperCollision(leftBumper);
+
+            ball2.checkCubeCollision(cube);
+
+            ball2.checkPipeCollision(pipe);
+
+            for (let wall of wallsList)
+                ball2.checkWallCollision(wall);
+
+        ball.checkBallCollision(ball2);
+        
         }
     }    
 }
@@ -153,6 +144,7 @@ window.addEventListener("keyup", onKeyReleased);
 function onKeyPressed(event) {
     if (event.key === "z") {
         leftFlipper.moving = true;
+        ball2.active = true;
            // playSound(soundFlipperUp);
     }
     if (event.key === "n") {

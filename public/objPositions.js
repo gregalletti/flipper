@@ -10,7 +10,7 @@ var ballLocalMatrix         = utils.MakeWorld( 0,         0,        0,          
 var bodyLocalMatrix         = utils.MakeWorld( 0,         0,        0,           0,        0,       0,     1);
 var bumper1LocalMatrix      = utils.MakeWorld( 1.1819,    9.1362,   0.020626,   -6.51,     0,       0,     1);
 var bumper2LocalMatrix      = utils.MakeWorld(-1.5055,    9.1362,   0.020626,   -6.51,     0,       0,     1);
-var bumper3LocalMatrix      = utils.MakeWorld(-0.11626,   9.1362,   -1.020626,  -6.51,     0,       0,     1);
+var bumper3LocalMatrix      = utils.MakeWorld(-0.11626,   9.0362,   -1.020626,  -6.51,     0,       0,     1);
 var dl1LocalMatrix          = utils.MakeWorld( 0.4366,   12.789,    4.1852,      0,     -101,       0,     1);
 var dl2LocalMatrix          = utils.MakeWorld( 0.713,    12.789,    4.1852,      0,     -101,       0,     1);
 var dl3LocalMatrix          = utils.MakeWorld( 0.9923,   12.789,    4.1852,      0,     -101,       0,     1);
@@ -45,12 +45,12 @@ var allLocalMatrices = [ballLocalMatrix, bodyLocalMatrix, bumper1LocalMatrix, bu
                         rightSlingshotMatrix, cubeLocalMatrix, leftCoinLocalMatrix, rightCoinLocalMatrix, fungo1LocalMatrix, fungo2LocalMatrix, fungo3LocalMatrix, tuboLocalMatrix, bonusBallLocalMatrix];
 
 
-function getBallLocalMatrix(ballX, ballY) {
-    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), 0, 0, 0, 1);
+function getBallLocalMatrix(ballX, ballY, speed) {
+    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), speed.x * 100, speed.y * 100, 0, 1);
 }
 
-function getBonusBallLocalMatrix(ballX, ballY, active) {
-    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), 0, 0, 0, active ? 1 : 0);
+function getBonusBallLocalMatrix(ballX, ballY, active, speed) {
+    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), speed.x * 100, speed.y * 100, 0, active ? 1 : 0);
 }
 
 function fromPlaneToSpace(ballX, ballY) {

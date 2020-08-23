@@ -324,13 +324,13 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     // update world matrices for moving objects
-    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y);
+    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y, ball.speed);
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     allLocalMatrices[19] = getPullerLocalMatrix(Math.min(power / 50, 0.6));
     allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
     allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
     allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
-    allLocalMatrices[31] = getBonusBallLocalMatrix(ball2.coords.x, ball2.coords.y, ball2.active); 
+    allLocalMatrices[31] = getBonusBallLocalMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed); 
 
     // ---------------------------------------- LIGHTS DEFINITION
 
@@ -512,9 +512,9 @@ async function init() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bodyMesh = await utils.loadMesh(modelsDir + "Body2.obj");
-    bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
-    bumper2Mesh = await utils.loadMesh(modelsDir + "bumper2.obj");
-    bumper3Mesh = await utils.loadMesh(modelsDir + "bumper3.obj");
+    bumper1Mesh = await utils.loadMesh(modelsDir + "Bumper1.obj");
+    bumper2Mesh = await utils.loadMesh(modelsDir + "Bumper1.obj");
+    bumper3Mesh = await utils.loadMesh(modelsDir + "Bumper1.obj");
     dl1Mesh = await utils.loadMesh(modelsDir + "DL1.obj");
     dl2Mesh = await utils.loadMesh(modelsDir + "DL2.obj");
     dl3Mesh = await utils.loadMesh(modelsDir + "DL3.obj");

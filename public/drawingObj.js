@@ -252,10 +252,11 @@ function main() {
       
       if(cubeOutcome == 1)
         newCubeMesh.textures = HEART_CUBE_UVS;
+
       if(cubeOutcome == 2)
         newCubeMesh.textures = STAR_CUBE_UVS;
       
-     newCubeMesh.textures = DEFAULT_CUBE_UVS;
+       //newCubeMesh.textures = DEFAULT_CUBE_UVS;
 
       addMeshToScene(24);    
       

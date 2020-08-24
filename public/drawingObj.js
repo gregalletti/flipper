@@ -194,13 +194,18 @@ function main() {
   var lightColorHandleB = gl.getUniformLocation(program, 'lightColorB');
 
   var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
+  var viewMatrixPositionHandle = gl.getUniformLocation(program, 'viewMatrix');
+  var dirMatrixPositionHandle = gl.getUniformLocation(program, 'dirMatrix');
 
-  var pointLightPositionHandle = gl.getUniformLocation(program, 'pLPos');
+  var pointLightPositionHandle2 = gl.getUniformLocation(program, 'pLPos');
+  var pointLightPositionHandle = gl.getUniformLocation(program, 'pLWM');
+  var pointLightPositionHandle3 = gl.getUniformLocation(program, 'pLVM');
   var pointLightColorHandle = gl.getUniformLocation(program, 'pLCol');
   var pointLightTargetHandle = gl.getUniformLocation(program, 'pLTarget');
   var pointLightDecayHandle = gl.getUniformLocation(program, 'pLDecay');
 
   var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
+  
   var vaos = new Array(allMeshes.length);
 
   texture = gl.createTexture();
@@ -334,7 +339,7 @@ function main() {
     allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
     allLocalMatrices[31] = getBonusBallLocalMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed); 
 
-    // ---------------------------------------- LIGHTS DEFINITION
+    //---------------------------------------- LIGHTS DEFINITION
 
     // DIRECTIONAL LIGHTS
     // var dirLightAlpha = utils.degToRad(-60);
@@ -368,13 +373,12 @@ function main() {
     
     // POINT LIGHT(s)
 
-    var pointLightPos = [ parseFloat(document.getElementById("x").value/1000),
-                          parseFloat(document.getElementById("y").value/1000),
-                          parseFloat(document.getElementById("z").value/1000)];
+    var x = parseFloat(document.getElementById("x").value/1000);
+    var y = parseFloat(document.getElementById("y").value/1000);
+    var z = parseFloat(document.getElementById("z").value/1000);
 
-    //allLocalMatrices[0] = utils.MakeWorld(pointLightPos[0],pointLightPos[1],pointLightPos[2],0,0,0,1)
+    var pointLightPosWM = utils.MakeWorld(0,0,0,0,0,0,1);
 
-    //pointLightPos = [0,0,10]
     var pointLightColor = fromHexToRGBVec(document.getElementById("LBlightColor").value);
     //pointLightColor = fromHexToRGBVec("#ffffff");
     var pointLightTarget = parseFloat(document.getElementById("Target").value/1000);
@@ -384,18 +388,12 @@ function main() {
       pointLightDecay = 0.0;
     }
 
-    var pointLightPosTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(viewMatrix, pointLightPos));
-    //console.log(pointLigthPosTransformed)
+    var pointLightPosTransformationMatrix = utils.multiplyMatrices(viewMatrix,pointLightPosWM);
+    var pointLightPosTransformed = utils.multiplyMatrix3Vector3(utils.sub3x3from4x4(pointLightPosTransformationMatrix),[x,y,z]);
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
       var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]); //Camera Space  VIEW = CAMERA^-1
       var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
-
-      //le trasformazioni seguenti non sono in camera space perché fanno questa cosa per tutte le meshes, 
-      //per essere in camera space questa cosa va fatta solo una volta di fuori da questo ciclo (per tutte le luci)
-      //var lightDirMatrix = utils.sub3x3from4x4(utils.transposeMatrix(allLocalMatrices[i]));
-      //var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
-      //var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
 
       // eye position per adesso non è usata per niente ma poi andrà spostata fuori ho idea
       var eyePositionMatrix = utils.invertMatrix(allLocalMatrices[i]);
@@ -406,13 +404,18 @@ function main() {
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
       gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
+      gl.uniformMatrix3fv(dirMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(lightDirMatrix));
+      
+      gl.uniformMatrix4fv(viewMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(worldViewMatrix));
 
-      gl.uniform3fv(pointLightPositionHandle, pointLightPosTransformed);
+      gl.uniformMatrix4fv(pointLightPositionHandle, gl.FALSE, pointLightPosWM);
+      gl.uniform3fv(pointLightPositionHandle2, pointLightPosTransformed);
+      gl.uniformMatrix4fv(pointLightPositionHandle3, gl.FALSE, utils.transposeMatrix(viewMatrix));
       gl.uniform3fv(pointLightColorHandle, pointLightColor);
       gl.uniform1f(pointLightTargetHandle, pointLightTarget);
       gl.uniform1f(pointLightDecayHandle, pointLightDecay);
-
-      gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
+  
+      //gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);
       gl.uniform3fv(lightColorHandleA, directionalLightColorA);
       gl.uniform3fv(lightDirectionHandleA, lightDirectionTransformedA);
@@ -423,7 +426,7 @@ function main() {
       gl.uniform3fv(specularColorHandle, specularColor);
       gl.uniform1f(shineSpecularHandle, specShine);
         
-      if (i >= 5 && i <=16)   
+      if (i >= 2 && i <=4)   
           gl.uniform3fv(emissionColorHandle, emission);
       else
           gl.uniform3fv(emissionColorHandle, [0.0, 0.0, 0.0]);
@@ -519,7 +522,7 @@ async function init() {
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "Ball.obj");
-    bodyMesh = await utils.loadMesh(modelsDir + "Body2.obj");
+    bodyMesh = await utils.loadMesh(modelsDir + "BodyTest.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper3Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");

@@ -7,7 +7,7 @@
 */
 
 var ballLocalMatrix         = utils.MakeWorld( 0,         0,        0,           0,        0,       0,     1); // #0
-var bodyLocalMatrix         = utils.MakeWorld( 0,         0,        0,           0,        0,       0,     1);
+var bodyLocalMatrix         = utils.MakeWorld( 0,         8.5,        0,           0,        0,       0,     1);
 var bumper1LocalMatrix      = utils.MakeWorld( 1.1819,    9.1362,   0.020626,   -6.51,     0,       0,     1);
 var bumper2LocalMatrix      = utils.MakeWorld(-1.5055,    9.1362,   0.020626,   -6.51,     0,       0,     1);
 var bumper3LocalMatrix      = utils.MakeWorld(-0.11626,   9.0362,   -1.020626,  -6.51,     0,       0,     1);

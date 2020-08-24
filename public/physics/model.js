@@ -362,7 +362,7 @@ class Ball {
             cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
             if(cubeOutcome == 1){
                 currentCubeTex = HEART_CUBE_UVS;
-                if(lives < 5) 
+                if(lives < 3) 
                     lives++;
                 else
                     currentScore += 50;

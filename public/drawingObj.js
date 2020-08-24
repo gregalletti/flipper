@@ -144,7 +144,7 @@ var cubeTex = DEFAULT_CUBE_UVS;
 var currentCubeTex = DEFAULT_CUBE_UVS;
 var shouldChangeCubeTexture = true;
 var cubeOutcome = 0;
-var lives = 3;
+var lives = 1;
 var pulling = false;
 var power = 0;
 

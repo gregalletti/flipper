@@ -91,7 +91,7 @@ class Ball {
     speed = new Vec(0, 0);
 
     launch() {
-        if (!this.ready)
+        if (!this.ready || ball2.active)
             return;
         this.speed = new Vec(0, power);
         this.ready = false;
@@ -102,7 +102,7 @@ class Ball {
     move() {
 
         //apply some gravity to the ball speed
-        this.speed = this.speed.add(new Vec(0, - 0.008));
+        this.speed = this.speed.add(new Vec(0, - 0.01));
 
         
         if(this.coords.x > 4.5)
@@ -368,7 +368,10 @@ class Ball {
             cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
             if(cubeOutcome == 1){
                 currentCubeTex = HEART_CUBE_UVS;
-                lives++;
+                if(lives < 5) 
+                    lives++;
+                else
+                    currentScore += 50;
             }
             else{
                 currentCubeTex = STAR_CUBE_UVS;
@@ -538,6 +541,8 @@ class Ball {
         let T = N.normal(); 
         let vT = newSpeed.dot(T);
         let vN = newSpeed.dot(N);
+        
+        console.log(impactPointSpeed.getAbs())
         
         vN += impactPointSpeed.getAbs();
         newSpeed = N.scale(vN).add(T.scale(vT));

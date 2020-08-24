@@ -128,6 +128,10 @@ class Ball {
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
                 //play(fallenBallSound);
+                if(this.number == 0)
+                        this.coords = new Vec(4.6, 2);
+                    else
+                        this.coords = new Vec(2.3, 9.3);
                 this.active = false;
                 this.ready = true;
             }
@@ -139,7 +143,11 @@ class Ball {
                     //prepare the next ball and update lives
                     lives--;
                     this.speed = new Vec(0,0);
-                    this.coords = new Vec(4.6, 2);
+                    if(this.number == 0)
+                        this.coords = new Vec(4.6, 2);
+                    else
+                        this.coords = new Vec(2.3, 9.3);
+
                     this.ready = true;
                     this.active = false;
                     //play(gameoverSound);  
@@ -451,7 +459,16 @@ class Ball {
 
         if(num == 0)    {
 
-            this.speed = this.speed.normal().scale(SLINGSHOT_HYP_BOOST);
+        //calculate normal and tangent vector 
+        let N = slingshot.side == 0 ? new Vec(- Math.sqrt(2) / 2, Math.sqrt(2) / 2) : new Vec(Math.sqrt(2) / 2, Math.sqrt(2) / 2);
+        let T = N.normal();
+
+        //speed is composed by the 2 components
+        let oldSpeed = this.speed.scale(SLINGSHOT_HYP_BOOST);
+        let vT = oldSpeed.dot(T);
+        let vN = oldSpeed.dot(N);
+
+        this.speed = (T.scale(vT).sub(N.scale(vN)));
             currentScore += SLINGSHOT_HYP_SCORE;
 
             let errorXY = error * Math.sqrt(2) / 2;

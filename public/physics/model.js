@@ -36,12 +36,6 @@ class Vec {
         return Math.atan2(this.y, this.x);
     }
 
-
-    static unit(angle) {
-        return new Vec(Math.cos(angle), Math.sin(angle));
-    }
-
-
     add(vector) {
         return new Vec(this.x + vector.x, this.y + vector.y);
     }
@@ -494,21 +488,26 @@ class Ball {
 
 
     checkBallCollision(ball) { 
+        
         let distance = this.coords.sub(ball.coords);
         
         if (distance.getAbs() <= BALL_RADIUS * 2) {
-            this.handleBallCollision(ball);
+            this.handleBallCollision(ball, distance);
         }
         return;
     }
 
-    handleBallCollision(ball) { 
+    handleBallCollision(ball, distance) { 
 
+        let error = BALL_RADIUS * 2 - distance.getAbs();
         let speed1 = this.speed;
         let speed2 = ball.speed;
 
         this.speed = speed2;
         ball.speed = speed1;
+
+        this.coords = this.coords.add(this.speed.scale(error));
+        ball.coords = ball.coords.add(ball.speed.scale(error))
 
         play(ballsCollisionSound);
 
@@ -542,9 +541,8 @@ class Ball {
         let vT = newSpeed.dot(T);
         let vN = newSpeed.dot(N);
         
-        console.log(impactPointSpeed.getAbs())
-        
-        vN += impactPointSpeed.getAbs();
+        //flipper power was too low, multiplied by 200 LOL
+        vN += 200 * impactPointSpeed.getAbs();
         newSpeed = N.scale(vN).add(T.scale(vT));
 
         this.speed = newSpeed.add(impactPointSpeed);
@@ -704,7 +702,7 @@ class Flipper {
     moving = false;
 
     getCurrentDirection() {
-        return Vec.unit(utils.degToRad(this.angle));
+        return new Vec(Math.cos(utils.degToRad(this.angle)), Math.sin(utils.degToRad(this.angle)));
     }
 
     getAngularSpeed() {

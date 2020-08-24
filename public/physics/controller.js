@@ -149,7 +149,8 @@ function controller() {
             for (let wall of wallsList)
                 ball2.checkWallCollision(wall);
 
-        ball.checkBallCollision(ball2);
+        if(ball.active && ball2.active)
+            ball.checkBallCollision(ball2);
         
         }
     }    

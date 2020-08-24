@@ -25,7 +25,7 @@ const FLIPPER_UP_ANGLE = 30;
 
 const FLIPPER_BOOST = 1.2;
 const BUMPER_BOOST = 1.5;
-const WALL_BOOST = 0.7;
+const WALL_BOOST = 0.8;
 const SLINGSHOT_HYP_BOOST = 1.5;
 const SLINGSHOT_BOOST = 0.8;
 const PIPE_BOOST = 0.8;

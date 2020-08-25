@@ -360,12 +360,7 @@ class Ball {
         let distance = Math.sqrt( (distX*distX) + (distY*distY) );
 
         // if the distance is less than the radius, collision!
-        if (distance <= BALL_RADIUS) {
-            if(cubeOutcome == 1)
-                play(heart);
-            else
-                play(star);
-               
+        if (distance <= BALL_RADIUS) {               
             this.handleCubeCollision(cube, edge, distance);
         }
         return;
@@ -423,6 +418,9 @@ class Ball {
 
             shouldChangeCubeTexture = false;
         }
+        else
+            play(magicCubeSound);
+
     }
 
 
@@ -590,7 +588,7 @@ class Ball {
         let vN = newSpeed.dot(N);
         
         //flipper power was too low, multiplied by 200 LOL
-        vN += 200 * impactPointSpeed.getAbs();
+        vN += impactPointSpeed.getAbs() * 200;
         newSpeed = N.scale(vN).add(T.scale(vT));
 
         this.speed = newSpeed.add(impactPointSpeed);

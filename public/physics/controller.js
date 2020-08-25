@@ -168,10 +168,10 @@ function onKeyPressed(event) {
 
     }
     if (event.key === " ") {
+        if(!pulling)
+            play(pullerSound);
+
         pulling = true;
-        play(pullerSound);
-        console.log("pull")
-        //play(letsGo);
     }
 }
 function onKeyReleased(event) {

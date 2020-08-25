@@ -256,13 +256,13 @@ function main() {
     addMeshToScene(i);
     
     function changeCubeTexture() {
-      console.log(cubeMesh.textures)
+      //console.log(cubeMesh.textures)
       if(currentCubeTex != cubeTex) {
         let newCubeMesh = cubeMesh;      
         newCubeMesh.textures = currentCubeTex;
         
         
-        console.log(cubeMesh.textures)
+        //console.log(cubeMesh.textures)
         cubeTex = currentCubeTex;
         setTimeout(() => {shouldChangeCubeTexture = true; currentCubeTex = DEFAULT_CUBE_UVS;}, 5000);
         

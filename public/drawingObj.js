@@ -521,7 +521,7 @@ async function init() {
   // load meshes from obj files
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
-    bonusBallMesh = await utils.loadMesh(modelsDir + "Ball.obj");
+    bonusBallMesh = await utils.loadMesh(modelsDir + "bonusBall.obj");
     bodyMesh = await utils.loadMesh(modelsDir + "BodyTest.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
@@ -549,8 +549,8 @@ async function init() {
     leftCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     rightCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
-    fungo2Mesh = await utils.loadMesh(modelsDir + "fungo2.obj");
-    fungo3Mesh = await utils.loadMesh(modelsDir + "fungo3.obj");
+    fungo2Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
+    fungo3Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
     tuboMesh = await utils.loadMesh(modelsDir + "tubega.obj");
 
 

@@ -584,8 +584,7 @@ async function init() {
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
-    cubeMesh = await utils.loadMesh(modelsDir + "NewMagicCube.obj")
-    console.log(cubeMesh.textures)
+    cubeMesh = await utils.loadMesh(modelsDir + "NewMagicCube.obj");
     leftCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     rightCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");

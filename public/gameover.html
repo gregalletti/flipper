@@ -3,28 +3,29 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="textures/icon.jpg">
   <title>Flipper</title>
   <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
 
 </head>
 
-<body style="overflow: hidden; margin:0px; width: 100%; height: 100%;">
+<body style=" background-image: url('resources/pinball-land.png'); overflow: hidden; margin: 0px; width: 100%; height: 20%; background-repeat: no-repeat; background-size: cover; -webkit-animation: fadein 4s;">
   
   <iframe src="sounds/silence.mp3.mp3" allow="autoplay" id="audio" style="display: none"></iframe>
   <audio id="player" autoplay loop>
     <source src="sounds/newgame.mp3" type="audio/mp3">
 </audio>
-  <img src="textures/loading.gif" style="width: 30%; display: block;  margin-left: auto;  margin-right: auto;"/>
+ <img src="textures/loading.gif" style="width: 10%;  margin-left: 50px;  padding-top: 260px;"/>
   <input hidden onkeypress="pageRedirect()"/>
-  <div style="align-self: center; font-family: Arcade;">
+  <div style="align-self: center; font-family: Arcade; margin-left: 80px;">
     <h1 id="score"></h1>
-    <h1 style="text-align: center; font-size: 48px; color: blue">Press SPACE to PLAY AGAIN</h1>
+    <h1 style="font-size: 52px; color: black; text-shadow: 6px 2px #ffffff;">press ENTER to play again</h1>
   </div>
   <script>
     window.addEventListener("keydown", pageRedirect, false);
     function pageRedirect(key) {
-      if(key.keyCode == 32){
+      if(key.keyCode == 13){
         console.log("HELLO");
         window.location.replace("index.html");
       }
@@ -34,25 +35,9 @@
     window.onload = function () {
       var url = new URL(window.location.href);
       var score = url.searchParams.get("score");
-      document.getElementById("score").innerHTML = '<h1 id="score" style="text-align: center; font-size: 48px; color: blue">SCORE: '+score+'</h1>';
+      document.getElementById("score").innerHTML = '<h1 id="score" style="font-size: 52px; color: black; text-shadow: 6px 2px #ffffff;">SCORE: '+score+'</h1>';
     }; 
   </script>
-  
-<!--
-  <audio id="sound_bumper" type="audio/wav" src="sounds/bumper.wav"></audio>
-  <audio id="sound_slingshot" type="audio/wav" src="sounds/slingshot.wav"></audio>
-  <audio id="sound_flipper_down" type="audio/wav" src="sounds/flipper_down.wav"></audio>
-  <audio id="sound_flipper_up" type="audio/wav" src="sounds/flipper_up.wav"></audio>
-  <audio id="sound_launch" type="audio/wav" src="sounds/launch.wav"></audio>
-  <audio id="sound_puller" type="audio/wav" src="sounds/puller.wav"></audio>
-  <audio id="sound_reload" type="audio/wav" src="sounds/reload.wav"></audio>
-  <audio id="sound_tunnel" type="audio/wav" src="sounds/tunnel.wav"></audio>
-  <audio id="sound_wall" type="audio/wav" src="sounds/wall.wav"></audio>
-  <audio id="sound_obstacle" type="audio/wav" src="sounds/obstacle.wav"></audio>
-  <audio id="sound_sphere" type="audio/wav" src="sounds/sphere.wav"></audio>
-  <audio id="sound_bonus" type="audio/wav" src="sounds/bonus.wav"></audio>
-  <audio id="sound_ball" type="audio/wav" src="sounds/ball.wav"></audio>
--->
 <audio id="new_game" type="audio/mp3" src="sounds/newgame.mp3"></audio>
 </body>
 

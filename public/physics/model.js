@@ -98,7 +98,6 @@ class Ball {
         //apply some gravity to the ball speed
         this.speed = this.speed.add(new Vec(0, - 0.01));
 
-        
         if(this.coords.x > 4.5)
             this.speed = this.speed.add(new Vec(- 0.002, 0));
 
@@ -122,10 +121,17 @@ class Ball {
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
                 //play(fallenBallSound);
-                if(this.number == 0)
-                        this.coords = new Vec(4.6, 2);
-                    else
-                        this.coords = new Vec(2.3, 9.3);
+                this.speed = new Vec(0,0);
+                if(this.number == 0){
+                    this.coords = new Vec(4.6, 2);
+                    angleY1 = 0;
+                    angleZ1 = 0;
+                }
+                else{
+                    this.coords = new Vec(2.3, 9.3);
+                    angleY2 = 0;
+                    angleZ2 = 0;
+                }
                 this.active = false;
                 this.ready = true;
             }
@@ -142,12 +148,17 @@ class Ball {
                     else
                         this.coords = new Vec(2.3, 9.3);
 
+                    angleY1 = 0;
+                    angleZ1 = 0;
+                    angleY2 = 0;
+                    angleZ2 = 0;
                     this.ready = true;
                     this.active = false;
                     //play(gameoverSound);  
 
                 }
                 else if(lives == 1){
+                    lives--;
                     console.log("game over")    
                     //play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
                 }

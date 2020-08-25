@@ -28,16 +28,6 @@ uniform mat4 pLVM;
 uniform float pLTagret;
 uniform float pLDecay;
 
-//in vec4 provacolorefinale;
-
-vec3 compDiffuse(vec3 lightDir, vec3 lightCol, vec3 normalVec) {
-	// Diffuse
-	// --> Lambert
-	vec3 diffuseLambert = lightCol * clamp(dot(normalVec, lightDir),0.0,1.0);
-	// ----> Select final component
-	return diffuseLambert;
-}
-
 void main() {
     
   vec4 texelCol = texture(in_texture, fsUV);
@@ -57,20 +47,10 @@ void main() {
 
 	vec3 lCol = pLCol * pow(2.0 / length(giustaPos - fs_pos), 1.0);
 
-  vec3 diffuse = lCol * clamp(dot(normalize(fsNormal), lDir),0.0,1.0);
+  vec3 diffusePoint = lCol * clamp(dot(normalize(fsNormal), lDir),0.0,1.0);
 
-  vec4 provacolorefinale = vec4(clamp((mDiffColor * diffuse), 0.0, 1.0),1.0);
+  vec3 lambertColor = clamp((mDiffColor * (diffusePoint + diffA + diffB)), 0.0, 1.0);
 
-  //spot
-  
-  /*float LAConeOut = 60.0;
-  float LAConeIn = 45.0;
-  float LCosOut = cos(radians(LAConeOut / 2.0));
-	float LCosIn = cos(radians(LAConeOut * LAConeIn / 2.0));
-	//lightDirA = normalize(LAPos - fsposnorm);
-	float CosAngle = dot(lDir, lDirA);
-	lCol = pLCol * pow(2.0 / length(pLPos - fsposnorm), 1.0) * clamp((CosAngle - LCosOut) / (LCosIn - LCosOut), 0.0, 1.0);*/
-  
   //computing ambient color
   vec3 ambient = ambientLightCol * ambientMat;
   
@@ -86,10 +66,9 @@ void main() {
   
   //computing BRDF color
   //vec3 color = clamp(blinnSpecular + lambertColor + ambient + emit, 0.0, 1.0);
-  //vec3 color = clamp(lambertColor + ambient + emit, 0.0, 1.0);
   
   //compose final color with texture
-  vec4 color = vec4(provacolorefinale.rgb,1.0);
+  vec4 color = vec4(clamp(lambertColor + ambient + emit, 0.0, 1.0).rgb,1.0);
   vec4 outColorfs = color * texture(in_texture, fsUV);
   outColor = outColorfs;
 }

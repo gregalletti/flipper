@@ -147,6 +147,7 @@ var cubeOutcome = 0;
 var lives = 1;
 var pulling = false;
 var power = 0;
+var pLight = new PointLight(new Vec(0,0),"#000000");
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -377,9 +378,24 @@ function main() {
     var y = parseFloat(document.getElementById("y").value/1000);
     var z = parseFloat(document.getElementById("z").value/1000);
 
+    x = pLight.position.x;
+    y = 10;
+    z = pLight.position.y;
+
+    let realCoords = fromPlaneToSpace(x,z);
+
+    x = realCoords[0];
+    y = 1.9;
+    z = realCoords[2];
+    
+    console.log(pLight);
+    console.log(x);
+    console.log(realCoords[1]);
+    console.log(z);
+
     var pointLightPosWM = utils.MakeWorld(0,0,0,0,0,0,1);
 
-    var pointLightColor = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    var pointLightColor = fromHexToRGBVec(pLight.color);
     //pointLightColor = fromHexToRGBVec("#ffffff");
     var pointLightTarget = parseFloat(document.getElementById("Target").value/1000);
     //var pointLightTarget = parseFloat(10.0);

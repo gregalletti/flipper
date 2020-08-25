@@ -17,6 +17,17 @@ WALL = BOARD
 ALL THE MEASUREMENTS HAVE BEEN DONE THROUGH BLENDER
 */
 
+class PointLight {
+    constructor(position, color) {
+        this.position = position;
+        this.color = color;
+        this.frames = 10;
+    }
+
+    consumeFrame(){
+        this.frames--;
+    }
+}
 
 //coords, velocity, acceleration...
 class Vec {
@@ -225,6 +236,10 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
             play(bumperSound);
             this.handleBumperCollision(bumper, distance);
+            pLight = new PointLight(bumper.position, "#ff0000"); // colore a caso per provare
+            setTimeout(()=>{
+                pLight.color = "#000000"
+            }, 1000);
         }
         return;
     }
@@ -534,8 +549,10 @@ class Ball {
         let impactPoint = flipper.getCurrentDirection().scale(projectionX).add(flipper.position);
 
         let realDistance = this.coords.sub(impactPoint);
-        if (realDistance.getAbs() <= BALL_RADIUS)
+        if (realDistance.getAbs() <= BALL_RADIUS){
             this.handleFlipperCollision(flipper, realDistance, impactPoint, projectionX);
+            pLight = new PointLight(flipper.position, "#880088"); // colore a caso per provare
+        }
     }
 
     handleFlipperCollision(flipper, realDistance, impactPoint, projectionX) {

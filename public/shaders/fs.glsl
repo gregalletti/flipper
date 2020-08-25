@@ -55,20 +55,20 @@ void main() {
   vec3 ambient = ambientLightCol * ambientMat;
   
   //computing Blinn specular color
-  /*vec3 eyeDir = normalize(eyePos - fsposnorm);
+  vec3 eyeDir = normalize(-pLPos);
   vec3 halfVecA = normalize(eyeDir + lDirA);
   vec3 halfVecB = normalize(eyeDir + lDirB);
   vec3 halfVecC = normalize(eyeDir + lDir);
   vec3 specularA = pow(max(dot(halfVecA, nNormal), 0.0), specShine) * lightColorA;
   vec3 specularB = pow(max(dot(halfVecB, nNormal), 0.0), specShine) * lightColorB;
-  vec3 specularC = pow(max(dot(halfVecC, nNormal), 0.0), specShine) * pLCol;
-  vec3 blinnSpecular = specularColor * (specularA + specularB + specularC); */
+  vec3 specularC = pow(max(dot(halfVecC, nNormal), 0.0), specShine) * lCol;
+  vec3 blinnSpecular = specularColor * (specularA + specularB);
   
   //computing BRDF color
   //vec3 color = clamp(blinnSpecular + lambertColor + ambient + emit, 0.0, 1.0);
   
   //compose final color with texture
-  vec4 color = vec4(clamp(lambertColor + ambient + emit, 0.0, 1.0).rgb,1.0);
+  vec4 color = vec4(clamp(blinnSpecular + lambertColor + ambient + emit, 0.0, 1.0).rgb,1.0);
   vec4 outColorfs = color * texture(in_texture, fsUV);
   outColor = outColorfs;
 }

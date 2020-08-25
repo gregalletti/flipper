@@ -172,7 +172,7 @@ function main() {
     
   //define specular component of color
   var specularColor = [1.0, 1.0, 1.0];
-  var specShine = 2.0;
+  var specShine = 10.0;
     
   //define emission color for digital score
   var emission = [1.0, 0.0, 0.0];    
@@ -346,20 +346,24 @@ function main() {
     // var dirLightAlpha = utils.degToRad(-60);
     //var dirLightBeta = utils.degToRad(50);
 
-    var dirLightAlpha = utils.degToRad(document.getElementById("LCDirTheta").value);
+    var dirLightAlphaA = utils.degToRad(document.getElementById("dirLightAlphaA").value);
 
-	  var dirLightBeta = utils.degToRad(document.getElementById("LCDirPhi").value);
+    var dirLightBetaA = utils.degToRad(document.getElementById("dirLightBetaA").value);
+    
+    var dirLightAlphaB = utils.degToRad(document.getElementById("dirLightAlphaB").value);
 
-    var directionalLightA = [Math.cos(180 - dirLightAlpha) * Math.cos(dirLightBeta),
-    Math.sin(180 - dirLightAlpha),
-    Math.cos(180 - dirLightAlpha) * Math.sin(dirLightBeta)
+	  var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);
+
+    var directionalLightA = [Math.cos(180 - dirLightAlphaA) * Math.cos(dirLightBetaA),
+    Math.sin(180 - dirLightAlphaA),
+    Math.cos(180 - dirLightAlphaA) * Math.sin(dirLightBetaA)
     ];
     //var directionalLightColorA = [0.55, 0.55, 0.35];
     var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);
 
-    var directionalLightB = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
-    Math.sin(dirLightAlpha),
-    Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
+    var directionalLightB = [-Math.cos(dirLightAlphaB) * Math.cos(dirLightBetaB),
+    Math.sin(dirLightAlphaB),
+    Math.cos(dirLightAlphaB) * Math.sin(dirLightBetaB)
     ];
     //var directionalLightColorB = [0.45, 0.35, 0.15];
     //var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
@@ -374,13 +378,9 @@ function main() {
     
     // POINT LIGHT(s)
 
-    var x = parseFloat(document.getElementById("x").value/1000);
-    var y = parseFloat(document.getElementById("y").value/1000);
-    var z = parseFloat(document.getElementById("z").value/1000);
-
-    x = pLight.position.x;
-    y = 10;
-    z = pLight.position.y;
+    var x = pLight.position.x;
+    var y = 10;
+    var z = pLight.position.y;
 
     let realCoords = fromPlaneToSpace(x,z);
 
@@ -388,18 +388,18 @@ function main() {
     y = 1.9;
     z = realCoords[2];
     
-    console.log(pLight);
-    console.log(x);
-    console.log(realCoords[1]);
-    console.log(z);
+    //console.log(pLight);
+    //console.log(x);
+    //console.log(realCoords[1]);
+    //console.log(z);
 
     var pointLightPosWM = utils.MakeWorld(0,0,0,0,0,0,1);
 
     var pointLightColor = fromHexToRGBVec(pLight.color);
     //pointLightColor = fromHexToRGBVec("#ffffff");
-    var pointLightTarget = parseFloat(document.getElementById("Target").value/1000);
+    var pointLightTarget = 0.0;
     //var pointLightTarget = parseFloat(10.0);
-    var pointLightDecay = parseInt(document.getElementById("Decay").value);
+    var pointLightDecay = 0.0;
     if(pointLightDecay === 0){
       pointLightDecay = 0.0;
     }

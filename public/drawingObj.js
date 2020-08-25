@@ -256,11 +256,13 @@ function main() {
     addMeshToScene(i);
     
     function changeCubeTexture() {
-
+      console.log(cubeMesh.textures)
       if(currentCubeTex != cubeTex) {
         let newCubeMesh = cubeMesh;      
         newCubeMesh.textures = currentCubeTex;
-
+        
+        
+        console.log(cubeMesh.textures)
         cubeTex = currentCubeTex;
         setTimeout(() => {shouldChangeCubeTexture = true; currentCubeTex = DEFAULT_CUBE_UVS;}, 5000);
         
@@ -582,7 +584,8 @@ async function init() {
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
-    cubeMesh = await utils.loadMesh(modelsDir + "kuboVero.obj")
+    cubeMesh = await utils.loadMesh(modelsDir + "NewMagicCube.obj")
+    console.log(cubeMesh.textures)
     leftCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     rightCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
     fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");

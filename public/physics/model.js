@@ -178,6 +178,8 @@ class Ball {
                     stopAudio(ballRoll);
                     console.log("game over")    
                     play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
+                    window.location.replace("gameover.html?score="+currentScore);
+
                 }
                     
             }         

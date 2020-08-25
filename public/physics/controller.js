@@ -43,7 +43,7 @@ function isBetweenY(p1, p2, x, y) {
 
 function controller() {
     for (let i = 0; i < SUBSTEPS; i++) {
-
+        //play(ballRoll)
         //handle ball launch
         if(pulling)
             power += 0.05;
@@ -88,7 +88,6 @@ function controller() {
 
         //if the ball has been launched
         if(ball.active) {
-
             //handle ball movement
             ball.move();
             
@@ -160,35 +159,35 @@ window.addEventListener("keydown", onKeyPressed);
 window.addEventListener("keyup", onKeyReleased);
 
 function onKeyPressed(event) {
-    if (event.key === "x") {
+    if (event.key === "z") {
         leftFlipper.moving = true;
         //ball2.active = true;
            // playSound(soundFlipperUp);
     }
-    if (event.key === "n") {
+    if (event.key === "m") {
         rightFlipper.moving = true;
            // playSound(soundFlipperUp);
     }
     if (event.key === " ") {
         pulling = true;
-        
+        //play(letsGo);
     }
 }
 function onKeyReleased(event) {
-    if (event.key === "x") {
+    if (event.key === "z") {
         leftFlipper.moving = false;
        // playSound(soundFlipperDown);
     }
-    if (event.key === "n") {
+    if (event.key === "m") {
         rightFlipper.moving = false;
       //  playSound(soundFlipperDown);
     }
     if (event.key === " ") {
+        play(pullerSound);
         pulling = false;
         ball.launch();
-        play(letsGo);
         power = 0;
-      //  playSound(soundPuller);
+        play(letsGo);
     }
 }
 

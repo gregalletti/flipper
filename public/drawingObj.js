@@ -472,6 +472,10 @@ var fallenBallSound;
 var magicCubeSound;
 var slingshotSound;
 var letsGo;
+var pullerSound;
+var ballRoll;
+var heart;
+var star;
 
 /**
  * 
@@ -480,7 +484,20 @@ var letsGo;
 function play(sound) {
   sound.currentTime = 0;
   sound.play();
+  sound.volume = 0.4;
 }
+
+
+/**
+ * 
+ * @param {HTMLAudioElement} sound 
+ */
+function stopAudio(sound) {
+  sound.currentTime = 0;
+  sound.pause();
+}
+
+
 
 async function init() {
  
@@ -496,6 +513,10 @@ async function init() {
   magicCubeSound = document.getElementById("magic_cube");
   slingshotSound = document.getElementById("slingshot");
   letsGo = document.getElementById("lets_go");
+  pullerSound = document.getElementById("puller");
+  ballRoll = document.getElementById("ballroll");
+  heart = document.getElementById("heart");
+  star = document.getElementById("star");
 
   setupCanvas();
   loadShaders();
@@ -538,7 +559,7 @@ async function init() {
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "BonusBall.obj");
-    bodyMesh = await utils.loadMesh(modelsDir + "BodyTest.obj");
+    bodyMesh = await utils.loadMesh(modelsDir + "BodyTest1.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper3Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");

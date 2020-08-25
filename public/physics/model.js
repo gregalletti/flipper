@@ -96,9 +96,10 @@ class Ball {
     speed = new Vec(0, 0);
 
     launch() {
+        play(ballRoll)
         if (!this.ready || ball2.active)
             return;
-        this.speed = new Vec(0, power);
+        this.speed = new Vec(0, Math.max(power, BALL_MAX_SPEED));
         this.ready = false;
         this.active = true;
         //ball2.active = true;
@@ -128,6 +129,7 @@ class Ball {
 
         //check if the ball falls out
         if(this.coords.y < 0.5) {
+            
             //if both balls were on the board then no problem
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
@@ -145,11 +147,13 @@ class Ball {
                 }
                 this.active = false;
                 this.ready = true;
+                
             }
             else {
                 currentCubeTex = DEFAULT_CUBE_UVS;
                 //if there was only one ball on the board
                 if(lives > 1) {
+                    stopAudio(ballRoll);
                     //play(fallenBallSound);
                     //prepare the next ball and update lives
                     lives--;
@@ -170,9 +174,11 @@ class Ball {
                 }
                 else if(lives == 1){
                     lives--;
+                    stopAudio(ballRoll);
                     console.log("game over")    
                     //play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
                 }
+                    
             }         
         }
         
@@ -354,7 +360,11 @@ class Ball {
 
         // if the distance is less than the radius, collision!
         if (distance <= BALL_RADIUS) {
-            play(magicCubeSound);
+            if(cubeOutcome == 1)
+                play(heart);
+            else
+                play(star);
+               
             this.handleCubeCollision(cube, edge, distance);
         }
         return;
@@ -387,18 +397,27 @@ class Ball {
             //must change texture of the cube (handled in drawingobj)
             cubeOutcome = Math.round(Math.random()) + 1;    //random number between 1 and 2
             if(cubeOutcome == 1){
+                play(heart);
                 currentCubeTex = HEART_CUBE_UVS;
-                if(lives < 3) 
+                if(lives < 3) {
+                    
                     lives++;
-                else
+                }
+                else{
+                    //play(magicCubeSound);
                     currentScore += 50;
+                }
             }
             else{
+                play(star);
                 currentCubeTex = STAR_CUBE_UVS;
-                if(ball2.active)
+                if(ball2.active){
+                    //play(magicCubeSound);
                     currentScore += 100;
-                else
+                }
+                else{
                     ball2.active = true;
+                }
             }
 
             shouldChangeCubeTexture = false;

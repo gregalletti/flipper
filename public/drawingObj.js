@@ -213,7 +213,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/SuperMarioPinballTemp4.png";
+  image.src = baseDir + "textures/SuperMarioPinballTemp5.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -561,7 +561,7 @@ async function init() {
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "BonusBall.obj");
-    bodyMesh = await utils.loadMesh(modelsDir + "BodyTest1.obj");
+    bodyMesh = await utils.loadMesh(modelsDir + "BodyFigo2.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper3Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");

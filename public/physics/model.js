@@ -96,17 +96,18 @@ class Ball {
     speed = new Vec(0, 0);
 
     launch() {
-        play(ballRoll)
         if (!this.ready || ball2.active)
             return;
-        this.speed = new Vec(0, Math.max(power, BALL_MAX_SPEED));
+        this.speed = new Vec(0, Math.min(power, BALL_MAX_SPEED));
+        
+        play(ballRoll)
+        ballRoll.volume = 0.05;
         this.ready = false;
         this.active = true;
         //ball2.active = true;
     }
 
     move() {
-
         //apply some gravity to the ball speed
         this.speed = this.speed.add(new Vec(0, - 0.01));
 
@@ -169,14 +170,14 @@ class Ball {
                     angleZ2 = 0;
                     this.ready = true;
                     this.active = false;
-                    //play(gameoverSound);  
+                    play(gameoverSound);  
 
                 }
                 else if(lives == 1){
                     lives--;
                     stopAudio(ballRoll);
                     console.log("game over")    
-                    //play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
+                    play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
                 }
                     
             }         

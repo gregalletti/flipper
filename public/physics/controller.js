@@ -51,7 +51,6 @@ function controller() {
         //handle flippers movement
         if(rightFlipper.moving){
             rightFlipper.angle = Math.max(rightFlipper.angle - 2, 150);
-            play(flipperSound);
             if(rightFlipper.angle == 150)
                 rightFlipper.stall = true;
             else
@@ -67,7 +66,6 @@ function controller() {
         }
         if(leftFlipper.moving){
             leftFlipper.angle = Math.min(leftFlipper.angle + 2, 30);
-            play(flipperSound);
             if(leftFlipper.angle == 30)
                 leftFlipper.stall = true;
             else
@@ -161,29 +159,32 @@ window.addEventListener("keyup", onKeyReleased);
 function onKeyPressed(event) {
     if (event.key === "z") {
         leftFlipper.moving = true;
-        //ball2.active = true;
-           // playSound(soundFlipperUp);
+        play(flipperUp);
+
     }
     if (event.key === "m") {
         rightFlipper.moving = true;
-           // playSound(soundFlipperUp);
+        play(flipperUp);
+
     }
     if (event.key === " ") {
         pulling = true;
+        play(pullerSound);
+        console.log("pull")
         //play(letsGo);
     }
 }
 function onKeyReleased(event) {
     if (event.key === "z") {
         leftFlipper.moving = false;
-       // playSound(soundFlipperDown);
+        play(flipperDown);
     }
     if (event.key === "m") {
         rightFlipper.moving = false;
-      //  playSound(soundFlipperDown);
+        play(flipperDown);
     }
     if (event.key === " ") {
-        play(pullerSound);
+        stopAudio(pullerSound)
         pulling = false;
         ball.launch();
         power = 0;

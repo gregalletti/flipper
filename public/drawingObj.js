@@ -465,7 +465,7 @@ function main() {
 
 var startSound;
 var gameoverSound;
-var flipperSound;
+var flipperUp;
 var flipperDown;
 var coinSound;
 var bumperSound;
@@ -505,7 +505,7 @@ async function init() {
  
   startSound = document.getElementById("new_game");
   gameoverSound = document.getElementById("game_over");
-  flipperSound = document.getElementById("flipper_sound");
+  flipperUp = document.getElementById("flipper_up");
   flipperDown = document.getElementById("flipper_down");
   coinSound = document.getElementById("coin_sound");
   bumperSound = document.getElementById("bumper_sound");

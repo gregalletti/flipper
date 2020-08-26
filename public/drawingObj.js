@@ -348,27 +348,27 @@ function main() {
     // var dirLightAlpha = utils.degToRad(-60);
     //var dirLightBeta = utils.degToRad(50);
 
-    var dirLightAlphaA = utils.degToRad(document.getElementById("dirLightAlphaA").value);
+    var dirLightAlphaA = utils.degToRad(document.getElementById("dirLightAlphaA").value);//20
 
-    var dirLightBetaA = utils.degToRad(document.getElementById("dirLightBetaA").value);
+    var dirLightBetaA = utils.degToRad(document.getElementById("dirLightBetaA").value);//32
     
-    var dirLightAlphaB = utils.degToRad(document.getElementById("dirLightAlphaB").value);
+    var dirLightAlphaB = utils.degToRad(document.getElementById("dirLightAlphaB").value);//55
 
-	  var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);
+	  var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);//95
 
     var directionalLightA = [Math.cos(180 - dirLightAlphaA) * Math.cos(dirLightBetaA),
     Math.sin(180 - dirLightAlphaA),
     Math.cos(180 - dirLightAlphaA) * Math.sin(dirLightBetaA)
     ];
     //var directionalLightColorA = [0.55, 0.55, 0.35];
-    var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);
+    var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);//#4d4d4d
 
     var directionalLightB = [-Math.cos(dirLightAlphaB) * Math.cos(dirLightBetaB),
     Math.sin(dirLightAlphaB),
     Math.cos(dirLightAlphaB) * Math.sin(dirLightBetaB)
     ];
     //var directionalLightColorB = [0.45, 0.35, 0.15];
-    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);//5e5e5e
     //var directionalLightColorB = fromHexToRGBVec("#ffffff");
 
     // CAMERA SPACE TRANSFORMATION OF LIGHTS 

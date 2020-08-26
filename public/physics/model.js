@@ -103,6 +103,7 @@ class Ball {
     }
 
     move() {
+       
         //apply some gravity to the ball speed
         this.speed = this.speed.add(new Vec(0, - 0.01));
 

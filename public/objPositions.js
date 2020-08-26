@@ -30,7 +30,7 @@ var rightButtonLocalMatrix  = utils.MakeWorld(-2.97,      8.7853,  -6.6902,     
 var rightFlipperLocalMatrix = utils.MakeWorld(-1.307,     8.4032,  -5.6357,    150,       -3.24,   -5.64,  1);  // #21
 var leftSlingshotMatrix     = utils.MakeWorld(1.1,    8.5,   -4.50626,   180,     0,       0,     1);           //
 var rightSlingshotMatrix    = utils.MakeWorld(-1.6,    8.5,   -4.50626,   90,     0,       0,     1);           //
-var cubeLocalMatrix         = utils.MakeWorld( 1,       9.7,        2.5,           0,       -5.8,       0,     0.5);  // 
+var cubeLocalMatrix         = utils.MakeWorld( 1,       9.8,        2.5,           0,       -5.8,       0,     0.5);  // 
 var leftCoinLocalMatrix     = utils.MakeWorld( 1,       9,        -2.5,           0,       90,       0,     0.5); 
 var rightCoinLocalMatrix    = utils.MakeWorld( -1.4,       9,        -2.5,           0,       90,       0,     0.5); 
 var fungo1LocalMatrix       = bumper1LocalMatrix;
@@ -94,4 +94,10 @@ function getRightCoinLocalMatrix(angle, scale, z) {
 
 function getLeftCoinLocalMatrix(angle, scale, z) {
     return utils.MakeWorld( 1,       z,        -2.5,           0,       90,       utils.radToDeg(angle),    scale); 
+}
+
+function getCubeLocalMatrix(z) {
+
+    return utils.MakeWorld( 1,       9.8 + 0.1 + Math.sin(z)/10,        2.5,           0,       -5.8,       0,     0.5);
+    
 }

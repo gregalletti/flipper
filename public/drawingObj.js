@@ -148,6 +148,7 @@ var lives = 1;
 var pulling = false;
 var power = 0;
 var pLight = new PointLight(new Vec(0,0),"#000000");
+var cubeZ = 0;
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -213,7 +214,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/SuperMarioPinballTemp5.png";
+  image.src = baseDir + "textures/SuperMarioPinballTemp6.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -341,6 +342,7 @@ function main() {
     allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
     allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
     allLocalMatrices[31] = getBonusBallLocalMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed); 
+    allLocalMatrices[24] = getCubeLocalMatrix(cubeZ); 
 
     //---------------------------------------- LIGHTS DEFINITION
 
@@ -472,26 +474,18 @@ var ballRoll;
 var heart;
 var star;
 
-/**
- * 
- * @param {HTMLAudioElement} sound 
- */
+//custom function to set and play sounds
 function play(sound) {
   sound.currentTime = 0;
   sound.play();
   sound.volume = 0.4;
 }
 
-
-/**
- * 
- * @param {HTMLAudioElement} sound 
- */
+//custom function to stop sounds
 function stopAudio(sound) {
   sound.currentTime = 0;
   sound.pause();
 }
-
 
 
 async function init() {
@@ -593,13 +587,8 @@ async function init() {
   
 } 
 
-function updateBallCounter(balls, gameOver) {
-  ballCounter.innerHTML = "Balls " + balls;
-
-  if (gameOver) {
-    gameOverBg.style.opacity = 0.5;
-    gameOverMsg.style.opacity = 1.0;
-  }
+function updateBallCounter() {
+  ballCounter.innerHTML = "Lives " + lives;
 }
 
 window.onload = init;

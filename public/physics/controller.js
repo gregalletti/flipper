@@ -84,6 +84,8 @@ function controller() {
         rightCoin.rotate();
         leftCoin.rotate();
 
+        cubeZ += 0.01;
+        
         //if the ball has been launched
         if(ball.active) {
             //handle ball movement

@@ -368,8 +368,8 @@ function main() {
     Math.cos(dirLightAlphaB) * Math.sin(dirLightBetaB)
     ];
     //var directionalLightColorB = [0.45, 0.35, 0.15];
-    //var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
-    var directionalLightColorB = fromHexToRGBVec("#ffffff");
+    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);
+    //var directionalLightColorB = fromHexToRGBVec("#ffffff");
 
     // CAMERA SPACE TRANSFORMATION OF LIGHTS 
 
@@ -381,21 +381,19 @@ function main() {
     // POINT LIGHT(s)
 
     var x = pLight.position.x;
-    var y = 10;
+    var y = 9.853;//parseFloat(document.getElementById("y").value/1000);
     var z = pLight.position.y;
+
+    //var x = parseFloat(document.getElementById("x").value/1000);
+    //var y = parseFloat(document.getElementById("y").value/1000);
+    //var z = parseFloat(document.getElementById("z").value/1000);
 
     let realCoords = fromPlaneToSpace(x,z);
 
     x = realCoords[0];
-    y = 1.9;
     z = realCoords[2];
-    
-    //console.log(pLight);
-    //console.log(x);
-    //console.log(realCoords[1]);
-    //console.log(z);
 
-    var pointLightPosWM = utils.MakeWorld(0,0,0,0,0,0,1);
+    var pointLightPos = [x,y,z,1.0];
 
     var pointLightColor = fromHexToRGBVec(pLight.color);
     //pointLightColor = fromHexToRGBVec("#ffffff");
@@ -406,28 +404,23 @@ function main() {
       pointLightDecay = 0.0;
     }
 
-    var pointLightPosTransformationMatrix = utils.multiplyMatrices(viewMatrix,pointLightPosWM);
-    var pointLightPosTransformed = utils.multiplyMatrix3Vector3(utils.sub3x3from4x4(pointLightPosTransformationMatrix),[x,y,z]);
+    var pointLightPosTransformationMatrix = viewMatrix;
+    var pointLightPosTransformed = utils.multiplyMatrixVector(pointLightPosTransformationMatrix,pointLightPos);
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
-      var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]); //Camera Space  VIEW = CAMERA^-1
-      var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
-
-      // eye position per adesso non è usata per niente ma poi andrà spostata fuori ho idea
-      var eyePositionMatrix = utils.invertMatrix(allLocalMatrices[i]);
-      var eyePositionTransformed = utils.normalizeVec3(utils.multiplyMatrix3Vector3(eyePositionMatrix, [viewX, viewY, viewZ]));    
+      var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]);
+      var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);  
 
       // matrix to transform normals, used by the Vertex Shader
       var normalTransformationMatrix = utils.invertMatrix(utils.transposeMatrix(worldViewMatrix));
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
       gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
-      gl.uniformMatrix3fv(dirMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(lightDirMatrix));
+      gl.uniformMatrix3fv(dirMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(pointLightPosTransformationMatrix));
       
       gl.uniformMatrix4fv(viewMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(worldViewMatrix));
 
-      gl.uniformMatrix4fv(pointLightPositionHandle, gl.FALSE, pointLightPosWM);
-      gl.uniform3fv(pointLightPositionHandle2, pointLightPosTransformed);
+      gl.uniform4fv(pointLightPositionHandle2, pointLightPosTransformed);
       gl.uniformMatrix4fv(pointLightPositionHandle3, gl.FALSE, utils.transposeMatrix(viewMatrix));
       gl.uniform3fv(pointLightColorHandle, pointLightColor);
       gl.uniform1f(pointLightTargetHandle, pointLightTarget);
@@ -444,10 +437,10 @@ function main() {
       gl.uniform3fv(specularColorHandle, specularColor);
       gl.uniform1f(shineSpecularHandle, specShine);
         
-      if (i >= 2 && i <=4)   
+      if (i >= 5 && i <=16)   
           gl.uniform3fv(emissionColorHandle, emission);
       else
-          gl.uniform3fv(emissionColorHandle, [0.0, 0.0, 0.0]);
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#550000"));
           
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);

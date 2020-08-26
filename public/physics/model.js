@@ -21,11 +21,6 @@ class PointLight {
     constructor(position, color) {
         this.position = position;
         this.color = color;
-        this.frames = 10;
-    }
-
-    consumeFrame(){
-        this.frames--;
     }
 }
 
@@ -245,10 +240,7 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
             play(bumperSound);
             this.handleBumperCollision(bumper, distance);
-            pLight = new PointLight(bumper.position, "#ff0000"); // colore a caso per provare
-            setTimeout(()=>{
-                pLight.color = "#000000"
-            }, 1000);
+            this.makeLight(bumper.position, "#ff5700");
         }
         return;
     }
@@ -288,6 +280,7 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + PIPE_RADIUS) {
             play(pipeSound);
             this.handlePipeCollision(pipe, distance);
+            this.makeLight(pipe.position, "#47ff66");
         }
         return;
     }
@@ -364,6 +357,8 @@ class Ball {
         // if the distance is less than the radius, collision!
         if (distance <= BALL_RADIUS) {               
             this.handleCubeCollision(cube, edge, distance);
+            this.makeLight(new Vec((cube.p1.x+cube.p2.x+cube.p3.x+cube.p4.x)/4,
+                                   (cube.p1.y+cube.p2.y+cube.p3.y+cube.p4.y)/4), "#ffffff"); //p1 o p3 adesso vediamo
         }
         return;
     }
@@ -516,6 +511,8 @@ class Ball {
 
             let errorXY = error * Math.sqrt(2) / 2;
             this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
+        
+            this.makeLight(slingshot.p1, "#47ff66");
         }
         else if(num == 1)   {
             this.speed = (this.speed.invertX().scale(SLINGSHOT_BOOST));
@@ -571,7 +568,6 @@ class Ball {
         let realDistance = this.coords.sub(impactPoint);
         if (realDistance.getAbs() <= BALL_RADIUS){
             this.handleFlipperCollision(flipper, realDistance, impactPoint, projectionX);
-            pLight = new PointLight(flipper.position, "#880088"); // colore a caso per provare
         }
     }
 
@@ -625,6 +621,13 @@ class Ball {
         currentScore += COIN_SCORE;
         play(coinSound);
         coin.scaleAndElevate();
+    }
+
+    makeLight(objPos,color){
+        pLight = new PointLight(objPos, color); // colore a caso per provare
+        setTimeout(()=>{
+            pLight = new PointLight(new Vec(0,0),"#000000")
+        }, 5000);
     }
 }
 

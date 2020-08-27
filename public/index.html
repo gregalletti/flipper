@@ -27,54 +27,46 @@
     Your browser does not support the HTML5 canvas element.
   </canvas> 
   <div
-    style="font-family: Arcade; position: absolute; z-index: 1; left: 40px; top: 70px; width: 16%; background-color: black; border-width: 8px; border-style: dashed; border-color:rgb(13,91,142); opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
-    <p id="ballCounter" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
-      BALLS:  3
-    </p>
-    <p id="activeBalls" style="color: rgb(226,188,10); font-size: 26px; text-align: center;">
-      ACTIVE:  1
+    style="font-family: Mario; position: absolute; z-index: 1; left: -30px; top: 10px; width: 16%; background-color:transparent; opacity: 1.0; padding: 1px 10px 1px 10px; overflow:auto">
+    <p id="ballCounter" style="color: #FFC3B6; text-shadow: 2px 2px #000000; font-size: 46px; text-align: center;">
+      LIVES:   1
     </p>
   </div>
 
-  <div style="font-family: Arcade; position: absolute; left:40px; bottom: 70px; background-color: black; border-width: 10px; border-style: dashed; border-color: rgb(13,91,142); opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
-      <div id="LC51" style="color:white">Alpha angle of first directional light</div>
+  <div style="font-family: Mario; position: absolute; left:0px; bottom: 0px; background-color: #D64D00; opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto; padding: 20px">
+      <div id="LC51" style="font-family: Mario; font-size: 20px; color:#FFC3B6; text-shadow: 2px 2px #000000;">Alpha angle of 1st Directional Light</div>
       <div id="ThetaValue"><input type="range" min="0" max="180" id="dirLightAlphaA" value="20"></div>
-      <div id="LC51" style="color:white">Beta angle of first directional light</div>
+      <div id="LC51" style="font-family: Mario; font-size: 20px; color:#FFC3B6; text-shadow: 2px 2px #000000;">Beta angle of 1st Directional Light</div>
       <div id="ThetaValue"><input type="range" min="0" max="180" id="dirLightBetaA" value="32"></div>
-      <div id="LC51" style="color:white">Alpha angle of second directional light</div>
+      <div id="LC51" style="font-family: Mario; font-size: 20px; color:#FFC3B6; text-shadow: 2px 2px #000000;">Alpha angle of 2nd directional Light</div>
       <div id="ThetaValue"><input type="range" min="0" max="180" id="dirLightAlphaB" value="55"></div>
-      <div id="LC51" style="color:white">Beta angle of second directional light</div>
+      <div id="LC51" style="font-family: Mario; font-size: 20px; color:#FFC3B6; text-shadow: 2px 2px #000000;">Beta angle of 2nd Directional Light</div>
       <div id="ThetaValue"><input type="range" min="0" max="180" id="dirLightBetaB" value="95"></div>
-      <div id="LC51" style="color:white">Color of first directional light</div>
+      <div id="LC51" style="font-family: Mario; font-size: 20px; color:#FFC3B6; text-shadow: 2px 2px #000000;">Color of 1st Directional Light</div>
       <div id="LA14"><input type="color" id="LAlightColor" value="#4d4d4d"></div>
       <div>
         <h2> </h2>
       </div>
-      <div id="LC51" style="color:white">Color of second directional light</div>
+      <div id="LC51" style="font-family: Mario; font-size: 20px; color:#FFC3B6; text-shadow: 2px 2px #000000;">Color of 2nd Directional Light</div>
       <div id="LA15"><input type="color" id="LBlightColor" value="#5e5e5e"></div>   
   </div>
 
   <div
-  style="font-family: Arcade; position: absolute; right: 40px; bottom: 70px; background-color: black; border-width: 10px; border-style: dashed; border-color: rgb(13,91,142); opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
-    <p style="font-size: 32px; color: rgb(226,188,10); text-align: center;">COMMANDS</p>
-    <H2 style="color: white; font-size: 22px; text-align: center; margin-right: 20px;">GAME CONTROLS</H2>
-    <ul id="gameControls" style="color: lightgray; list-style-type: none;">
-      <li>START GAME:  SPACEBAR</li>
-      <li>LEFT FLIPPER:  Z</li>
-      <li>RIGHT FLIPPER:  M</li>
-    </ul>
-    <h2 style="color: white; font-size: 22px; text-align: center;">CAMERA CONTROLS</h2>
-    <ul id="cameraControls" style="color: lightgray; list-style-type: none;">
-      <li>MOVE FORWARD:  🡱</li>
-      <li>MOVE BACKWARD:  🡳</li>
-      <li>MOVE LEFT:  🡰</li>
-      <li>MOVE RIGHT:  🡲</li>
-      <li>MOVE UP:  W</li>
-      <li>MOVE DOWN:  S</li>
-      <li>TILT UP:  R</li>
-      <li>TILT DOWN:  F</li>
-      <li>PAN LEFT:  Q</li>
-      <li>PAN RIGHT:  E</li>
+  style="font-family: Mario; position: absolute; right: 0px; bottom: 0px; background-color: #D64D00; opacity: 1.0; padding: 0px 20px 0px 0px; overflow:auto">
+    <ul id="gameControls" style="color: #FFC3B6; text-shadow: 2px 2px #000000; list-style-type: none; padding-left: 20px">
+      <li style="font-size: 20px">START GAME:  SPACEBAR</li>
+      <li style="font-size: 20px">LEFT FLIPPER:  Z</li>
+      <li style="font-size: 20px">RIGHT FLIPPER:  M</li>
+      <li style="font-size: 20px">MOVE FORWARD:  🡱</li>
+      <li style="font-size: 20px">MOVE BACKWARD:  🡳</li>
+      <li style="font-size: 20px">MOVE LEFT:  🡰</li>
+      <li style="font-size: 20px">MOVE RIGHT:  🡲</li>
+      <li style="font-size: 20px">MOVE UP:  W</li>
+      <li style="font-size: 20px">MOVE DOWN:  S</li>
+      <li style="font-size: 20px">TILT UP:  R</li>
+      <li style="font-size: 20px">TILT DOWN:  F</li>
+      <li style="font-size: 20px">PAN LEFT:  Q</li>
+      <li style="font-size: 20px">PAN RIGHT:  E</li>
     </ul>
   </div>
 

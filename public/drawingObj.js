@@ -312,7 +312,11 @@ function main() {
       
     } 
   
+  
   function drawScene() {
+    // update lives
+    updateBallCounter();
+
 
     // update uv coordinates of dynamic score system  
     changeCubeTexture();
@@ -588,7 +592,7 @@ async function init() {
 } 
 
 function updateBallCounter() {
-  ballCounter.innerHTML = "Lives " + lives;
+  ballCounter.innerHTML = "LIVES: " + lives;
 }
 
 window.onload = init;

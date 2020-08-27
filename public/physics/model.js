@@ -105,13 +105,13 @@ class Ball {
     move() {
        
         //apply some gravity to the ball speed
-        this.speed = this.speed.add(new Vec(0, - 0.01));
+        this.speed = this.speed.add(new Vec(0, - 0.015));
 
         if(this.coords.x > 4.5)
-            this.speed = this.speed.add(new Vec(- 0.002, 0));
+            this.speed = this.speed.add(new Vec(- 0.005, 0));
 
         if(this.coords.x < 0.5)
-            this.speed = this.speed.add(new Vec(0.002, 0));
+            this.speed = this.speed.add(new Vec(0.005, 0));
 
         //limit the ball speed to avoid crazy things
         if(this.speed.getAbs() > BALL_MAX_SPEED)
@@ -125,19 +125,18 @@ class Ball {
         this.coords = this.coords.add(this.speed.scale(T));
 
         //check if the ball falls out
-        if(this.coords.y < 0.5) {
-            
+        if(this.coords.y < 0.5) {            
             //if both balls were on the board then no problem
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
-                //play(fallenBallSound);
                 this.speed = new Vec(0,0);
-                if(this.number == 0){
+                if(this.number == 0) {
                     this.coords = new Vec(4.6, 2);
                     angleY1 = 0;
                     angleZ1 = 0;
+                    showBall = false;
                 }
-                else{
+                else {
                     this.coords = new Vec(2.3, 9.3);
                     angleY2 = 0;
                     angleZ2 = 0;
@@ -160,6 +159,7 @@ class Ball {
                     else
                         this.coords = new Vec(2.3, 9.3);
 
+                    showBall = true;
                     angleY1 = 0;
                     angleZ1 = 0;
                     angleY2 = 0;
@@ -172,8 +172,7 @@ class Ball {
                 else if(lives == 1){
                     lives--;
                     stopAudio(ballRoll);
-                    console.log("game over")    
-                    play(gameoverSound); //questa chiamata va spostata perché mi nuclearizza i timpani
+                    play(gameoverSound);
                     window.location.replace("gameover.html?score="+currentScore);
 
                 }

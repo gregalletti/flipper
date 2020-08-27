@@ -149,6 +149,8 @@ var pulling = false;
 var power = 0;
 var pLight = new PointLight(new Vec(0,0),"#000000");
 var cubeZ = 0;
+var showBall = true;
+
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -339,7 +341,7 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     // update world matrices for moving objects
-    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y, ball.speed);
+    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y, ball.speed, showBall);
     allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
     allLocalMatrices[19] = getPullerLocalMatrix(Math.min(power / 50, 0.6));
     allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);

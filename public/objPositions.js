@@ -49,13 +49,13 @@ var angleZ1 = 0;
 var angleY2 = 0;
 var angleZ2 = 0;
 
-function getBallLocalMatrix(ballX, ballY, speed) {
+function getBallLocalMatrix(ballX, ballY, speed, active) {
 
     angleY1 += (speed.y / BALL_RADIUS);
     angleZ1 += (speed.x / BALL_RADIUS);
     //console.log(angleY1, angleY2)
 
-    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), 0, angleY1 / 2, angleZ1 / 2, lives == 0 ? 0 : 1);
+    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), 0, angleY1 / 2, angleZ1 / 2, active ? 1 : 0);
 }
 
 function getBonusBallLocalMatrix(ballX, ballY, active, speed) {

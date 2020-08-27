@@ -150,6 +150,7 @@ var power = 0;
 var pLight = new PointLight(new Vec(0,0),"#000000");
 var cubeZ = 0;
 var showBall = true;
+var ballBounce = 0;
 
 
 function fromHexToRGBVec(hex) {
@@ -316,39 +317,39 @@ function main() {
   
   
   function drawScene() {
-    // update lives
-    updateBallCounter();
+    //update lives in HTML div
+    lives.innerHTML = "LIVES: " + lives;
 
-
-    // update uv coordinates of dynamic score system  
+    //update textures (if needed) of cube and score  
     changeCubeTexture();
     changeDigitTexture();
 
-    // adjust camera
+    //move camera
     viewX += viewXSpeed * camera_dt;
     viewY += viewYSpeed * camera_dt;
     viewZ += viewZSpeed * camera_dt;
     viewPhi += viewPhiSpeed * camera_dt;
     viewTheta += viewThetaSpeed * camera_dt;
 
+    //run the game logic
     controller();
 
     // clear scene
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
 
-    // compose view and light
+    //calculate view matrix
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
-    // update world matrices for moving objects
-    allLocalMatrices[0] = getBallLocalMatrix(ball.coords.x, ball.coords.y, ball.speed, showBall);
-    allLocalMatrices[18] = getLeftFlipperLocalMatrix(leftFlipper.angle);
-    allLocalMatrices[19] = getPullerLocalMatrix(Math.min(power / 50, 0.6));
-    allLocalMatrices[21] = getRightFlipperLocalMatrix(rightFlipper.angle);
-    allLocalMatrices[26] = getRightCoinLocalMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
-    allLocalMatrices[25] = getLeftCoinLocalMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
-    allLocalMatrices[31] = getBonusBallLocalMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed); 
-    allLocalMatrices[24] = getCubeLocalMatrix(cubeZ); 
+    //get all the needed matrices (the ones for animated meshes)
+    matricesArray[0]  = getBallMatrix(ball.coords.x, ball.coords.y, ball.speed, showBall);
+    matricesArray[18] = getLeftFlipperMatrix(leftFlipper.angle);
+    matricesArray[19] = getPullerMatrix(Math.min(power / 50, 0.6));
+    matricesArray[21] = getRightFlipperMatrix(rightFlipper.angle);
+    matricesArray[24] = getCubeMatrix(cubeZ); 
+    matricesArray[25] = getLeftCoinMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
+    matricesArray[26] = getRightCoinMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
+    matricesArray[31] = getBonusBallMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed); 
 
     //---------------------------------------- LIGHTS DEFINITION
 
@@ -416,7 +417,7 @@ function main() {
     var pointLightPosTransformed = utils.multiplyMatrixVector(pointLightPosTransformationMatrix,pointLightPos);
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
-      var worldViewMatrix = utils.multiplyMatrices(viewMatrix, allLocalMatrices[i]);
+      var worldViewMatrix = utils.multiplyMatrices(viewMatrix, matricesArray[i]);
       var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);  
 
       // matrix to transform normals, used by the Vertex Shader
@@ -477,6 +478,7 @@ var slingshotSound;
 var letsGo;
 var pullerSound;
 var ballRoll;
+var ballLoad;
 var heart;
 var star;
 
@@ -512,6 +514,7 @@ async function init() {
   ballRoll = document.getElementById("ballroll");
   heart = document.getElementById("heart");
   star = document.getElementById("star");
+  ballLoad = document.getElementById("ball_load");
 
   setupCanvas();
   loadShaders();
@@ -592,9 +595,5 @@ async function init() {
   }
   
 } 
-
-function updateBallCounter() {
-  ballCounter.innerHTML = "LIVES: " + lives;
-}
 
 window.onload = init;

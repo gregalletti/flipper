@@ -170,10 +170,12 @@ function onKeyPressed(event) {
 
     }
     if (event.key === " ") {
+        if(ball.ready && ball2.ready){
         if(!pulling)
             play(pullerSound);
 
         pulling = true;
+        }
     }
 }
 function onKeyReleased(event) {
@@ -186,11 +188,11 @@ function onKeyReleased(event) {
         play(flipperDown);
     }
     if (event.key === " ") {
+        
         stopAudio(pullerSound)
         pulling = false;
         ball.launch();
         power = 0;
-        play(letsGo);
     }
 }
 

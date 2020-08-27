@@ -99,6 +99,8 @@ class Ball {
         ballRoll.volume = 0.05;
         this.ready = false;
         this.active = true;
+        play(letsGo);
+
         //ball2.active = true;
     }
 
@@ -160,13 +162,22 @@ class Ball {
                         this.coords = new Vec(2.3, 9.3);
 
                     showBall = true;
+
+                    ballBounce = 0.2;
+                    setTimeout(() => {ballBounce = 0.15;},  300);            
+                    setTimeout(() => {ballBounce = 0.10;},  600);
+                    setTimeout(() => {ballBounce = 0.05;},  900);
+                    setTimeout(() => {ballBounce = 0;},     1200);
+
                     angleY1 = 0;
                     angleZ1 = 0;
                     angleY2 = 0;
                     angleZ2 = 0;
                     this.ready = true;
                     this.active = false;
-                    play(gameoverSound);  
+                    play(gameoverSound); 
+                    play(ballLoad); 
+
 
                 }
                 else if(lives == 1){
@@ -410,6 +421,7 @@ class Ball {
                 }
                 else{
                     ball2.active = true;
+                    ball2.ready = false;
                 }
             }
 

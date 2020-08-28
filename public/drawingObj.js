@@ -151,7 +151,6 @@ var pLight = new PointLight(new Vec(0,0),"#000000");
 var cubeZ = 0;
 var showBall = true;
 var ballBounce = 0;
-var livesP;
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -515,7 +514,6 @@ async function init() {
   heart = document.getElementById("heart");
   star = document.getElementById("star");
   ballLoad = document.getElementById("ball_load");
-  livesP = document.getElementById("lives");
 
   setupCanvas();
   loadShaders();

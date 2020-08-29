@@ -22,6 +22,15 @@ class PointLight {
         this.position = position;
         this.color = color;
     }
+
+    makeLight(objPos, color){
+        this.position = objPos; 
+        this.color = color;
+        setTimeout(()=>{
+            this.position = new Vec(0,0); 
+            this.color = "#00000";
+        }, 100);
+    }
 }
 
 //coords, velocity, acceleration...
@@ -251,7 +260,7 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
             play(bumperSound);
             this.handleBumperCollision(bumper, distance);
-            this.makeLight(bumper.position, "#ff5700");
+            pLight.makeLight(bumper.position, "#ff5700");
         }
         return;
     }
@@ -291,7 +300,7 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + PIPE_RADIUS) {
             play(pipeSound);
             this.handlePipeCollision(pipe, distance);
-            this.makeLight(pipe.position, "#47ff66");
+            //pLight.makeLight(pipe.position, "#47ff66");
         }
         return;
     }
@@ -368,7 +377,7 @@ class Ball {
         // if the distance is less than the radius, collision!
         if (distance <= BALL_RADIUS) {               
             this.handleCubeCollision(cube, edge, distance);
-            this.makeLight(new Vec((cube.p1.x+cube.p2.x+cube.p3.x+cube.p4.x)/4,
+            pLight.makeLight(new Vec((cube.p1.x+cube.p2.x+cube.p3.x+cube.p4.x)/4,
                                    (cube.p1.y+cube.p2.y+cube.p3.y+cube.p4.y)/4), "#ffffff"); //p1 o p3 adesso vediamo
         }
         return;
@@ -524,7 +533,7 @@ class Ball {
             let errorXY = error * Math.sqrt(2) / 2;
             this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
         
-            this.makeLight(slingshot.p1, "#47ff66");
+            pLight.makeLight(slingshot.p1, "#47ff66");
         }
         else if(num == 1)   {
             this.speed = (this.speed.invertX().scale(SLINGSHOT_BOOST));
@@ -635,12 +644,6 @@ class Ball {
         coin.scaleAndElevate();
     }
 
-    makeLight(objPos,color){
-        pLight = new PointLight(objPos, color); // colore a caso per provare
-        setTimeout(()=>{
-            pLight = new PointLight(new Vec(0,0),"#000000")
-        }, 5000);
-    }
 }
 
 

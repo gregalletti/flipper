@@ -128,8 +128,12 @@ var objects;
 var fungo1Mesh;
 var fungo2Mesh;
 var fungo3Mesh;
-
 var tuboMesh;
+
+var line1Mesh;
+var line2Mesh;
+var line3Mesh;
+var line4Mesh;
 
 var texture;
 
@@ -348,7 +352,17 @@ function main() {
     matricesArray[24] = getCubeMatrix(cubeZ); 
     matricesArray[25] = getLeftCoinMatrix(leftCoin.rotationAngle + 90, leftCoin.scale, leftCoin.z);
     matricesArray[26] = getRightCoinMatrix(rightCoin.rotationAngle, rightCoin.scale, rightCoin.z);
-    matricesArray[31] = getBonusBallMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed); 
+    matricesArray[31] = getBonusBallMatrix(ball2.coords.x, ball2.coords.y, ball2.active, ball2.speed);
+    matricesArray[32] = getDotMatrix(power, 1); 
+    matricesArray[33] = getDotMatrix(power, 2); 
+    matricesArray[34] = getDotMatrix(power, 3); 
+    matricesArray[35] = getDotMatrix(power, 4); 
+    matricesArray[36] = getDotMatrix(power, 5); 
+    matricesArray[37] = getDotMatrix(power, 6); 
+    matricesArray[38] = getDotMatrix(power, 7); 
+    matricesArray[39] = getDotMatrix(power, 8); 
+    matricesArray[40] = getDotMatrix(power, 9); 
+
 
     //---------------------------------------- LIGHTS DEFINITION
 
@@ -586,11 +600,21 @@ async function init() {
     fungo2Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
     fungo3Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
     tuboMesh = await utils.loadMesh(modelsDir + "tubega.obj");
+    line1Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line2Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line3Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line4Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line5Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line6Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line7Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line8Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    line9Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+
 
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh];
+      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh];
   }
   
 } 

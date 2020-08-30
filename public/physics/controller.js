@@ -42,7 +42,7 @@ function isBetweenY(p1, p2, x, y) {
 }
 
 function controller() {
-    for (let i = 0; i < SUBSTEPS; i++) {
+    for (let i = 0; i < 5; i++) {
         //play(ballRoll)
         //handle ball launch
         if(pulling)
@@ -192,6 +192,8 @@ function onKeyReleased(event) {
         stopAudio(pullerSound)
         pulling = false;
         ball.launch();
+        console.log(power)
+
         power = 0;
     }
 }

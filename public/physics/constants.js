@@ -19,11 +19,11 @@ const CUBE_EDGE = 1;
 const FLIPPER_LENGTH = 0.9;
 const FLIPPER_HEIGHT = 0.265;
 
-const FLIPPER_ANGULAR_SPEED = 180; //   degrees / seconds
+const FLIPPER_ANGULAR_SPEED = 9; //   degrees / seconds
 const FLIPPER_DOWN_ANGLE = - 30;
 const FLIPPER_UP_ANGLE = 30;
 
-const FLIPPER_BOOST = 1.2;
+const FLIPPER_BOOST = 0.8;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.8;
 const SLINGSHOT_HYP_BOOST = 1.5;

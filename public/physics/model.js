@@ -609,13 +609,12 @@ class Ball {
         let vT = newSpeed.dot(T);
         let vN = newSpeed.dot(N);
         
-        //flipper power was too low, multiplied by 200 LOL
-        vN += impactPointSpeed.getAbs() * 200;
+        vN += impactPointSpeed.getAbs() + FLIPPER_BOOST;
         newSpeed = N.scale(vN).add(T.scale(vT));
 
-        this.speed = newSpeed.add(impactPointSpeed);
+        this.speed = newSpeed.sub(impactPointSpeed);
 
-            //this.speed = new Vec(0,200);
+
 
 /*      INSTABILE, COMMENTATA PER ORA
         let vT = oldSpeed.dot(T);

@@ -182,7 +182,7 @@ function main() {
   var specShine = 10.0;
     
   //define emission color for digital score
-  var emission = [1.0, 0.0, 0.0];    
+  var emission = [0.0, 0.0, 0.0];    
 
   var positionAttributeLocation = gl.getAttribLocation(program, "inPosition");
   var normalAttributeLocation = gl.getAttribLocation(program, "inNormal");
@@ -460,9 +460,9 @@ function main() {
       gl.uniform1f(shineSpecularHandle, specShine);
         
       if (i >= 5 && i <=16)   
-          gl.uniform3fv(emissionColorHandle, emission);
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#ff0000"));
       else
-          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#550000"));
+          gl.uniform3fv(emissionColorHandle, emission);
           
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);

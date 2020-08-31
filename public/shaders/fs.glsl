@@ -68,6 +68,7 @@ void main() {
 	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos, 1.0, 1.0);
   vec3 diffusePointContact = lambertDiffuse(lDirP,lCol,nNormal);
 
+  //total lambert component
   vec3 lambertDiff = clamp((mDiffColor*(diffusePointContact + diffA + diffB)), 0.0, 1.0);
 
   //computing ambient color
@@ -77,6 +78,8 @@ void main() {
   vec3 specA = blinnSpecular(lDirA,lightColorA,nNormal,fs_pos,specShine);
   vec3 specB = blinnSpecular(lDirB,lightColorB,nNormal,fs_pos,specShine);
   vec3 specP = blinnSpecular(lDirP,lCol,nNormal,fs_pos,specShine);
+
+  //total specular component
   vec3 blinnSpec = specularColor * (specA + specB + specP);
   
   //computing BRDF color

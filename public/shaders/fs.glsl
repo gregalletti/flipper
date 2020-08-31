@@ -65,7 +65,7 @@ void main() {
   vec3 diffA = lambertDiffuse(lDirA,lightColorA,nNormal);
   vec3 diffB = lambertDiffuse(lDirB,lightColorB,nNormal);
   //point lights
-	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos, 1.0, 1.0);
+	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos, 0.5, 1.0);
   vec3 diffusePointContact = lambertDiffuse(lDirP,lCol,nNormal);
 
   //total lambert component

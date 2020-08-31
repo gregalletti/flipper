@@ -151,7 +151,7 @@ var cubeOutcome = 0;
 var lives = 1;
 var pulling = false;
 var power = 0;
-var pLight = new PointLight(new Vec(0,0),"#000000");
+var pLight = new PointLight(new Vec(0,0),"#000000", "");
 var cubeZ = 0;
 var showBall = true;
 var ballBounce = 0;
@@ -458,11 +458,24 @@ function main() {
       gl.uniform3fv(ambientMaterialHandle, ambientMat);
       gl.uniform3fv(specularColorHandle, specularColor);
       gl.uniform1f(shineSpecularHandle, specShine);
-        
+      
+      console.log(pLight.hit);
+
       if (i >= 5 && i <=16)   
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#ff0000"));
+      else if ((pLight.hit == "lSlingshot" && i === 22) || (pLight.hit == "rSlingshot" && i == 23)){
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#00ff00"));
+          console.log("illumino uno slingshot.")
+      }
+      else if ((pLight.hit == "bumper1" && i == 27) || (pLight.hit == "bumper2" && i == 28) || (pLight.hit == "bumper3" && i == 29))
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#ff0000"));
+      else if ((pLight.hit == "cube" && i == 24))
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#e1ff00"));
+      else if ((pLight.hit == "pipe" && i == 30))
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#00ff00"));
       else
-          gl.uniform3fv(emissionColorHandle, emission);
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#000000"));
+
           
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);

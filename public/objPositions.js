@@ -51,48 +51,48 @@ var line9Matrix             = line1Matrix;
 
 
 
-var matricesArray = [
-    ballMatrix, 
-    bodyMatrix, 
-    bumper1Matrix, 
-    bumper2Matrix, 
-    bumper3Matrix, 
-    dl1Matrix, 
-    dl2Matrix, 
-    dl3Matrix,
-    dl4Matrix, 
-    dl5Matrix, 
-    dl6Matrix, 
-    dr1Matrix, 
-    dr2Matrix, 
-    dr3Matrix, 
-    dr4Matrix, 
-    dr5Matrix, 
-    dr6Matrix,
-    leftButtonMatrix, 
-    leftFlipperMatrix, 
-    pullerMatrix, 
-    rightButtonMatrix, 
-    rightFlipperMatrix, 
-    leftSlingshotMatrix, 
-    rightSlingshotMatrix, 
-    cubeMatrix, 
-    leftCoinMatrix, 
-    rightCoinMatrix, 
-    fungo1Matrix, 
-    fungo2Matrix, 
-    fungo3Matrix, 
-    tuboMatrix, 
-    bonusBallMatrix,    
-    line1Matrix,
-    line2Matrix,
-    line3Matrix,
-    line4Matrix,
-    line5Matrix,
-    line6Matrix,
-    line7Matrix,
-    line8Matrix,
-    line9Matrix     
+var matricesArray = [       //all -1
+    ballMatrix,             //1
+    bodyMatrix,             //2
+    bumper1Matrix,          //3
+    bumper2Matrix,          //4
+    bumper3Matrix,          //5
+    dl1Matrix,              //6
+    dl2Matrix,              //7
+    dl3Matrix,              //8
+    dl4Matrix,              //9
+    dl5Matrix,              //10
+    dl6Matrix,              //11
+    dr1Matrix,              //12
+    dr2Matrix,              //13
+    dr3Matrix,              //14
+    dr4Matrix,              //15
+    dr5Matrix,              //16
+    dr6Matrix,              //17
+    leftButtonMatrix,       //18
+    leftFlipperMatrix,      //19
+    pullerMatrix,           //20
+    rightButtonMatrix,      //21
+    rightFlipperMatrix,     //22
+    leftSlingshotMatrix,    //23
+    rightSlingshotMatrix,   //24
+    cubeMatrix,             //25
+    leftCoinMatrix,         //26  
+    rightCoinMatrix,        //27 
+    fungo1Matrix,           //28
+    fungo2Matrix,           //29
+    fungo3Matrix,           //30
+    tuboMatrix,             //31  
+    bonusBallMatrix,        //32 
+    line1Matrix,            //33        
+    line2Matrix,            //34        
+    line3Matrix,            //35       
+    line4Matrix,            //36        
+    line5Matrix,            //37    
+    line6Matrix,            //38    
+    line7Matrix,            //39        
+    line8Matrix,            //40    
+    line9Matrix             //41            
 ];
 
 var angleY1 = 0;

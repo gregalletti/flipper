@@ -18,18 +18,21 @@ ALL THE MEASUREMENTS HAVE BEEN DONE THROUGH BLENDER
 */
 
 class PointLight {
-    constructor(position, color) {
+    constructor(position, color, hit) {
         this.position = position;
         this.color = color;
+        this.hit = hit;
     }
 
-    makeLight(objPos, color){
+    makeLight(objPos, color, hit){
         this.position = objPos; 
         this.color = color;
+        this.hit = hit;
         setTimeout(()=>{
             this.position = new Vec(0,0); 
             this.color = "#00000";
-        }, 100);
+            this.hit = "";
+        }, 1000);
     }
 }
 
@@ -260,7 +263,7 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
             play(bumperSound);
             this.handleBumperCollision(bumper, distance);
-            pLight.makeLight(bumper.position, "#ff5700");
+            pLight.makeLight(bumper.position, "#ff0000", "bumper"+bumper.num);
         }
         return;
     }
@@ -300,7 +303,7 @@ class Ball {
         if (distance.getAbs() <= BALL_RADIUS + PIPE_RADIUS) {
             play(pipeSound);
             this.handlePipeCollision(pipe, distance);
-            //pLight.makeLight(pipe.position, "#47ff66");
+            //pLight.makeLight(pipe.position, "#47ff66", "pipe");
         }
         return;
     }
@@ -378,7 +381,7 @@ class Ball {
         if (distance <= BALL_RADIUS) {               
             this.handleCubeCollision(cube, edge, distance);
             pLight.makeLight(new Vec((cube.p1.x+cube.p2.x+cube.p3.x+cube.p4.x)/4,
-                                   (cube.p1.y+cube.p2.y+cube.p3.y+cube.p4.y)/4), "#ffffff"); //p1 o p3 adesso vediamo
+                                   (cube.p1.y+cube.p2.y+cube.p3.y+cube.p4.y)/4), "#ffffff", "cube"); 
         }
         return;
     }
@@ -533,7 +536,7 @@ class Ball {
             let errorXY = error * Math.sqrt(2) / 2;
             this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
         
-            pLight.makeLight(slingshot.p1, "#47ff66");
+            pLight.makeLight(slingshot.p1, "#00ff00", slingshot.side == 0 ? "rSlingshot" : "lSlingshot");
         }
         else if(num == 1)   {
             this.speed = (this.speed.invertX().scale(SLINGSHOT_BOOST));
@@ -665,9 +668,10 @@ class Wall {
 //circle
 class Bumper {
 
-    constructor(position) {
+    constructor(position, num) {
 
         this.position = position;
+        this.num = num;
 
     }
 

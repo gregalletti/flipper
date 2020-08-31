@@ -10,9 +10,9 @@ var leftSlingshot = new Slingshot(new Vec(1.4, 1.7), new Vec(0.5, 2.7), new Vec(
 var rightCoin = new Coin(new Vec(3.6, 4,2));
 var leftCoin = new Coin(new Vec(1.2, 4.2));
 
-var rightBumper = new Bumper(new Vec(2.2 - 1.1819, 6.7 + 0.020626));  
-var middleBumper = new Bumper(new Vec(2.2 + 1.5055, 6.7 + 0.020626));  
-var leftBumper = new Bumper(new Vec(2.2 + 0.11626, 6.7 -1.020626 ));  
+var rightBumper = new Bumper(new Vec(2.2 - 1.1819, 6.7 + 0.020626), 1);  
+var middleBumper = new Bumper(new Vec(2.2 + 1.5055, 6.7 + 0.020626), 2);  
+var leftBumper = new Bumper(new Vec(2.2 + 0.11626, 6.7 -1.020626), 3);  
 
 var cube = new Cube(new Vec(0.7, 9.8), new Vec(1.7, 9.8), new Vec(1.7, 8.8), new Vec(0.7, 8.8));
 

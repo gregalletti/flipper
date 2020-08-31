@@ -28,6 +28,26 @@ uniform mat4 pLVM;
 uniform float pLTagret;
 uniform float pLDecay;
 
+vec3 lambertDiffuse(vec3 lightDir, vec3 lightCol, vec3 normalVec) {
+  vec3 diffL = lightCol * clamp(dot(normalVec, lightDir),0.0,1.0);
+  return diffL;
+}
+
+vec3 blinnSpecular(vec3 lightDir, vec3 lightCol, vec3 normalVec, vec4 fs_pos, float specShine) {
+  // camera space implies eye position to be (0,0,0)
+  vec3 eyeDir = vec3(normalize(-fs_pos));
+  vec3 halfVec = normalize(eyeDir + lightDir);
+  vec3 specularBl = pow(max(dot(halfVec, normalVec), 0.0), specShine) * lightCol;
+
+  return specularBl;
+}
+
+vec3 pointLightColor(vec4 pLPos, vec3 pLCol, vec4 fs_pos) {
+	vec3 lCol = pLCol * pow(1.0 / length(pLPos - fs_pos), 1.0);
+
+  return lCol;
+}
+
 void main() {
     
   vec4 texelCol = texture(in_texture, fsUV);
@@ -36,36 +56,30 @@ void main() {
   
   vec3 lDirA = normalize(lightDirectionA); 
   vec3 lDirB = normalize(lightDirectionB);
-  
+  vec3 lDirP = vec3(normalize(pLPos-fs_pos));
+
   //computing Lambert diffuse color
-  vec3 diffA = clamp(dot(-lDirA,nNormal), 0.0, 1.0) * lightColorA;
-  vec3 diffB = clamp(dot(-lDirB,nNormal), 0.0, 1.0) * lightColorB;
+  //directional lights
+  vec3 diffA = lambertDiffuse(lDirA,lightColorA,nNormal);
+  vec3 diffB = lambertDiffuse(lDirB,lightColorB,nNormal);
+  //point lights
+	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos);
+  vec3 diffusePointContact = lambertDiffuse(lDirP,lCol,nNormal);
 
-  vec4 giustaPos = pLPos;
-  
-  vec3 lDir = vec3(normalize(giustaPos - fs_pos));
 
-	vec3 lCol = pLCol * pow(1.0 / length(giustaPos - fs_pos), 1.0);
-
-  vec3 diffusePoint = lCol * clamp(dot(normalize(fsNormal), lDir),0.0,1.0);
-
-  vec3 lambertColor = clamp((mDiffColor*(diffusePoint + diffA + diffB)), 0.0, 1.0);
+  vec3 lambertDiff = clamp((mDiffColor*(diffusePointContact + diffA + diffB)), 0.0, 1.0);
 
   //computing ambient color
   vec3 ambient = ambientLightCol * ambientMat;
   
   //computing Blinn specular color
-  vec3 eyeDir = vec3(normalize(-fs_pos));
-  vec3 halfVecA = normalize(eyeDir + lDirA);
-  vec3 halfVecB = normalize(eyeDir + lDirB);
-  vec3 halfVecC = normalize(eyeDir + lDir);
-  vec3 specularA = pow(max(dot(halfVecA, nNormal), 0.0), specShine) * lightColorA;
-  vec3 specularB = pow(max(dot(halfVecB, nNormal), 0.0), specShine) * lightColorB;
-  vec3 specularC = pow(max(dot(halfVecC, nNormal), 0.0), specShine) * lCol;
-  vec3 blinnSpecular = specularColor * (specularA + specularB + specularC);
+  vec3 specA = blinnSpecular(lDirA,lightColorA,nNormal,fs_pos,specShine);
+  vec3 specB = blinnSpecular(lDirB,lightColorB,nNormal,fs_pos,specShine);
+  vec3 specP = blinnSpecular(lDirP,lCol,nNormal,fs_pos,specShine);
+  vec3 blinnSpec = specularColor * (specA + specB + specP);
   
   //computing BRDF color
-  vec4 color = vec4(clamp(blinnSpecular + lambertColor + ambient + emit, 0.0, 1.0).rgb,1.0);
+  vec4 color = vec4(clamp(blinnSpec + lambertDiff + ambient + emit, 0.0, 1.0).rgb,1.0);
   
   //compose final color with texture
   vec4 outColorfs = color * texture(in_texture, fsUV);

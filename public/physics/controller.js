@@ -1,5 +1,7 @@
-var ball = new Ball(new Vec(4.6, 2), true, 0);
-var ball2 = new Ball(new Vec(2.3, 9.3), true, 1);
+//HERE WE CREATE ALL THE NEEDED OBJECTS TO SET UP AND START THE GAME
+
+var ball = new Ball(new Vec(4.6, 2), true, 0);  //default ball
+var ball2 = new Ball(new Vec(2.3, 9.3), true, 1);   //bonus ball
 
 var rightFlipper = new Flipper(new Vec(3.6, 1.22), 0, 210);
 var leftFlipper = new Flipper(new Vec(1.4, 1.22), 1, -30);
@@ -25,8 +27,10 @@ var wall3 = new Wall(new Vec(- 0.2, BOARD_HEIGHT - 0.2), new Vec(BOARD_WIDTH, BO
 var wall4 = new Wall(new Vec(BOARD_WIDTH, BOARD_HEIGHT), new Vec(BOARD_WIDTH, 0), 4);   //right board wall
 var wall5 = new Wall(new Vec(3.6, 1.22), new Vec(5, 1.22), 5);   //bottom-right little wall
 
+//let's make an array to better handle them
 var wallsList = [wall1, wall2, wall3, wall4, wall5];
 
+//functions needed for lines collision to check whether the impact point is beetween the line start and end points
 function isBetweenX(p1, p2, x, y) {
     if((x >= p1.x && x <= p2.x) || (x <= p1.x && x >= p2.x))
         return true;    
@@ -41,14 +45,15 @@ function isBetweenY(p1, p2, x, y) {
     return false;
 }
 
+//function to start and manage the game
 function controller() {
     for (let i = 0; i < 5; i++) {
-        //play(ballRoll)
+
         //handle ball launch
         if(pulling)
             power += 0.05;
 
-        //handle flippers movement
+        //handle flippers movement and set some values
         if(rightFlipper.moving){
             rightFlipper.angle = Math.max(rightFlipper.angle - 2, 150);
             if(rightFlipper.angle == 150)
@@ -62,8 +67,8 @@ function controller() {
                 rightFlipper.stall = true;
             else
                 rightFlipper.stall = false;
-            //play(flipperDown);
         }
+
         if(leftFlipper.moving){
             leftFlipper.angle = Math.min(leftFlipper.angle + 2, 30);
             if(leftFlipper.angle == 30)
@@ -73,7 +78,6 @@ function controller() {
         }
         else{
             leftFlipper.angle = Math.max(leftFlipper.angle - 2, -30);
-            //play(flipperDown);
             if(leftFlipper.angle == -30)
                 leftFlipper.stall = true;
             else
@@ -84,15 +88,16 @@ function controller() {
         rightCoin.rotate();
         leftCoin.rotate();
 
+        //move up and down the cube 
         cubeZ += 0.01;
         
         //if the ball has been launched
         if(ball.active) {
+
             //handle ball movement
             ball.move();
             
             //check for all collisions (handled in model)  
-
             ball.checkFlipperCollision(rightFlipper);
             ball.checkFlipperCollision(leftFlipper);
 
@@ -124,7 +129,6 @@ function controller() {
             ball2.move();          
             
             //check for all collisions (handled in model)  
-
             ball2.checkFlipperCollision(rightFlipper);
             ball2.checkFlipperCollision(leftFlipper);
 
@@ -148,6 +152,7 @@ function controller() {
             for (let wall of wallsList)
                 ball2.checkWallCollision(wall);
 
+        //handle balls collision
         if(ball.active && ball2.active)
             ball.checkBallCollision(ball2);
         
@@ -155,45 +160,46 @@ function controller() {
     }    
 }
 
+//add listeners on key bindings to move objects
 window.addEventListener("keydown", onKeyPressed);
 window.addEventListener("keyup", onKeyReleased);
 
 function onKeyPressed(event) {
     if (event.key === "z") {
+        //move left flipper up
         leftFlipper.moving = true;
         play(flipperUp);
-
     }
     if (event.key === "m") {
+        //move right flipper up
         rightFlipper.moving = true;
         play(flipperUp);
-
     }
     if (event.key === " ") {
+        //move puller backward
         if(ball.ready && ball2.ready){
-        if(!pulling)
-            play(pullerSound);
-
-        pulling = true;
+            if(!pulling)
+                play(pullerSound);
+            pulling = true;
         }
     }
 }
 function onKeyReleased(event) {
     if (event.key === "z") {
+        //move left flipper down
         leftFlipper.moving = false;
         play(flipperDown);
     }
     if (event.key === "m") {
+        //move right flipper down
         rightFlipper.moving = false;
         play(flipperDown);
     }
     if (event.key === " ") {
-        
+        //move puller forward, then launch the ball and reset power
         stopAudio(pullerSound)
         pulling = false;
         ball.launch();
-        console.log(power)
-
         power = 0;
     }
 }

@@ -17,6 +17,8 @@ WALL = BOARD
 ALL THE MEASUREMENTS HAVE BEEN DONE THROUGH BLENDER
 */
 
+
+//class for the pointlight that comes out when there is a special collision
 class PointLight {
     constructor(position, color, hit) {
         this.position = position;
@@ -32,7 +34,7 @@ class PointLight {
             this.position = new Vec(0,0); 
             this.color = "#00000";
             this.hit = "";
-        }, 1000);
+        }, 200);
     }
 }
 
@@ -45,48 +47,16 @@ class Vec {
     }
 
     //USEFUL METHODS
-
-    getAbs() {
-        return Math.hypot(this.x, this.y);
-    }
-
-    getPhase() {
-        return Math.atan2(this.y, this.x);
-    }
-
-    add(vector) {
-        return new Vec(this.x + vector.x, this.y + vector.y);
-    }
-
-   
-    scale(factor) {
-        return new Vec(factor * this.x, factor * this.y);
-    }
-
-    sub(vector) {
-        return this.add(vector.scale(-1));
-    }
-
-    normalize() {
-        
-        return new Vec(Math.cos(this.getPhase()), Math.sin(this.getPhase()));
-    }
-
-    dot(vector) {
-        return this.x * vector.x + this.y * vector.y;
-    }
-
-    normal() {
-        return new Vec(-this.y, this.x);
-    }
-
-    invertX() {
-        return new Vec(- this.x, this.y);
-    }
-
-    invertY() {
-        return new Vec(this.x, - this.y);
-    }
+    add(v)      {return new Vec(this.x + v.x, this.y + v.y);}
+    sub(v)      {return new Vec(this.x - v.x, this.y - v.y);}   
+    scale(s)    {return new Vec(this.x * s, this.y * s);}
+    normalize() {return new Vec(Math.cos(this.getPhase()), Math.sin(this.getPhase()));}
+    dot(v)      {return this.x * v.x + this.y * v.y;}
+    normal()    {return new Vec(- this.y, this.x);}
+    invertX()   {return new Vec(- this.x, this.y);}
+    invertY()   {return new Vec(this.x, - this.y);}    
+    getModule() {return Math.hypot(this.x, this.y);}
+    getPhase()  {return Math.atan2(this.y, this.x);}
 }
 
 //circle
@@ -105,15 +75,13 @@ class Ball {
     launch() {
         if (!this.ready || ball2.active)
             return;
-        this.speed = new Vec(0, Math.min(power, BALL_MAX_SPEED));
-        
+
+        this.speed = new Vec(0, Math.min(power, BALL_MAX_SPEED)); 
         play(ballRoll)
         ballRoll.volume = 0.05;
         this.ready = false;
         this.active = true;
         play(letsGo);
-
-        //ball2.active = true;
     }
 
     move() {
@@ -128,11 +96,11 @@ class Ball {
             this.speed = this.speed.add(new Vec(0.005, 0));
 
         //limit the ball speed to avoid crazy things
-        if(this.speed.getAbs() > BALL_MAX_SPEED)
+        if(this.speed.getModule() > BALL_MAX_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
         
         //increase the ball speed to avoid blocking
-        if(this.speed.getAbs() < BALL_MIN_SPEED)
+        if(this.speed.getModule() < BALL_MIN_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MIN_SPEED);
         
         //apply velocity (for the time interval) to the ball coords
@@ -260,7 +228,7 @@ class Ball {
 
         let distance = this.coords.sub(bumper.position);
         
-        if (distance.getAbs() <= BALL_RADIUS + BUMPER_RADIUS) {
+        if (distance.getModule() <= BALL_RADIUS + BUMPER_RADIUS) {
             play(bumperSound);
             this.handleBumperCollision(bumper, distance);
             pLight.makeLight(bumper.position, "#ff0000", "bumper"+bumper.num);
@@ -276,7 +244,7 @@ class Ball {
         let N = this.coords.sub(impactPoint).normalize();
         let T = N.normal();
 
-        let error = BALL_RADIUS + BUMPER_RADIUS - distance.getAbs();
+        let error = BALL_RADIUS + BUMPER_RADIUS - distance.getModule();
         let offset = N.scale(BALL_RADIUS + error);
         this.coords = impactPoint.add(offset);
 
@@ -289,7 +257,7 @@ class Ball {
         this.speed = (T.scale(vT).sub(N.scale(vN)));
         
         //limit the ball speed to avoid crazy things
-        if(this.speed.getAbs() > BALL_MAX_SPEED)
+        if(this.speed.getModule() > BALL_MAX_SPEED)
         this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
 
         currentScore += BUMPER_SCORE;
@@ -300,7 +268,7 @@ class Ball {
 
         let distance = this.coords.sub(pipe.position);
         
-        if (distance.getAbs() <= BALL_RADIUS + PIPE_RADIUS) {
+        if (distance.getModule() <= BALL_RADIUS + PIPE_RADIUS) {
             play(pipeSound);
             this.handlePipeCollision(pipe, distance);
             //pLight.makeLight(pipe.position, "#47ff66", "pipe");
@@ -316,7 +284,7 @@ class Ball {
         let N = this.coords.sub(impactPoint).normalize();
         let T = N.normal();
 
-        let error = BALL_RADIUS + PIPE_RADIUS - distance.getAbs();
+        let error = BALL_RADIUS + PIPE_RADIUS - distance.getModule();
         let offset = N.scale(BALL_RADIUS + error);
         this.coords = impactPoint.add(offset);
 
@@ -549,7 +517,7 @@ class Ball {
         }
 
         //limit the ball speed to avoid crazy things
-        if(this.speed.getAbs() > BALL_MAX_SPEED)
+        if(this.speed.getModule() > BALL_MAX_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
     }
 
@@ -558,7 +526,7 @@ class Ball {
         
         let distance = this.coords.sub(ball.coords);
         
-        if (distance.getAbs() <= BALL_RADIUS * 2) {
+        if (distance.getModule() <= BALL_RADIUS * 2) {
             this.handleBallCollision(ball, distance);
         }
         return;
@@ -566,7 +534,7 @@ class Ball {
 
     handleBallCollision(ball, distance) { 
 
-        let error = BALL_RADIUS * 2 - distance.getAbs();
+        let error = BALL_RADIUS * 2 - distance.getModule();
         let speed1 = this.speed;
         let speed2 = ball.speed;
 
@@ -590,7 +558,7 @@ class Ball {
         let impactPoint = flipper.getCurrentDirection().scale(projectionX).add(flipper.position);
 
         let realDistance = this.coords.sub(impactPoint);
-        if (realDistance.getAbs() <= BALL_RADIUS){
+        if (realDistance.getModule() <= BALL_RADIUS){
             this.handleFlipperCollision(flipper, realDistance, impactPoint, projectionX);
         }
     }
@@ -600,7 +568,7 @@ class Ball {
         let impactPointSpeed = flipper.getCurrentDirection().normal().scale(projectionX * flipper.getAngularSpeed()); //alan facchinetti way
         let N = realDistance.normalize();
         
-        let error = BALL_RADIUS - realDistance.getAbs();
+        let error = BALL_RADIUS - realDistance.getModule();
         let offset = N.scale(BALL_RADIUS + error);
         this.coords = impactPoint.add(offset);
 
@@ -609,7 +577,7 @@ class Ball {
         let vT = newSpeed.dot(T);
         let vN = newSpeed.dot(N);
         
-        vN += impactPointSpeed.getAbs() + FLIPPER_BOOST;
+        vN += impactPointSpeed.getModule() + FLIPPER_BOOST;
         newSpeed = N.scale(vN).add(T.scale(vT));
 
         this.speed = newSpeed.sub(impactPointSpeed);
@@ -623,7 +591,7 @@ class Ball {
         this.speed = (T.scale(vT).sub(N.scale(vN)));     
 
         //limit the ball speed to avoid crazy things
-        if(this.speed.getAbs() > BALL_MAX_SPEED)
+        if(this.speed.getModule() > BALL_MAX_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
             */
     }
@@ -632,7 +600,7 @@ class Ball {
      checkCoinCollision(coin) { 
         let distance = this.coords.sub(coin.position);
         
-        if (distance.getAbs() <= BALL_RADIUS + COIN_RADIUS) {
+        if (distance.getModule() <= BALL_RADIUS + COIN_RADIUS) {
             this.handleCoinCollision(coin, distance);
         }
         return;
@@ -657,7 +625,7 @@ class Wall {
         this.start = start;
         this.end = end;
         this.number = number;
-        this.length = end.sub(start).getAbs();
+        this.length = end.sub(start).getModule();
         this.direction = end.sub(start).normalize();
 
     }
@@ -736,11 +704,11 @@ class Slingshot {
         this.p3 = p3;
         this.side = side;
 
-        this.p12_length = p2.sub(p1).getAbs();
+        this.p12_length = p2.sub(p1).getModule();
 
-        this.p13_length = p3.sub(p1).getAbs();
+        this.p13_length = p3.sub(p1).getModule();
 
-        this.p23_length = p3.sub(p2).getAbs();
+        this.p23_length = p3.sub(p2).getModule();
 
     }
 

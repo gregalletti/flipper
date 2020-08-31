@@ -21,6 +21,8 @@ uniform vec3 ambientLightCol;
 uniform vec3 ambientMat;
 uniform sampler2D in_texture;
 
+uniform vec4 emitPosition;
+
 uniform vec4 pLPos;
 uniform vec3 pLCol;
 uniform mat4 pLWM;
@@ -42,8 +44,8 @@ vec3 blinnSpecular(vec3 lightDir, vec3 lightCol, vec3 normalVec, vec4 fs_pos, fl
   return specularBl;
 }
 
-vec3 pointLightColor(vec4 pLPos, vec3 pLCol, vec4 fs_pos) {
-	vec3 lCol = pLCol * pow(1.0 / length(pLPos - fs_pos), 1.0);
+vec3 pointLightColor(vec4 pLPos, vec3 pLCol, vec4 fs_pos, float target, float decay) {
+	vec3 lCol = pLCol * pow(target / length(pLPos - fs_pos), decay);
 
   return lCol;
 }
@@ -63,9 +65,8 @@ void main() {
   vec3 diffA = lambertDiffuse(lDirA,lightColorA,nNormal);
   vec3 diffB = lambertDiffuse(lDirB,lightColorB,nNormal);
   //point lights
-	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos);
+	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos, 1.0, 1.0);
   vec3 diffusePointContact = lambertDiffuse(lDirP,lCol,nNormal);
-
 
   vec3 lambertDiff = clamp((mDiffColor*(diffusePointContact + diffA + diffB)), 0.0, 1.0);
 

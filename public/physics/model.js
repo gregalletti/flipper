@@ -275,7 +275,7 @@ class Ball {
         if (distance.getModule() <= BALL_RADIUS + PIPE_RADIUS) {
             play(pipeSound);
             this.handlePipeCollision(pipe, distance);
-            //pLight.makeLight(pipe.position, "#47ff66", "pipe");
+            pLight.makeLight(pipe.position, "#000000", "pipe");
         }
         return;
     }

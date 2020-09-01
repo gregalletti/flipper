@@ -317,8 +317,8 @@ function main() {
           leftDigitMeshesArray[i].textures = DIGIT_UVS[currentScoreArray[i]];
           addMeshToScene(i + 5);
           if(!firstTime){
-            play(recordSound);
-            recordSound.volume = 0.3;
+            play(yahoo);
+            yahoo.volume = 1;
           }
           firstTime = true;
           setTimeout(() => {done = true}, 1000);
@@ -517,7 +517,8 @@ var ballRoll;
 var ballLoad;
 var heart;
 var star;
-var recordSound;
+var yahoo;
+var bonusSound;
 
 //custom function to set and play sounds
 function play(sound) {
@@ -552,7 +553,8 @@ async function init() {
   heart = document.getElementById("heart");
   star = document.getElementById("star");
   ballLoad = document.getElementById("ball_load");
-  recordSound = document.getElementById("record");
+  yahoo = document.getElementById("yahoo");
+  bonusSound = document.getElementById("bonus");
 
   setupCanvas();
   loadShaders();

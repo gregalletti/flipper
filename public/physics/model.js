@@ -122,6 +122,9 @@ class Ball {
                     this.coords = new Vec(2.3, 9.3);
                     angleY2 = 0;
                     angleZ2 = 0;
+                    stopAudio(bonusSound);
+                    ballRoll.volume = 0.1;
+
                 }
                 this.active = false;
                 this.ready = true;
@@ -138,9 +141,10 @@ class Ball {
                     this.speed = new Vec(0,0);
                     if(this.number == 0)
                         this.coords = new Vec(4.6, 2);
-                    else
+                    else{
                         this.coords = new Vec(2.3, 9.3);
-
+                        stopAudio(bonusSound);
+                    }
                     showBall = true;
 
                     ballBounce = 0.2;
@@ -394,6 +398,8 @@ class Ball {
             }
             else{
                 play(star);
+                play(bonusSound);
+                ballRoll.volume = 0;
                 currentCubeTex = STAR_CUBE_UVS;
                 if(ball2.active){
                     //play(magicCubeSound);

@@ -78,7 +78,7 @@ class Ball {
 
         this.speed = new Vec(0, Math.min(power, BALL_MAX_SPEED)); 
         play(ballRoll)
-        ballRoll.volume = 0.05;
+        ballRoll.volume = 0.1;
         this.ready = false;
         this.active = true;
         play(letsGo);

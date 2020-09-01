@@ -139,9 +139,11 @@ var texture;
 
 //score variables
 var firstLoop = true;
-var record = "002010";
+var record = "000010";
 var score = 0;
 var currentScore = 0;
+var firstTime = false;
+var done = false;
 
 //global variables
 var cubeTex = DEFAULT_CUBE_UVS;
@@ -200,6 +202,9 @@ function main() {
   var lightColorHandleA = gl.getUniformLocation(program, 'lightColorA');
   var lightDirectionHandleB = gl.getUniformLocation(program, 'lightDirectionB');
   var lightColorHandleB = gl.getUniformLocation(program, 'lightColorB');
+
+  var lightDirectionHandleRecord = gl.getUniformLocation(program, 'lightDirectionRecord');
+  var lightColorHandleRecord = gl.getUniformLocation(program, 'lightColorRecord');
 
   var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
   var viewMatrixPositionHandle = gl.getUniformLocation(program, 'viewMatrix');
@@ -311,6 +316,8 @@ function main() {
         for (let i = 0; i < currentScoreArray.length; i++) {
           leftDigitMeshesArray[i].textures = DIGIT_UVS[currentScoreArray[i]];
           addMeshToScene(i + 5);
+          firstTime = true;
+          setTimeout(() => {done = true}, 1000);
         }
       }
       score = currentScore;
@@ -371,27 +378,31 @@ function main() {
     //var dirLightBeta = utils.degToRad(50);
 
     var dirLightAlphaA = utils.degToRad(document.getElementById("dirLightAlphaA").value);//20
-
     var dirLightBetaA = utils.degToRad(document.getElementById("dirLightBetaA").value);//32
     
     var dirLightAlphaB = utils.degToRad(document.getElementById("dirLightAlphaB").value);//55
-
-	  var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);//95
+    var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);//95
+    
+    var dirLightAlphaRecord = utils.degToRad(Math.random()*1000%360);
+	  var dirLightBetaRecord = utils.degToRad(Math.random()*1000%360);
 
     var directionalLightA = [Math.cos(180 - dirLightAlphaA) * Math.cos(dirLightBetaA),
     Math.sin(180 - dirLightAlphaA),
     Math.cos(180 - dirLightAlphaA) * Math.sin(dirLightBetaA)
     ];
-    //var directionalLightColorA = [0.55, 0.55, 0.35];
     var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);//#4d4d4d
 
     var directionalLightB = [-Math.cos(dirLightAlphaB) * Math.cos(dirLightBetaB),
     Math.sin(dirLightAlphaB),
     Math.cos(dirLightAlphaB) * Math.sin(dirLightBetaB)
     ];
-    //var directionalLightColorB = [0.45, 0.35, 0.15];
     var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);//5e5e5e
-    //var directionalLightColorB = fromHexToRGBVec("#ffffff");
+
+    var directionalLightRecord = [-Math.cos(dirLightAlphaRecord) * Math.cos(dirLightBetaRecord),
+    Math.sin(dirLightAlphaRecord),
+    Math.cos(dirLightAlphaRecord) * Math.sin(dirLightBetaRecord)
+    ];
+    var directionalLightColorRecord = [Math.random(), Math.random(), Math.random()];//5e5e5e
 
     // CAMERA SPACE TRANSFORMATION OF LIGHTS 
 
@@ -399,6 +410,8 @@ function main() {
     var lightDirMatrix = utils.sub3x3from4x4(utils.invertMatrix(utils.transposeMatrix(viewMatrix)));
     var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
     var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
+    
+    var lightDirectionTransformedRecord = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightRecord));
     
     // POINT LIGHT(s)
 
@@ -418,13 +431,6 @@ function main() {
     var pointLightPos = [x,y,z,1.0];
 
     var pointLightColor = fromHexToRGBVec(pLight.color);
-    //pointLightColor = fromHexToRGBVec("#ffffff");
-    var pointLightTarget = 0.0;
-    //var pointLightTarget = parseFloat(10.0);
-    var pointLightDecay = 0.0;
-    if(pointLightDecay === 0){
-      pointLightDecay = 0.0;
-    }
 
     var pointLightPosTransformationMatrix = viewMatrix;
     var pointLightPosTransformed = utils.multiplyMatrixVector(pointLightPosTransformationMatrix,pointLightPos);
@@ -445,8 +451,6 @@ function main() {
       gl.uniform4fv(pointLightPositionHandle2, pointLightPosTransformed);
       gl.uniformMatrix4fv(pointLightPositionHandle3, gl.FALSE, utils.transposeMatrix(viewMatrix));
       gl.uniform3fv(pointLightColorHandle, pointLightColor);
-      gl.uniform1f(pointLightTargetHandle, pointLightTarget);
-      gl.uniform1f(pointLightDecayHandle, pointLightDecay);
   
       //gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);
@@ -459,14 +463,10 @@ function main() {
       gl.uniform3fv(specularColorHandle, specularColor);
       gl.uniform1f(shineSpecularHandle, specShine);
       
-      console.log(pLight.hit);
-
       if (i >= 5 && i <=16)   
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#ff0000"));
-      else if ((pLight.hit == "lSlingshot" && i === 22) || (pLight.hit == "rSlingshot" && i == 23)){
+      else if ((pLight.hit == "lSlingshot" && i === 22) || (pLight.hit == "rSlingshot" && i == 23))
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#00ff00"));
-          console.log("illumino uno slingshot.")
-      }
       else if ((pLight.hit == "bumper1" && i == 27) || (pLight.hit == "bumper2" && i == 28) || (pLight.hit == "bumper3" && i == 29))
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#ff0000"));
       else if ((pLight.hit == "cube" && i == 24))
@@ -476,7 +476,13 @@ function main() {
       else
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#000000"));
 
-          
+      if(firstTime && !done){
+          gl.uniform3fv(lightColorHandleRecord, directionalLightColorRecord);
+          gl.uniform3fv(lightDirectionHandleRecord, lightDirectionTransformedRecord);
+      } else{
+          gl.uniform3fv(lightColorHandleRecord, fromHexToRGBVec("#000000"));
+          gl.uniform3fv(lightDirectionHandleRecord, lightDirectionTransformedRecord);
+      }
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.uniform1i(textLocation, 0);

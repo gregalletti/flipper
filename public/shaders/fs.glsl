@@ -17,6 +17,10 @@ uniform vec3 lightDirectionA;
 uniform vec3 lightColorA;
 uniform vec3 lightDirectionB; 
 uniform vec3 lightColorB;
+
+uniform vec3 lightDirectionRecord; 
+uniform vec3 lightColorRecord;
+
 uniform vec3 ambientLightCol;
 uniform vec3 ambientMat;
 uniform sampler2D in_texture;
@@ -58,18 +62,20 @@ void main() {
   
   vec3 lDirA = normalize(lightDirectionA); 
   vec3 lDirB = normalize(lightDirectionB);
+  vec3 lDirRecord = normalize(lightDirectionRecord);
   vec3 lDirP = vec3(normalize(pLPos-fs_pos));
 
   //computing Lambert diffuse color
   //directional lights
   vec3 diffA = lambertDiffuse(lDirA,lightColorA,nNormal);
   vec3 diffB = lambertDiffuse(lDirB,lightColorB,nNormal);
+  vec3 diffRecord = lambertDiffuse(lDirRecord,lightColorRecord,nNormal);
   //point lights
 	vec3 lCol = pointLightColor(pLPos, pLCol, fs_pos, 0.5, 1.0);
   vec3 diffusePointContact = lambertDiffuse(lDirP,lCol,nNormal);
 
   //total lambert component
-  vec3 lambertDiff = clamp((mDiffColor*(diffusePointContact + diffA + diffB)), 0.0, 1.0);
+  vec3 lambertDiff = clamp((mDiffColor*(diffusePointContact + diffA + diffB + diffRecord)), 0.0, 1.0);
 
   //computing ambient color
   vec3 ambient = ambientLightCol * ambientMat;
@@ -77,10 +83,11 @@ void main() {
   //computing Blinn specular color
   vec3 specA = blinnSpecular(lDirA,lightColorA,nNormal,fs_pos,specShine);
   vec3 specB = blinnSpecular(lDirB,lightColorB,nNormal,fs_pos,specShine);
+  vec3 specRecord = blinnSpecular(lDirRecord,lightColorRecord,nNormal,fs_pos,specShine);
   vec3 specP = blinnSpecular(lDirP,lCol,nNormal,fs_pos,specShine);
 
   //total specular component
-  vec3 blinnSpec = specularColor * (specA + specB + specP);
+  vec3 blinnSpec = specularColor * (specA + specB + specP + specRecord);
   
   //computing BRDF color
   vec4 color = vec4(clamp(blinnSpec + lambertDiff + ambient + emit, 0.0, 1.0).rgb,1.0);

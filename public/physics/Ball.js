@@ -1,64 +1,3 @@
-/*
-BOARD (3 linee) 
- _
-| |
- 
-BUMPER (3 + sfera -> cerchi)
-BALL (cerchio)
-SLINGSHOTS (triangoli)
-FLIPPER (linee)
-WALL (triangoli) meglio linee, ipotenusa
-OBSTACLE (rettangoli)
-
-WALL = BOARD
-*/
-
-/*
-ALL THE MEASUREMENTS HAVE BEEN DONE THROUGH BLENDER
-*/
-
-
-//class for the pointlight that comes out when there is a special collision
-class PointLight {
-    constructor(position, color, hit) {
-        this.position = position;
-        this.color = color;
-        this.hit = hit;
-    }
-
-    makeLight(objPos, color, hit){
-        this.position = objPos; 
-        this.color = color;
-        this.hit = hit;
-        setTimeout(()=>{
-            this.position = new Vec(0,0); 
-            this.color = "#00000";
-            this.hit = "";
-        }, 200);
-    }
-}
-
-//coords, velocity, acceleration...
-class Vec {
-
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    //USEFUL METHODS
-    add(v)      {return new Vec(this.x + v.x, this.y + v.y);}
-    sub(v)      {return new Vec(this.x - v.x, this.y - v.y);}   
-    scale(s)    {return new Vec(this.x * s, this.y * s);}
-    normalize() {return new Vec(Math.cos(this.getPhase()), Math.sin(this.getPhase()));}
-    dot(v)      {return this.x * v.x + this.y * v.y;}
-    normal()    {return new Vec(- this.y, this.x);}
-    invertX()   {return new Vec(- this.x, this.y);}
-    invertY()   {return new Vec(this.x, - this.y);}    
-    getModule() {return Math.hypot(this.x, this.y);}
-    getPhase()  {return Math.atan2(this.y, this.x);}
-}
-
 //circle
 class Ball {
 
@@ -70,13 +9,13 @@ class Ball {
     }
 
     active = false;
-    speed = new Vec(0, 0);
+    speed = new Vec2(0, 0);
 
     launch() {
         if (!this.ready || ball2.active)
             return;
 
-        this.speed = new Vec(0, Math.min(power, BALL_MAX_SPEED)); 
+        this.speed = new Vec2(0, Math.min(power, BALL_MAX_SPEED)); 
         play(ballRoll)
         ballRoll.volume = 0.1;
         this.ready = false;
@@ -87,13 +26,13 @@ class Ball {
     move() {
        
         //apply some gravity to the ball speed
-        this.speed = this.speed.add(new Vec(0, - 0.015));
+        this.speed = this.speed.add(new Vec2(0, - 0.017));
 
         if(this.coords.x > 4.5)
-            this.speed = this.speed.add(new Vec(- 0.005, 0));
+            this.speed = this.speed.add(new Vec2(- 0.005, 0));
 
         if(this.coords.x < 0.5)
-            this.speed = this.speed.add(new Vec(0.005, 0));
+            this.speed = this.speed.add(new Vec2(0.005, 0));
 
         //limit the ball speed to avoid crazy things
         if(this.speed.getModule() > BALL_MAX_SPEED)
@@ -104,22 +43,22 @@ class Ball {
             this.speed = this.speed.normalize().scale(BALL_MIN_SPEED);
         
         //apply velocity (for the time interval) to the ball coords
-        this.coords = this.coords.add(this.speed.scale(T));
+        this.coords = this.coords.add(this.speed.scale(0.003));
 
         //check if the ball falls out
         if(this.coords.y < 0.5) {            
             //if both balls were on the board then no problem
             if(ball.active && ball2.active) {
                 //just remove the ball and go on
-                this.speed = new Vec(0,0);
+                this.speed = new Vec2(0,0);
                 if(this.number == 0) {
-                    this.coords = new Vec(4.6, 2);
+                    this.coords = new Vec2(4.6, 2);
                     angleY1 = 0;
                     angleZ1 = 0;
                     showBall = false;
                 }
                 else {
-                    this.coords = new Vec(2.3, 9.3);
+                    this.coords = new Vec2(2.3, 9.3);
                     angleY2 = 0;
                     angleZ2 = 0;
                     stopAudio(bonusSound);
@@ -138,11 +77,11 @@ class Ball {
                     //play(fallenBallSound);
                     //prepare the next ball and update lives
                     lives--;
-                    this.speed = new Vec(0,0);
+                    this.speed = new Vec2(0,0);
                     if(this.number == 0)
-                        this.coords = new Vec(4.6, 2);
+                        this.coords = new Vec2(4.6, 2);
                     else{
-                        this.coords = new Vec(2.3, 9.3);
+                        this.coords = new Vec2(2.3, 9.3);
                         stopAudio(bonusSound);
                     }
                     showBall = true;
@@ -200,28 +139,28 @@ class Ball {
     }
 
     handleWallCollision(wall, closestX, closestY, distance) {
-        let error = BALL_RADIUS - distance;
-        
-        
+
+        let error = BALL_RADIUS - distance;        
 
         if((wall.number == 1 || wall.number == 3 || wall.number == 5)){
             if(isBetweenX(wall.start, wall.end, closestX, closestY)){
                 this.speed = this.speed.invertY().scale(WALL_BOOST);
                
                 if((wall.number == 1 || wall.number == 5))
-                    this.coords = this.coords.add(new Vec(0, error));
+                    this.coords = this.coords.add(new Vec2(0, error));
                 else
-                    this.coords = this.coords.add(new Vec(0, - error));
+                    this.coords = this.coords.add(new Vec2(0, - error));
             }
         }
         else {
             if(isBetweenY(wall.start, wall.end, closestX, closestY)){
+                
                 this.speed = this.speed.invertX().scale(WALL_BOOST);
                 
                 if(wall.number == 2)
-                    this.coords = this.coords.add(new Vec(error, 0));
+                    this.coords = this.coords.add(new Vec2(error, 0));
                 else
-                    this.coords = this.coords.add(new Vec(- error, 0));  
+                    this.coords = this.coords.add(new Vec2(- error, 0));  
             }
         } 
 
@@ -352,7 +291,7 @@ class Ball {
         // if the distance is less than the radius, collision!
         if (distance <= BALL_RADIUS) {               
             this.handleCubeCollision(cube, edge, distance);
-            pLight.makeLight(new Vec((cube.p1.x+cube.p2.x+cube.p3.x+cube.p4.x)/4,
+            pLight.makeLight(new Vec2((cube.p1.x+cube.p2.x+cube.p3.x+cube.p4.x)/4,
                                    (cube.p1.y+cube.p2.y+cube.p3.y+cube.p4.y)/4), "#ffffff", "cube"); 
         }
         return;
@@ -363,19 +302,19 @@ class Ball {
         let error = BALL_RADIUS - distance;
 
         if(edge == 0)   {
-            this.coords = this.coords.add(new Vec(- error, 0));
+            this.coords = this.coords.add(new Vec2(- error, 0));
             this.speed = this.speed.invertX();
         }
         else if (edge == 1)    {
-            this.coords = this.coords.add(new Vec(0, error));  
+            this.coords = this.coords.add(new Vec2(0, error));  
             this.speed = this.speed.invertY();
         }
         else if (edge == 2)    {
-            this.coords = this.coords.add(new Vec(error, 0)); 
+            this.coords = this.coords.add(new Vec2(error, 0)); 
             this.speed = this.speed.invertX();
         } 
         else if (edge == 3)    {
-            this.coords = this.coords.add(new Vec(0, - error));  
+            this.coords = this.coords.add(new Vec2(0, - error));  
             this.speed = this.speed.invertY();
         }
 
@@ -496,7 +435,7 @@ class Ball {
         if(num == 0)    {
 
         //calculate normal and tangent vector 
-        let N = slingshot.side == 0 ? new Vec(- Math.sqrt(2) / 2, Math.sqrt(2) / 2) : new Vec(Math.sqrt(2) / 2, Math.sqrt(2) / 2);
+        let N = slingshot.side == 0 ? new Vec2(- Math.sqrt(2) / 2, Math.sqrt(2) / 2) : new Vec2(Math.sqrt(2) / 2, Math.sqrt(2) / 2);
         let T = N.normal();
 
         //speed is composed by the 2 components
@@ -508,18 +447,18 @@ class Ball {
             currentScore += SLINGSHOT_HYP_SCORE;
 
             let errorXY = error * Math.sqrt(2) / 2;
-            this.coords = slingshot.side == 0 ? this.coords.add(new Vec(- errorXY, errorXY)) : this.coords.add(new Vec(errorXY, errorXY));
+            this.coords = slingshot.side == 0 ? this.coords.add(new Vec2(- errorXY, errorXY)) : this.coords.add(new Vec2(errorXY, errorXY));
         
             pLight.makeLight(slingshot.p1, "#00ff00", slingshot.side == 0 ? "rSlingshot" : "lSlingshot");
         }
         else if(num == 1)   {
             this.speed = (this.speed.invertX().scale(SLINGSHOT_BOOST));
-            this.coords = slingshot.side == 0 ? this.coords.add(new Vec(error, 0)) : this.coords.add(new Vec(- error, 0));
+            this.coords = slingshot.side == 0 ? this.coords.add(new Vec2(error, 0)) : this.coords.add(new Vec2(- error, 0));
         }
         else    {
 
             this.speed = (this.speed.invertY().scale(SLINGSHOT_BOOST));
-            this.coords = this.coords.add(new Vec(0, - error));
+            this.coords = this.coords.add(new Vec2(0, - error));
         }
 
         //limit the ball speed to avoid crazy things
@@ -621,140 +560,3 @@ class Ball {
     }
 
 }
-
-
-
-//line
-class Wall {
-    constructor(start, end, number) {
-
-        this.start = start;
-        this.end = end;
-        this.number = number;
-        this.length = end.sub(start).getModule();
-        this.direction = end.sub(start).normalize();
-
-    }
-
-}
-
-//circle
-class Bumper {
-
-    constructor(position, num) {
-
-        this.position = position;
-        this.num = num;
-
-    }
-
-}
-
-//circle
-class Coin {
-
-    constructor(position) {
-
-        this.position = position;
-
-    }
-
-    rotationAngle = 0;
-    scale = 0.5;
-    z = 9;
-    taken = false;
-
-    rotate() { 
-        this.rotationAngle = this.rotationAngle + 0.02;
-    }
-      
-    async scaleAndElevate() {
-
-        //a quanto pare un FOR non va bene
-        //gradually increase z of the coin and decrease scale (arcade feels on purpose with non-fluid transformations)
-        setTimeout(() => {this.z = 9.1; this.taken = true;}, 150);
-        setTimeout(() => {this.z = 9.2;}, 300);
-        setTimeout(() => {this.z = 9.2;}, 450);
-        setTimeout(() => {this.z = 9.3;}, 600);
-        setTimeout(() => {this.scale = 0.4; this.z = 9.4;}, 750);
-        setTimeout(() => {this.scale = 0.3; this.z = 9.5;}, 900);
-        setTimeout(() => {this.scale = 0.2; this.z = 9.6;}, 1050);
-        setTimeout(() => {this.scale = 0.1; this.z = 9.7;}, 1200);
-        setTimeout(() => {this.scale = 0; this.z = 9.8;}, 1350);
-
-        //after 2 seconds the coin must reappear
-        setTimeout(() => {this.scale = 0.5; this.z = 9; this.taken = false;}, 3350);
-        
-    }
-
-}
-
-//circle
-class Pipe {
-
-    constructor(position) {
-
-        this.position = position;
-
-    }
-
-}
-
-//triangle
-class Slingshot {
-
-    constructor(p1, p2, p3, side) {
-
-        this.p1 = p1;
-        this.p2 = p2;
-        this.p3 = p3;
-        this.side = side;
-
-        this.p12_length = p2.sub(p1).getModule();
-
-        this.p13_length = p3.sub(p1).getModule();
-
-        this.p23_length = p3.sub(p2).getModule();
-
-    }
-
-}
-
-//rectangle
-class Cube {
-
-    constructor(p1, p2, p3, p4) {
-
-        this.p1 = p1;
-        this.p2 = p2;
-        this.p3 = p3;
-        this.p4 = p4;
-    }
-
-}
-
-
-class Flipper {
-    constructor(position, number, angle) {
-        this.position = position;
-        this.number = number;   //0 = right, 1 = left
-        this.angle = angle;
-    }
-
-    stall = true;
-    moving = false;
-
-    getCurrentDirection() {
-        return new Vec(Math.cos(utils.degToRad(this.angle)), Math.sin(utils.degToRad(this.angle)));
-    }
-
-    getAngularSpeed() {
-        if (this.stall)
-            return 0;
-        if (this.number == 1)
-            return utils.degToRad(-FLIPPER_ANGULAR_SPEED);
-        return utils.degToRad(FLIPPER_ANGULAR_SPEED);
-    }
-
-    
-}   

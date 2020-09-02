@@ -153,7 +153,7 @@ var cubeOutcome = 0;
 var lives = 1;
 var pulling = false;
 var power = 0;
-var pLight = new PointLight(new Vec(0,0),"#000000", "");
+var pLight = new PointLight(new Vec2(0,0),"#000000", "");
 var cubeZ = 0;
 var showBall = true;
 var ballBounce = 0;
@@ -346,7 +346,7 @@ function main() {
     viewTheta += viewThetaSpeed * camera_dt;
 
     //run the game logic
-    controller();
+    startGame();
 
     // clear scene
     gl.clearColor(0.0, 0.0, 0.0, 0.0);

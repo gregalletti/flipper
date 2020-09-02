@@ -27,7 +27,7 @@ var leftButtonMatrix        = utils.MakeWorld(2.6175    , 8.7853    ,  -6.6902, 
 var leftFlipperMatrix       = utils.MakeWorld(0.6906    , 8.4032    ,  -5.6357,     29.8,     -3.24,   -5.64,  1);  
 var pullerMatrix            = utils.MakeWorld(- 2.5264  , 8.3925    ,  -7.5892,      0,      -90,       0,     1); 
 var rightButtonMatrix       = utils.MakeWorld(- 2.97    , 8.7853    ,  -6.6902,      0,        0,      90,     1);  
-var rightFlipperMatrix      = utils.MakeWorld(- 1.307   , 8.4032    ,  -5.6357,    150,       -3.24,   -5.64,  1);  
+var rightFlipperMatrix      = utils.MakeWorld(- 1.307   , 8.4032    ,  -5.6357,    150,      0,   0,  1);  
 var leftSlingshotMatrix     = utils.MakeWorld(1.1       , 8.5       ,       -4.50626,   180,     0,       0,     1);           
 var rightSlingshotMatrix    = utils.MakeWorld(- 1.6     , 8.5       ,   -4.50626,   90,     0,       0,     1);           
 var cubeMatrix              = utils.MakeWorld(1         , 9.8       ,        2.5,           0,       -5.8,       0,     0.5);  
@@ -141,15 +141,15 @@ function fromPlaneToSpace(ballX, ballY) {
 }
 
 function getLeftFlipperMatrix(angle) {
-        return utils.MakeWorld(0.6906,      8.4032,     -5.6357,       - angle,      -3.24,      -5.64,      1);
+        return utils.MakeWorld(0.6906,      8.4032,     -5.6357,       - angle,      0,      -5.4,      1);
 }
 
 function getRightFlipperMatrix(angle) {
-    return utils.MakeWorld(-1.307, 8.4032, -5.6357, - angle, -3.24, -5.64, 1);
+    return utils.MakeWorld(-1.307, 8.4032, -5.6357, - angle, -5.4, 0, 1);
 }
 
 function getPullerMatrix(power) {
-    return utils.MakeWorld(-2.5264, 8.3925, -7.1 - power, 0, -90, 0, 1);
+    return utils.MakeWorld(-2.5264, 8.3925, -7.1 - Math.min(power, 0.3), 0, -90, 0, 1);
 }
 
 function getRightCoinMatrix(angle, scale, z) {

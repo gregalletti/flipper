@@ -56,6 +56,21 @@ function startGame() {
         if(pulling)
             power += 0.05;
 
+        if(rampMovingUp){
+            rampY = Math.min(rampY + 0.004, 1);
+            if(rampY == 1){
+                rampMovingUp = false;
+                rampActive = true;
+            }
+        }
+        if(rampMovingDown){
+            rampY = Math.max(rampY - 0.004, 0);
+            if(rampY == 0){
+                rampMovingDown = false;
+                rampActive = false;
+            }
+        }
+
         //handle flippers movement and set some values
         if(rightFlipper.moving){
             rightFlipper.angle = Math.max(rightFlipper.angle - 2, 150);

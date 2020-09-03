@@ -200,7 +200,7 @@ class Ball {
                 else{
                     this.coords = this.coords.add(new Vec2(0, - error));
                     if(this.onRamp)
-                        console.log("OLE")
+                        rampMovingDown = true;
                 }
             }
         }

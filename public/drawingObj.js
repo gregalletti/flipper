@@ -164,7 +164,11 @@ var pLight = new PointLight(new Vec2(0,0),"#000000", "");
 var cubeZ = 0;
 var showBall = true;
 var ballBounce = 0;
-var rampActive = true;
+var rampActive = false;
+var rampMovingUp = false;
+var rampMovingDown = false;
+var rampY = 0;
+var goalReached = false;
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -233,7 +237,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/SuperMarioPinballTemp6.png";
+  image.src = baseDir + "textures/SuperMarioPinballTemp7.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -292,6 +296,11 @@ function main() {
     }  
     
     function changeDigitTexture() {
+
+    if(currentScore > 1000 && !goalReached){
+      rampMovingUp = true;
+      goalReached = true;
+    }
 
     let rightDigitMeshesArray = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];
     let leftDigitMeshesArray = [dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh];
@@ -381,6 +390,7 @@ function main() {
     matricesArray[38] = getDotMatrix(power, 7); 
     matricesArray[39] = getDotMatrix(power, 8); 
     matricesArray[40] = getDotMatrix(power, 9); 
+    matricesArray[41] = getRampMatrix(rampY); 
 
 
     //---------------------------------------- LIGHTS DEFINITION
@@ -644,7 +654,7 @@ async function init() {
     line7Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line8Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line9Mesh = await utils.loadMesh(modelsDir + "dot.obj");
-    rampMesh = await utils.loadMesh(modelsDir + "Ramp.obj");
+    rampMesh = await utils.loadMesh(modelsDir + "Ramp2.obj");
 
 
 

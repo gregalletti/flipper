@@ -103,6 +103,12 @@ var angleZ1 = 0;
 var angleY2 = 0;
 var angleZ2 = 0;
 
+function getRampMatrix(rampY){
+    //y = 9.7 is the right value when visible
+    //rampY goes from 0 to 1, then again from 1 to 0
+    return utils.MakeWorld(-2     , 8.7 + rampY       ,   3.8,  -90,     -5.4,       0,     1);
+}
+
 function getDotMatrix(power, number) {
 
     if(power > number * 1.6){

@@ -10,6 +10,7 @@ class Ball {
 
     active = false;
     speed = new Vec2(0, 0);
+    onRamp = false;
 
     launch() {
         if (!this.ready || ball2.active)
@@ -26,8 +27,17 @@ class Ball {
     move() {
        
         //apply some gravity to the ball speed
-        this.speed = this.speed.add(new Vec2(0, - 0.017));
+        this.speed = this.speed.add(new Vec2(0, - 0.019));
 
+        if(this.coords.x > RAMP_START_X && this.coords.y > RAMP_START_Y && rampActive)
+            this.onRamp = true;
+        else
+            this.onRamp = false;
+
+            /*
+        if(this.onRamp)
+            this.speed = this.speed.add(new Vec2(0, - 0.017));
+*/
         if(this.coords.x > 4.5)
             this.speed = this.speed.add(new Vec2(- 0.005, 0));
 
@@ -117,6 +127,45 @@ class Ball {
         
     }
 
+    checkRampCollision(ramp) {
+
+        var fromLeft = true;
+        if(this.coords.x >= ramp.start.x)
+            fromLeft = false;
+        
+            // get dot product of the line and circle
+        let dot = (((this.coords.x - ramp.start.x)*(ramp.end.x - ramp.start.x)) + ((this.coords.y - ramp.start.y)*(ramp.end.y - ramp.start.y)) ) / Math.pow(ramp.length, 2);
+    
+        // find the closest point on the line
+        let closestX = ramp.start.x + (dot * (ramp.end.x - ramp.start.x));
+        let closestY = ramp.start.y + (dot * (ramp.end.y - ramp.start.y));
+    
+        // get distance to closest point
+        let distX = closestX - this.coords.x;
+        let distY = closestY - this.coords.y;
+        let distance = Math.sqrt((distX * distX) + (distY * distY));
+    
+        if (distance <= BALL_RADIUS) {
+                this.handleRampCollision(ramp, closestX, closestY, distance, fromLeft);
+        }
+        return;
+  
+    }
+
+    handleRampCollision(ramp, closestX, closestY, distance, fromLeft) {
+
+        let error = BALL_RADIUS - distance;        
+
+        if(isBetweenY(ramp.start, ramp.end, closestX, closestY)){
+                
+            this.speed = this.speed.invertX().scale(WALL_BOOST);
+                
+            this.coords = fromLeft ? this.coords.add(new Vec2(-error, 0)) : this.coords = this.coords.add(new Vec2(error, 0));  
+            
+        } 
+
+    }
+
     checkWallCollision(wall) {
 
         // get dot product of the line and circle
@@ -148,8 +197,11 @@ class Ball {
                
                 if((wall.number == 1 || wall.number == 5))
                     this.coords = this.coords.add(new Vec2(0, error));
-                else
+                else{
                     this.coords = this.coords.add(new Vec2(0, - error));
+                    if(this.onRamp)
+                        console.log("OLE")
+                }
             }
         }
         else {

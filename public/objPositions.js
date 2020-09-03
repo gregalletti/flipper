@@ -35,6 +35,8 @@ var leftCoinMatrix          = utils.MakeWorld(1         , 9         ,        -2.
 var rightCoinMatrix         = utils.MakeWorld(- 1.4     , 9         ,        -2.5,           0,       90,       0,     0.5); 
 var tuboMatrix              = utils.MakeWorld(- 0.3     , 8.9       ,   -3.50626,   90,     -5.4,       0,     0.2);
 var bonusBallMatrix         = utils.MakeWorld(0         , 0         ,        0,           0,        0,       0,     1); 
+var rampMatrix              = utils.MakeWorld(-2     , 9.7       ,   3.8,  -90,     -5.4,       0,     1);
+
 var fungo1Matrix            = bumper1Matrix;
 var fungo2Matrix            = bumper2Matrix;
 var fungo3Matrix            = bumper3Matrix;
@@ -92,7 +94,8 @@ var matricesArray = [       //all -1
     line6Matrix,            //38    
     line7Matrix,            //39        
     line8Matrix,            //40    
-    line9Matrix             //41            
+    line9Matrix,            //41           
+    rampMatrix 
 ];
 
 var angleY1 = 0;
@@ -110,24 +113,38 @@ function getDotMatrix(power, number) {
     return utils.MakeWorld(0       ,    0,0,0,0,0,0);
 }
 
-function getBallMatrix(ballX, ballY, speed, active) {
+
+function getBallMatrix(ballX, ballY, speed, active, onRamp, rampActive) {
 
     angleY1 += (speed.y / BALL_RADIUS);
     angleZ1 += (speed.x / BALL_RADIUS);
-    //console.log(angleY1, angleY2)
     
     let spaceCoords = fromPlaneToSpace(ballX, ballY);
 
-    return utils.MakeWorld(spaceCoords[0], spaceCoords[1] + ballBounce, spaceCoords[2], 0, angleY1 / 2, angleZ1 / 2, active ? 1 : 0);
+    let moreY = 0;
+    if(onRamp && rampActive)
+        moreY += Math.tan(utils.degToRad(RAMP_INCLINATION)) * (ballY - RAMP_START_Y);
+    else
+        moreY = 0; 
+
+    return utils.MakeWorld(spaceCoords[0], spaceCoords[1] + ballBounce + moreY, spaceCoords[2], 0, angleY1 / 2, angleZ1 / 2, active ? 1 : 0);
     
 }
 
-function getBonusBallMatrix(ballX, ballY, active, speed) {
+function getBonusBallMatrix(ballX, ballY, active, speed, onRamp, rampActive) {
 
     angleY2 += (speed.y / BALL_RADIUS);
     angleZ2 += (speed.x / BALL_RADIUS);
 
-    return utils.MakeWorld(...fromPlaneToSpace(ballX, ballY), 0, angleY2 / 2, angleZ2 / 2, active ? 1 : 0);
+    let spaceCoords = fromPlaneToSpace(ballX, ballY);
+
+    let moreY = 0;
+    if(onRamp && rampActive)
+        moreY += Math.tan(utils.degToRad(RAMP_INCLINATION)) * (ballY - RAMP_START_Y);
+    else
+        moreY = 0; 
+
+    return utils.MakeWorld(spaceCoords[0], spaceCoords[1] + ballBounce + moreY, spaceCoords[2], 0, angleY2 / 2, angleZ2 / 2, active ? 1 : 0);
 }
 
 function fromPlaneToSpace(ballX, ballY) {

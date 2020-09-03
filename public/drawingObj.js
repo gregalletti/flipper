@@ -134,6 +134,13 @@ var line1Mesh;
 var line2Mesh;
 var line3Mesh;
 var line4Mesh;
+var line5Mesh;
+var line6Mesh;
+var line7Mesh;
+var line8Mesh;
+var line9Mesh;
+var rampMesh;
+
 
 var texture;
 
@@ -157,6 +164,7 @@ var pLight = new PointLight(new Vec2(0,0),"#000000", "");
 var cubeZ = 0;
 var showBall = true;
 var ballBounce = 0;
+var rampActive = true;
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -356,7 +364,7 @@ function main() {
     var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
 
     //get all the needed matrices (the ones for animated meshes)
-    matricesArray[0]  = getBallMatrix(ball.coords.x, ball.coords.y, ball.speed, showBall);
+    matricesArray[0]  = getBallMatrix(ball.coords.x, ball.coords.y, ball.speed, showBall, ball.onRamp, rampActive);
     matricesArray[18] = getLeftFlipperMatrix(leftFlipper.angle);
     matricesArray[19] = getPullerMatrix(Math.min(power / 50, 0.6));
     matricesArray[21] = getRightFlipperMatrix(rightFlipper.angle);
@@ -636,12 +644,13 @@ async function init() {
     line7Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line8Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line9Mesh = await utils.loadMesh(modelsDir + "dot.obj");
+    rampMesh = await utils.loadMesh(modelsDir + "Ramp.obj");
 
 
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh];
+      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh, rampMesh];
   }
   
 } 

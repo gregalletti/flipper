@@ -30,6 +30,9 @@ var wall5 = new Wall(new Vec2(3.6, 1.22), new Vec2(5, 1.22), 5);   //bottom-righ
 //let's make an array to better handle them
 var wallsList = [wall1, wall2, wall3, wall4, wall5];
 
+var ramp = new Ramp(new Vec2(RAMP_START_X, RAMP_START_Y), new Vec2(RAMP_START_X, BOARD_HEIGHT));   //left wall of the ramp
+
+
 //functions needed for lines collision to check whether the impact point is beetween the line start and end points
 function isBetweenX(p1, p2, x, y) {
     if((x >= p1.x && x <= p2.x) || (x <= p1.x && x >= p2.x))
@@ -118,6 +121,9 @@ function startGame() {
 
             ball.checkPipeCollision(pipe);
 
+            if(rampActive)
+                ball.checkRampCollision(ramp);
+
             for (let wall of wallsList)
                 ball.checkWallCollision(wall);
                 
@@ -148,6 +154,9 @@ function startGame() {
             ball2.checkCubeCollision(cube);
 
             ball2.checkPipeCollision(pipe);
+
+            if(rampActive)
+                ball.checkRampCollision(ramp);
 
             for (let wall of wallsList)
                 ball2.checkWallCollision(wall);

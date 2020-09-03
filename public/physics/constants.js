@@ -4,6 +4,10 @@ const LEFT_OFFSET = - 0.18;
 const BASE_Y = 8.53;
 const BASE_Z = - 5.97;
 const PLANE_INCLINATION = 6.51;
+const RAMP_INCLINATION = 38; //45 deg
+
+const RAMP_START_X = 3.4;
+const RAMP_START_Y = 9.7;
 
 const BOARD_WIDTH = 5;
 const BOARD_HEIGHT = 11;

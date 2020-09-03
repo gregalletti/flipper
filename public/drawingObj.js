@@ -300,6 +300,31 @@ function main() {
     if(currentScore > 1000 && !goalReached){
       rampMovingUp = true;
       goalReached = true;
+      var goalDate = new Date().getTime() + 32000;
+
+      var x = setInterval(function() {
+
+        // Get today's date and time
+        var now = new Date().getTime();
+      
+        // Find the distance between now and the count down date
+        var distance = goalDate - now;
+      
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);      
+
+        if(!rampActive)
+          clearInterval(x);
+
+        // If the count down is finished, write some text
+        if (distance <= 0) {
+          clearInterval(x);
+          rampMovingDown = true;
+          mission.innerHTML = "";
+        }
+        else
+          mission.innerHTML = "HEADSHOT THE PRINCESS: " + seconds + " s";
+
+      }, 1000);
     }
 
     let rightDigitMeshesArray = [dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh];

@@ -140,7 +140,7 @@ var line7Mesh;
 var line8Mesh;
 var line9Mesh;
 var rampMesh;
-
+var goombaMesh;
 
 var texture;
 
@@ -168,6 +168,7 @@ var rampActive = false;
 var rampMovingUp = false;
 var rampMovingDown = false;
 var rampY = 0;
+var goombaScale = 3;
 var goalReached = false;
 
 function fromHexToRGBVec(hex) {
@@ -237,7 +238,7 @@ function main() {
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   var image = new Image();
-  image.src = baseDir + "textures/SuperMarioPinballTemp7.png";
+  image.src = baseDir + "textures/SuperMarioPinballTemp8.png";
   image.onload = function () {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -279,14 +280,13 @@ function main() {
   for (let i in allMeshes)
     addMeshToScene(i);
     
+
     function changeCubeTexture() {
-      //console.log(cubeMesh.textures)
+
       if(currentCubeTex != cubeTex) {
         let newCubeMesh = cubeMesh;      
         newCubeMesh.textures = currentCubeTex;
         
-        
-        //console.log(cubeMesh.textures)
         cubeTex = currentCubeTex;
         setTimeout(() => {shouldChangeCubeTexture = true; currentCubeTex = DEFAULT_CUBE_UVS;}, 5000);
         
@@ -301,6 +301,7 @@ function main() {
       rampMovingUp = true;
       goalReached = true;
       var goalDate = new Date().getTime() + 32000;
+      play(pipeSound);
 
       var x = setInterval(function() {
 
@@ -316,13 +317,13 @@ function main() {
           clearInterval(x);
 
         // If the count down is finished, write some text
-        if (distance <= 0) {
+        if (distance <= 0 || !rampActive) {
           clearInterval(x);
           rampMovingDown = true;
           mission.innerHTML = "";
         }
         else
-          mission.innerHTML = "HEADSHOT THE PRINCESS: " + seconds + " s";
+          mission.innerHTML = "MISSION: " + seconds + "s";
 
       }, 1000);
     }
@@ -416,6 +417,7 @@ function main() {
     matricesArray[39] = getDotMatrix(power, 8); 
     matricesArray[40] = getDotMatrix(power, 9); 
     matricesArray[41] = getRampMatrix(rampY); 
+    matricesArray[42] = getGoombaMatrix(); 
 
 
     //---------------------------------------- LIGHTS DEFINITION
@@ -562,6 +564,8 @@ var heart;
 var star;
 var yahoo;
 var bonusSound;
+var kick;
+var goombaSound;
 
 //custom function to set and play sounds
 function play(sound) {
@@ -598,6 +602,8 @@ async function init() {
   ballLoad = document.getElementById("ball_load");
   yahoo = document.getElementById("yahoo");
   bonusSound = document.getElementById("bonus");
+  kick = document.getElementById("kick");
+  goombaSound = document.getElementById("goomba");
 
   setupCanvas();
   loadShaders();
@@ -680,12 +686,11 @@ async function init() {
     line8Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line9Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     rampMesh = await utils.loadMesh(modelsDir + "Ramp2.obj");
-
-
+    goombaMesh = await utils.loadMesh(modelsDir + "Goomba.obj");
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh, rampMesh];
+      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh, rampMesh, goombaMesh];
   }
   
 } 

@@ -27,17 +27,17 @@ class Ball {
     move() {
        
         //apply some gravity to the ball speed
-        this.speed = this.speed.add(new Vec2(0, - 0.019));
+        this.speed = this.speed.add(new Vec2(0, - 0.017));
 
         if(this.coords.x > RAMP_START_X && this.coords.y > RAMP_START_Y && rampActive)
             this.onRamp = true;
         else
             this.onRamp = false;
 
-            /*
+            
         if(this.onRamp)
-            this.speed = this.speed.add(new Vec2(0, - 0.017));
-*/
+            this.speed = this.speed.add(new Vec2(0, - 0.002));
+
         if(this.coords.x > 4.5)
             this.speed = this.speed.add(new Vec2(- 0.005, 0));
 
@@ -158,8 +158,7 @@ class Ball {
 
         if(isBetweenY(ramp.start, ramp.end, closestX, closestY)){
                 
-            this.speed = this.speed.invertX().scale(WALL_BOOST);
-                
+            this.speed = this.speed.invertX().scale(WALL_BOOST);                
             this.coords = fromLeft ? this.coords.add(new Vec2(-error, 0)) : this.coords = this.coords.add(new Vec2(error, 0));  
             
         } 
@@ -199,8 +198,11 @@ class Ball {
                     this.coords = this.coords.add(new Vec2(0, error));
                 else{
                     this.coords = this.coords.add(new Vec2(0, - error));
-                    if(this.onRamp)
+                    if(this.onRamp){
+                        //goomba tuonato
                         rampMovingDown = true;
+                        play(goombaSound);
+                    }
                 }
             }
         }
@@ -264,7 +266,7 @@ class Ball {
         let distance = this.coords.sub(pipe.position);
         
         if (distance.getModule() <= BALL_RADIUS + PIPE_RADIUS) {
-            play(pipeSound);
+            play(kick);
             this.handlePipeCollision(pipe, distance);
             pLight.makeLight(pipe.position, "#000000", "pipe");
         }

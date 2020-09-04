@@ -28,8 +28,8 @@ var leftFlipperMatrix       = utils.MakeWorld(0.6906    , 8.4032    ,  -5.6357, 
 var pullerMatrix            = utils.MakeWorld(- 2.5264  , 8.3925    ,  -7.5892,      0,      -90,       0,     1); 
 var rightButtonMatrix       = utils.MakeWorld(- 2.97    , 8.7853    ,  -6.6902,      0,        0,      90,     1);  
 var rightFlipperMatrix      = utils.MakeWorld(- 1.307   , 8.4032    ,  -5.6357,    150,      0,   0,  1);  
-var leftSlingshotMatrix     = utils.MakeWorld(1.1       , 8.5       ,       -4.50626,   180,     0,       0,     1);           
-var rightSlingshotMatrix    = utils.MakeWorld(- 1.6     , 8.5       ,   -4.50626,   90,     0,       0,     1);           
+var leftSlingshotMatrix     = utils.MakeWorld(1.1       , 8.5       ,       -4.50626,   180,     -5.4,      0,     1);           
+var rightSlingshotMatrix    = utils.MakeWorld(- 1.6     , 8.5       ,   -4.50626,   90,     0,       -5.4,     1);           
 var cubeMatrix              = utils.MakeWorld(1         , 9.8       ,        2.5,           0,       -5.8,       0,     0.5);  
 var leftCoinMatrix          = utils.MakeWorld(1         , 9         ,        -2.5,           0,       90,       0,     0.5); 
 var rightCoinMatrix         = utils.MakeWorld(- 1.4     , 9         ,        -2.5,           0,       90,       0,     0.5); 
@@ -51,6 +51,7 @@ var line7Matrix             = line1Matrix;
 var line8Matrix             = line1Matrix;
 var line9Matrix             = line1Matrix;
 
+var goombaMatrix            = utils.MakeWorld(- 2  , 10.7    ,    4,      0,     -90,       0,     1);
 
 
 var matricesArray = [       //all -1
@@ -95,13 +96,18 @@ var matricesArray = [       //all -1
     line7Matrix,            //39        
     line8Matrix,            //40    
     line9Matrix,            //41           
-    rampMatrix 
+    rampMatrix,             //42
+    goombaMatrix            //43
 ];
 
 var angleY1 = 0;
 var angleZ1 = 0;
 var angleY2 = 0;
 var angleZ2 = 0;
+
+function getGoombaMatrix(){
+    return utils.MakeWorld(- 1.98  , 10.5    ,    4.02,      0,     -94,       0,     3 - goombaScale);
+}
 
 function getRampMatrix(rampY){
     //y = 9.7 is the right value when visible

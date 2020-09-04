@@ -58,6 +58,9 @@ function startGame() {
 
         if(rampMovingUp){
             rampY = Math.min(rampY + 0.004, 1);
+            goombaScale = Math.max(goombaScale - 0.01, 0);
+            console.log(goombaScale)
+
             if(rampY == 1){
                 rampMovingUp = false;
                 rampActive = true;
@@ -65,9 +68,12 @@ function startGame() {
         }
         if(rampMovingDown){
             rampY = Math.max(rampY - 0.004, 0);
+            goombaScale = Math.min(goombaScale + 0.01, 3);
+            console.log(goombaScale)
             if(rampY == 0){
                 rampMovingDown = false;
                 rampActive = false;
+                mission.innerHTML = "";
             }
         }
 
@@ -171,7 +177,7 @@ function startGame() {
             ball2.checkPipeCollision(pipe);
 
             if(rampActive)
-                ball.checkRampCollision(ramp);
+                ball2.checkRampCollision(ramp);
 
             for (let wall of wallsList)
                 ball2.checkWallCollision(wall);

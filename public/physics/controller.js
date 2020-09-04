@@ -6,8 +6,8 @@ var ball2 = new Ball(new Vec2(2.3, 9.3), true, 1);   //bonus ball
 var rightFlipper = new Flipper(new Vec2(3.6, 1.22), 0, 210);
 var leftFlipper = new Flipper(new Vec2(1.4, 1.22), 1, -30);
 
-var rightSlingshot = new Slingshot(new Vec2(3.4, 1.7), new Vec2(4.3, 2.7), new Vec2(4.3, 1.7), 0);
-var leftSlingshot = new Slingshot(new Vec2(1.4, 1.7), new Vec2(0.5, 2.7), new Vec2(0.5, 1.7), 1);
+var rightSlingshot = new Slingshot(new Vec2(3.35, 1.65), new Vec2(4.35, 2.65), new Vec2(4.35, 1.65), 0);
+var leftSlingshot = new Slingshot(new Vec2(1.5, 1.65), new Vec2(0.5, 2.65), new Vec2(0.5, 1.65), 1);
 
 var rightCoin = new Coin(new Vec2(3.6, 4,2));
 var leftCoin = new Coin(new Vec2(1.2, 4.2));

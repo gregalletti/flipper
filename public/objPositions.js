@@ -170,11 +170,11 @@ function fromPlaneToSpace(ballX, ballY) {
 }
 
 function getLeftFlipperMatrix(angle) {
-        return utils.MakeWorld(0.6906,      8.4032,     -5.6357,       - angle,      0,      -5.4,      1);
+        return utils.MakeWorld(0.6906,      8.4032,     -5.6357,       - angle,      0,      0,      1);
 }
 
 function getRightFlipperMatrix(angle) {
-    return utils.MakeWorld(-1.307, 8.4032, -5.6357, - angle, -5.4, 0, 1);
+    return utils.MakeWorld(-1.307, 8.4032, -5.6357, - angle, 0, 0, 1);
 }
 
 function getPullerMatrix(power) {

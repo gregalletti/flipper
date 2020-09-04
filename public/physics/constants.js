@@ -24,7 +24,7 @@ const FLIPPER_ANGULAR_SPEED = 8; //   radians / seconds
 const FLIPPER_DOWN_ANGLE = - 30;
 const FLIPPER_UP_ANGLE = 30;
 
-const FLIPPER_BOOST = 0.8;
+const FLIPPER_BOOST = 0.5;
 const BUMPER_BOOST = 1.5;
 const WALL_BOOST = 0.8;
 const SLINGSHOT_HYP_BOOST = 1.5;

@@ -20,7 +20,7 @@ const CUBE_EDGE = 1;
 const FLIPPER_LENGTH = 0.9;
 const FLIPPER_HEIGHT = 0.265;
 
-const FLIPPER_ANGULAR_SPEED = 9; //   radians / seconds
+const FLIPPER_ANGULAR_SPEED = 8; //   radians / seconds
 const FLIPPER_DOWN_ANGLE = - 30;
 const FLIPPER_UP_ANGLE = 30;
 

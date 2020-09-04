@@ -16,7 +16,7 @@ class Flipper {
         if (this.stall)
             return 0;
         if (this.number == 1)
-            return utils.degToRad(-FLIPPER_ANGULAR_SPEED);
+            return utils.degToRad(- FLIPPER_ANGULAR_SPEED);
         return utils.degToRad(FLIPPER_ANGULAR_SPEED);
     }
 

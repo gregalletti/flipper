@@ -59,7 +59,6 @@ function startGame() {
         if(rampMovingUp){
             rampY = Math.min(rampY + 0.004, 1);
             goombaScale = Math.max(goombaScale - 0.01, 0);
-            console.log(goombaScale)
 
             if(rampY == 1){
                 rampMovingUp = false;
@@ -69,7 +68,6 @@ function startGame() {
         if(rampMovingDown){
             rampY = Math.max(rampY - 0.004, 0);
             goombaScale = Math.min(goombaScale + 0.01, 3);
-            console.log(goombaScale)
             if(rampY == 0){
                 rampMovingDown = false;
                 rampActive = false;

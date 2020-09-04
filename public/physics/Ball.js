@@ -576,11 +576,18 @@ class Ball {
         let vT = newSpeed.dot(T);
         let vN = newSpeed.dot(N);
         
-        vN += impactPointSpeed.getModule() + FLIPPER_BOOST;
+        if(impactPointSpeed.getModule() != 0){
+        vN += 5 * impactPointSpeed.getModule() + FLIPPER_BOOST;
+
         newSpeed = N.scale(vN).add(T.scale(vT));
 
         this.speed = newSpeed.sub(impactPointSpeed);
+        }
+        else{
+            newSpeed = T.scale(vT).sub(N.scale(vN));
 
+        this.speed = newSpeed;
+        }
 
 
 /*      INSTABILE, COMMENTATA PER ORA

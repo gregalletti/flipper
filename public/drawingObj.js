@@ -1,88 +1,105 @@
-// PATHS
+//relevant paths to resources
 var program;
 var baseDir;
 var shaderDir;
 var modelsDir;
 
-// CAMERA STATUS AND CONTROLS:
-var viewX = 0;
-var viewY = 13.5;
-var viewZ = - 9.5;
-var viewPhi = - 30;
-var viewTheta = 180;
+//camera variables
+var cx = 0;
+var cy = 13.5;
+var cz = - 9.5;
+var elev = - 30;
+var ang = 180;
 
-var viewXSpeed = 0;
-var viewYSpeed = 0;
-var viewZSpeed = 0;
-var viewPhiSpeed = 0;
-var viewThetaSpeed = 0;
+var vx = 0;
+var vy = 0;
+var vz = 0;
+var rvx = 0;
+var rvy = 0;
 
-const positionSpeed = 1;
-const angleSpeed = 10;
-const camera_dt = 1 / 30;
+window.addEventListener("keydown", keyFunctionDown);
+window.addEventListener("keyup", keyFunctionUp);
 
-const viewXIncreaseKey = "ArrowLeft";   // move left
-const viewXDecreaseKey = "ArrowRight";  // move right
-const viewYIncreaseKey = "s";           // move down
-const viewYDecreaseKey = "w";           // move up
-const viewZIncreaseKey = "ArrowUp";     // move forward
-const viewZDecreaseKey = "ArrowDown";   // move backward
-const viewPhiIncreaseKey = "r";         // tilt up
-const viewPhiDecreaseKey = "f";         // tilt down
-const viewThetaIncreaseKey = "q";       // pan left
-const viewThetaDecreaseKey = "e";       // pan right
+function keyFunctionDown(e) {
+  switch (e.key) {
+    case "a":
+      vx = 0.2;
+      break;
 
-window.addEventListener("keydown", handlePress);
-window.addEventListener("keyup", handleRelease);
+    case "d":
+      vx = - 0.2;
+      break;
 
-function handlePress(event) {
-  switch (event.key) {
-    case viewXIncreaseKey:
-      return viewXSpeed = positionSpeed;
-    case viewXDecreaseKey:
-      return viewXSpeed = -positionSpeed;
-    case viewYIncreaseKey:
-      return viewYSpeed = positionSpeed;
-    case viewYDecreaseKey:
-      return viewYSpeed = -positionSpeed;
-    case viewZIncreaseKey:
-      return viewZSpeed = positionSpeed;
-    case viewZDecreaseKey:
-      return viewZSpeed = -positionSpeed;
-    case viewPhiIncreaseKey:
-      return viewPhiSpeed = angleSpeed;
-    case viewPhiDecreaseKey:
-      return viewPhiSpeed = -angleSpeed;
-    case viewThetaIncreaseKey:
-      return viewThetaSpeed = angleSpeed;
-    case viewThetaDecreaseKey:
-      return viewThetaSpeed = -angleSpeed;
+    case "ArrowUp":
+      vy = 0.2;
+      break;
+
+    case "ArrowDown":
+      vy = - 0.2;
+      break;
+
+    case "w":
+      vz = 0.2;
+      break;
+
+    case "s":
+      vz = - 0.2;
+      break;
+
+    case "q":
+      rvx = 1;
+      break;
+
+    case "e":
+      rvx = - 1;
+      break;
+
+    case "ArrowRight":
+      rvy = 1;
+      break;
+
+    case "ArrowLeft":
+      rvy = - 1;
+      break;
+
     default:
-      return 0;
+      break;
   }
 }
 
-function handleRelease(event) {
-  switch (event.key) {
-    case viewXIncreaseKey:
-    case viewXDecreaseKey:
-      return viewXSpeed = 0;
-    case viewYIncreaseKey:
-    case viewYDecreaseKey:
-      return viewYSpeed = 0;
-    case viewZIncreaseKey:
-    case viewZDecreaseKey:
-      return viewZSpeed = 0;
-    case viewPhiIncreaseKey:
-    case viewPhiDecreaseKey:
-      return viewPhiSpeed = 0;
-    case viewThetaIncreaseKey:
-    case viewThetaDecreaseKey:
-      return viewThetaSpeed = 0;
+
+function keyFunctionUp(e) {
+  switch (e.key) {
+    case "a":
+    case "d":
+      vx = 0;
+      break;
+
+    case "ArrowDown":
+    case "ArrowUp":
+      vy = 0;
+      break;
+
+    case "s":
+    case "w":
+      vz = 0;
+      break;
+
+    case "q":
+    case "e":
+      rvx = 0;
+      break;
+
+    case "ArrowLeft":
+    case "ArrowRight":
+      rvy = 0;
+      break;
+
     default:
-      return 0;
+      break;
   }
 }
+
 
 // MESHES
 var ballMesh;
@@ -381,22 +398,21 @@ function main() {
     changeCubeTexture();
     changeDigitTexture();
 
-    //move camera
-    viewX += viewXSpeed * camera_dt;
-    viewY += viewYSpeed * camera_dt;
-    viewZ += viewZSpeed * camera_dt;
-    viewPhi += viewPhiSpeed * camera_dt;
-    viewTheta += viewThetaSpeed * camera_dt;
-
     //run the game logic
     startGame();
 
     // clear scene
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
+    
+    //move camera and calculate view matrix
+    cx += vx;
+    cy += vy;
+    cz += vz;
+    elev += rvx;
+    ang += rvy;
 
-    //calculate view matrix
-    var viewMatrix = utils.MakeView(viewX, viewY, viewZ, viewPhi, viewTheta);
+    var viewMatrix = utils.MakeView(cx, cy, cz, elev, ang);
 
     //get all the needed matrices (the ones for animated meshes)
     matricesArray[0]  = getBallMatrix(ball.coords.x, ball.coords.y, ball.speed, showBall, ball.onRamp, rampActive);

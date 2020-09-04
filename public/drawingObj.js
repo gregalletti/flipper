@@ -23,43 +23,43 @@ window.addEventListener("keyup", keyFunctionUp);
 function keyFunctionDown(e) {
   switch (e.key) {
     case "a":
-      vx = 0.2;
+      vx = CAMERA_COORDS_SPEED;
       break;
 
     case "d":
-      vx = - 0.2;
+      vx = - CAMERA_COORDS_SPEED;
       break;
 
     case "ArrowUp":
-      vy = 0.2;
+      vy = CAMERA_COORDS_SPEED;
       break;
 
     case "ArrowDown":
-      vy = - 0.2;
+      vy = - CAMERA_COORDS_SPEED;
       break;
 
     case "w":
-      vz = 0.2;
+      vz = CAMERA_COORDS_SPEED;
       break;
 
     case "s":
-      vz = - 0.2;
+      vz = - CAMERA_COORDS_SPEED;
       break;
 
     case "q":
-      rvx = 1;
+      rvx = CAMERA_ANGLE_SPEED;
       break;
 
     case "e":
-      rvx = - 1;
+      rvx = - CAMERA_ANGLE_SPEED;
       break;
 
     case "ArrowRight":
-      rvy = 1;
+      rvy = CAMERA_ANGLE_SPEED;
       break;
 
     case "ArrowLeft":
-      rvy = - 1;
+      rvy = - CAMERA_ANGLE_SPEED;
       break;
 
     default:

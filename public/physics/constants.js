@@ -1,3 +1,6 @@
+const CAMERA_COORDS_SPEED = 0.1;
+const CAMERA_ANGLE_SPEED = 1;
+
 const X_OFFSET = 2.2;
 const Y_OFFSET = 6.7;
 const LEFT_OFFSET = - 0.18;

@@ -10,7 +10,6 @@ var cy = 13.5;
 var cz = - 9.5;
 var elev = - 30;
 var ang = 180;
-
 var vx = 0;
 var vy = 0;
 var vz = 0;
@@ -127,26 +126,15 @@ var pullerMesh;
 var rightButtonMesh;
 var rightFlipperMesh;
 var slingshotLeftMesh;
-var slingshotRightMesh;
-var obstacleLeftMesh;
-var obstacleRightMesh;
-var poleLeftMesh;
-var poleCenterMesh;
-var poleRightMesh;
-var bigSphereMesh;
-var tunnelRightMesh;
-var tunnelLeftMesh;
+var slingshotRightMesh;;
 var tunnelUpMesh;
 var cubeMesh;
 var leftCoinMesh;
 var rightCoinMesh;
-var objects;
-
 var fungo1Mesh;
 var fungo2Mesh;
 var fungo3Mesh;
-var tuboMesh;
-
+var tubeMesh;
 var line1Mesh;
 var line2Mesh;
 var line3Mesh;
@@ -158,7 +146,6 @@ var line8Mesh;
 var line9Mesh;
 var rampMesh;
 var goombaMesh;
-
 var texture;
 
 //score variables
@@ -187,6 +174,28 @@ var rampMovingDown = false;
 var rampY = 0;
 var goombaScale = 3;
 var goalReached = false;
+
+// sounds
+var startSound;
+var gameoverSound;
+var flipperUp;
+var flipperDown;
+var coinSound;
+var bumperSound;
+var pipeSound;
+var fallenBallSound;
+var magicCubeSound;
+var slingshotSound;
+var letsGo;
+var pullerSound;
+var ballRoll;
+var ballLoad;
+var heart;
+var star;
+var yahoo;
+var bonusSound;
+var kick;
+var goombaSound;
 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
@@ -436,7 +445,7 @@ function main() {
     matricesArray[42] = getGoombaMatrix(); 
 
 
-    //---------------------------------------- LIGHTS DEFINITION
+    /*---------------------------------------- LIGHTS DEFINITION ----------------------------------------*/
 
     // DIRECTIONAL LIGHTS
     // var dirLightAlpha = utils.degToRad(-60);
@@ -483,10 +492,6 @@ function main() {
     var x = pLight.position.x;
     var y = 9.853;//parseFloat(document.getElementById("y").value/1000);
     var z = pLight.position.y;
-
-    //var x = parseFloat(document.getElementById("x").value/1000);
-    //var y = parseFloat(document.getElementById("y").value/1000);
-    //var z = parseFloat(document.getElementById("z").value/1000);
 
     let realCoords = fromPlaneToSpace(x,z);
 
@@ -562,26 +567,6 @@ function main() {
   drawScene();
 }
 
-var startSound;
-var gameoverSound;
-var flipperUp;
-var flipperDown;
-var coinSound;
-var bumperSound;
-var pipeSound;
-var fallenBallSound;
-var magicCubeSound;
-var slingshotSound;
-var letsGo;
-var pullerSound;
-var ballRoll;
-var ballLoad;
-var heart;
-var star;
-var yahoo;
-var bonusSound;
-var kick;
-var goombaSound;
 
 //custom function to set and play sounds
 function play(sound) {
@@ -662,7 +647,7 @@ async function init() {
   async function loadMeshes() {
     ballMesh = await utils.loadMesh(modelsDir + "Ball.obj");
     bonusBallMesh = await utils.loadMesh(modelsDir + "BonusBall.obj");
-    bodyMesh = await utils.loadMesh(modelsDir + "BodyFigo2.obj");
+    bodyMesh = await utils.loadMesh(modelsDir + "Body.obj");
     bumper1Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper2Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
     bumper3Mesh = await utils.loadMesh(modelsDir + "bumper1.obj");
@@ -685,13 +670,13 @@ async function init() {
     rightFlipperMesh = await utils.loadMesh(modelsDir + "RightFlipper.obj");
     slingshotLeftMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
     slingshotRightMesh = await utils.loadMesh(modelsDir + "LeftSlingshot.obj");
-    cubeMesh = await utils.loadMesh(modelsDir + "NewMagicCube.obj");
-    leftCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
-    rightCoinMesh = await utils.loadMesh(modelsDir + "coinForseGiusto.obj");
-    fungo1Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
-    fungo2Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
-    fungo3Mesh = await utils.loadMesh(modelsDir + "fungo1.obj");
-    tuboMesh = await utils.loadMesh(modelsDir + "tubega.obj");
+    cubeMesh = await utils.loadMesh(modelsDir + "MagicCube.obj");
+    leftCoinMesh = await utils.loadMesh(modelsDir + "Coin.obj");
+    rightCoinMesh = await utils.loadMesh(modelsDir + "Coin.obj");
+    fungo1Mesh = await utils.loadMesh(modelsDir + "Mushroom.obj");
+    fungo2Mesh = await utils.loadMesh(modelsDir + "Mushroom.obj");
+    fungo3Mesh = await utils.loadMesh(modelsDir + "Mushroom.obj");
+    tubeMesh = await utils.loadMesh(modelsDir + "tubega.obj");
     line1Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line2Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line3Mesh = await utils.loadMesh(modelsDir + "dot.obj");
@@ -701,12 +686,12 @@ async function init() {
     line7Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line8Mesh = await utils.loadMesh(modelsDir + "dot.obj");
     line9Mesh = await utils.loadMesh(modelsDir + "dot.obj");
-    rampMesh = await utils.loadMesh(modelsDir + "Ramp2.obj");
+    rampMesh = await utils.loadMesh(modelsDir + "Ramp.obj");
     goombaMesh = await utils.loadMesh(modelsDir + "Goomba.obj");
 
     allMeshes = [ballMesh, bodyMesh, bumper1Mesh, bumper2Mesh, bumper3Mesh, dl1Mesh, dl2Mesh, dl3Mesh, dl4Mesh, dl5Mesh, dl6Mesh,
       dr1Mesh, dr2Mesh, dr3Mesh, dr4Mesh, dr5Mesh, dr6Mesh, leftButtonMesh, leftFlipperMesh, pullerMesh, rightButtonMesh, rightFlipperMesh, 
-      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tuboMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh, rampMesh, goombaMesh];
+      slingshotLeftMesh, slingshotRightMesh, cubeMesh, leftCoinMesh, rightCoinMesh, fungo1Mesh, fungo2Mesh, fungo3Mesh, tubeMesh, bonusBallMesh, line1Mesh, line2Mesh, line3Mesh, line4Mesh, line5Mesh, line6Mesh, line7Mesh, line8Mesh, line9Mesh, rampMesh, goombaMesh];
   }
   
 } 

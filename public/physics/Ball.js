@@ -33,7 +33,6 @@ class Ball {
             this.onRamp = true;
         else
             this.onRamp = false;
-
             
         if(this.onRamp)
             this.speed = this.speed.add(new Vec2(0, - 0.002));
@@ -42,6 +41,12 @@ class Ball {
             this.speed = this.speed.add(new Vec2(- 0.005, 0));
 
         if(this.coords.x < 0.5)
+            this.speed = this.speed.add(new Vec2(0.005, 0));
+
+        if(this.coords.x > 3.6 && this.coords.y < 1.65)
+            this.speed = this.speed.add(new Vec2(- 0.005, 0));
+
+        if(this.coords.x < 1.4 && this.coords.y < 1.65)
             this.speed = this.speed.add(new Vec2(0.005, 0));
 
         //limit the ball speed to avoid crazy things
@@ -490,14 +495,19 @@ class Ball {
 
         //calculate normal and tangent vector 
         let N = slingshot.side == 0 ? new Vec2(- Math.sqrt(2) / 2, Math.sqrt(2) / 2) : new Vec2(Math.sqrt(2) / 2, Math.sqrt(2) / 2);
-        let T = N.normal();
 
+        this.speed = N.scale(this.speed.getModule()).scale(SLINGSHOT_HYP_BOOST);
+
+
+        /*
         //speed is composed by the 2 components
         let oldSpeed = this.speed.scale(SLINGSHOT_HYP_BOOST);
         let vT = oldSpeed.dot(T);
         let vN = oldSpeed.dot(N);
 
         this.speed = (T.scale(vT).sub(N.scale(vN)));
+        */
+
             currentScore += SLINGSHOT_HYP_SCORE;
 
             let errorXY = error * Math.sqrt(2) / 2;

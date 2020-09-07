@@ -42,13 +42,13 @@ class Ball {
 
         if(this.coords.x < 0.5)
             this.speed = this.speed.add(new Vec2(0.005, 0));
-
+/*
         if(this.coords.x > 3.6 && this.coords.y < 1.65)
             this.speed = this.speed.add(new Vec2(- 0.005, 0));
 
         if(this.coords.x < 1.4 && this.coords.y < 1.65)
             this.speed = this.speed.add(new Vec2(0.005, 0));
-
+*/
         //limit the ball speed to avoid crazy things
         if(this.speed.getModule() > BALL_MAX_SPEED)
             this.speed = this.speed.normalize().scale(BALL_MAX_SPEED);
@@ -206,6 +206,7 @@ class Ball {
                     if(this.onRamp){
                         //goomba tuonato
                         rampMovingDown = true;
+                        currentScore += 50000;
                         play(goombaSound);
                     }
                 }
@@ -593,6 +594,7 @@ class Ball {
         }
         else{
             this.speed = T.scale(vT).sub(N.scale(vN).scale(FLIPPER_BOOST));
+            console.log("dio")
 
             if(this.speed.getModule() < BALL_MIN_SPEED)
                 this.speed = this.speed.normalize().scale(BALL_MIN_SPEED);

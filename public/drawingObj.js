@@ -524,7 +524,6 @@ function main() {
       gl.uniform4fv(pointLightPositionHandle, pointLightPosTransformed);
       gl.uniform3fv(pointLightColorHandle, pointLightColor);
   
-      //gl.uniform3fv(eyePositionHandle, eyePositionTransformed);
       gl.uniform3fv(materialDiffColorHandle, materialColor);
       gl.uniform3fv(lightColorHandleA, directionalLightColorA);
       gl.uniform3fv(lightDirectionHandleA, lightDirectionTransformedA);

@@ -33,7 +33,7 @@ var wallsList = [wall1, wall2, wall3, wall4, wall5];
 var ramp = new Ramp(new Vec2(RAMP_START_X, RAMP_START_Y), new Vec2(RAMP_START_X, BOARD_HEIGHT));   //left wall of the ramp
 
 
-//functions needed for lines collision to check whether the impact point is beetween the line start and end points
+//functions needed for lines collision to check whether the impact point is between the line start and end points
 function isBetweenX(p1, p2, x, y) {
     if((x >= p1.x && x <= p2.x) || (x <= p1.x && x >= p2.x))
         return true;    

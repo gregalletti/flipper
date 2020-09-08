@@ -487,7 +487,7 @@ function main() {
     var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
     var lightDirectionTransformedRecord = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightRecord));
     
-    // POINT LIGHT(s)
+    // POINT LIGHT
 
     //Position
     var x = pLight.position.x;
@@ -508,7 +508,7 @@ function main() {
     var pointLightPosTransformationMatrix = viewMatrix;
     var pointLightPosTransformed = utils.multiplyMatrixVector(pointLightPosTransformationMatrix,pointLightPos);
 
-    // TEST
+    // Passing "static" parameters to the shaders
 
     gl.uniform4fv(pointLightPositionHandle, pointLightPosTransformed);
     gl.uniform3fv(pointLightColorHandle, pointLightColor);

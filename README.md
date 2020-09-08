@@ -19,7 +19,7 @@ Every part of the interactable world has been approximated to a geometrical figu
 - coins = circles
 - pipe = cylinder
 ## Physics
-We have implemented a basic collision detection mechanics applying the rules of Analytical Mechanics.
+We have implemented a basic collision detection mechanism applying the rules of Analytical Mechanics.
 
 You can play the final version by clicking [HERE][heroku] 
 

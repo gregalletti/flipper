@@ -448,26 +448,26 @@ function main() {
     // directional light A
     var dirLightAlphaA = utils.degToRad(document.getElementById("dirLightAlphaA").value);//20
     var dirLightBetaA = utils.degToRad(document.getElementById("dirLightBetaA").value);//32
-    
+
+    var directionalLightA = [Math.cos(180 - dirLightAlphaA) * Math.cos(dirLightBetaA),
+      Math.sin(180 - dirLightAlphaA),
+      Math.cos(180 - dirLightAlphaA) * Math.sin(dirLightBetaA)
+      ];
+    var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);//#4d4d4d
+
     // directional light B
     var dirLightAlphaB = utils.degToRad(document.getElementById("dirLightAlphaB").value);//55
     var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);//95
+
+    var directionalLightB = [-Math.cos(dirLightAlphaB) * Math.cos(dirLightBetaB),
+      Math.sin(dirLightAlphaB),
+      Math.cos(dirLightAlphaB) * Math.sin(dirLightBetaB)
+      ];
+    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);//5e5e5e
     
     // directional light "Record"
     var dirLightAlphaRecord = utils.degToRad(Math.random()*1000%360);
 	  var dirLightBetaRecord = utils.degToRad(Math.random()*1000%360);
-
-    var directionalLightA = [Math.cos(180 - dirLightAlphaA) * Math.cos(dirLightBetaA),
-    Math.sin(180 - dirLightAlphaA),
-    Math.cos(180 - dirLightAlphaA) * Math.sin(dirLightBetaA)
-    ];
-    var directionalLightColorA = fromHexToRGBVec(document.getElementById("LAlightColor").value);//#4d4d4d
-
-    var directionalLightB = [-Math.cos(dirLightAlphaB) * Math.cos(dirLightBetaB),
-    Math.sin(dirLightAlphaB),
-    Math.cos(dirLightAlphaB) * Math.sin(dirLightBetaB)
-    ];
-    var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);//5e5e5e
 
     //directional light "Record" assumes a different color and direction each frame, its effect lasts for 
     // a very short time in order to simulate the blinking lights of a pinball when the player

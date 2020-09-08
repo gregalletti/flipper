@@ -508,6 +508,22 @@ function main() {
     var pointLightPosTransformationMatrix = viewMatrix;
     var pointLightPosTransformed = utils.multiplyMatrixVector(pointLightPosTransformationMatrix,pointLightPos);
 
+    // TEST
+
+    gl.uniform4fv(pointLightPositionHandle, pointLightPosTransformed);
+    gl.uniform3fv(pointLightColorHandle, pointLightColor);
+
+    gl.uniform3fv(materialDiffColorHandle, materialColor);
+    gl.uniform3fv(lightColorHandleA, directionalLightColorA);
+    gl.uniform3fv(lightDirectionHandleA, lightDirectionTransformedA);
+    gl.uniform3fv(lightColorHandleB, directionalLightColorB);
+    gl.uniform3fv(lightDirectionHandleB, lightDirectionTransformedB);
+    gl.uniform3fv(ambientLightColorHandle, ambientLight);
+    gl.uniform3fv(ambientMaterialHandle, ambientMat);
+    gl.uniform3fv(specularColorHandle, specularColor);
+    gl.uniform1f(shineSpecularHandle, specShine);
+
+
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
       var worldViewMatrix = utils.multiplyMatrices(viewMatrix, matricesArray[i]);
@@ -520,19 +536,6 @@ function main() {
       gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
       
       gl.uniformMatrix4fv(worldViewMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(worldViewMatrix));
-
-      gl.uniform4fv(pointLightPositionHandle, pointLightPosTransformed);
-      gl.uniform3fv(pointLightColorHandle, pointLightColor);
-  
-      gl.uniform3fv(materialDiffColorHandle, materialColor);
-      gl.uniform3fv(lightColorHandleA, directionalLightColorA);
-      gl.uniform3fv(lightDirectionHandleA, lightDirectionTransformedA);
-      gl.uniform3fv(lightColorHandleB, directionalLightColorB);
-      gl.uniform3fv(lightDirectionHandleB, lightDirectionTransformedB);
-      gl.uniform3fv(ambientLightColorHandle, ambientLight);
-      gl.uniform3fv(ambientMaterialHandle, ambientMat);
-      gl.uniform3fv(specularColorHandle, specularColor);
-      gl.uniform1f(shineSpecularHandle, specShine);
       
       if (i >= 5 && i <=16)   
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#ff0000"));
@@ -543,7 +546,7 @@ function main() {
       else if ((pLight.hit == "cube" && i == 24))
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#e1ff00"));
       else if ((pLight.hit == "pipe" && i == 30))
-          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#00ff00"));
+          gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#006600"));
       else
           gl.uniform3fv(emissionColorHandle, fromHexToRGBVec("#000000"));
 

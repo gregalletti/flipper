@@ -197,6 +197,8 @@ var bonusSound;
 var kick;
 var goombaSound;
 
+//this functions converts a string representing a color in hexadecimal in the form "#xxxxxx"
+//to a vector of 3 component: R, G, B. 
 function fromHexToRGBVec(hex) {
   col = hex.substring(1,7);
     R = parseInt(col.substring(0,2) ,16) / 255;
@@ -230,7 +232,6 @@ function main() {
   var uvAttributeLocation = gl.getAttribLocation(program, "in_uv");
   var textLocation = gl.getUniformLocation(program, "in_texture");
   var matrixLocation = gl.getUniformLocation(program, "matrix");
-  var eyePositionHandle = gl.getUniformLocation(program, "eyePos");    
   var ambientLightColorHandle = gl.getUniformLocation(program, "ambientLightCol");
   var ambientMaterialHandle = gl.getUniformLocation(program, "ambientMat");
   var materialDiffColorHandle = gl.getUniformLocation(program, 'mDiffColor');
@@ -246,15 +247,10 @@ function main() {
   var lightColorHandleRecord = gl.getUniformLocation(program, 'lightColorRecord');
 
   var normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
-  var viewMatrixPositionHandle = gl.getUniformLocation(program, 'viewMatrix');
-  var dirMatrixPositionHandle = gl.getUniformLocation(program, 'dirMatrix');
+  var worldViewMatrixPositionHandle = gl.getUniformLocation(program, 'worldViewMatrix');
 
-  var pointLightPositionHandle2 = gl.getUniformLocation(program, 'pLPos');
-  var pointLightPositionHandle = gl.getUniformLocation(program, 'pLWM');
-  var pointLightPositionHandle3 = gl.getUniformLocation(program, 'pLVM');
+  var pointLightPositionHandle = gl.getUniformLocation(program, 'pLPos');
   var pointLightColorHandle = gl.getUniformLocation(program, 'pLCol');
-  var pointLightTargetHandle = gl.getUniformLocation(program, 'pLTarget');
-  var pointLightDecayHandle = gl.getUniformLocation(program, 'pLDecay');
 
   var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
   
@@ -448,15 +444,16 @@ function main() {
     /*---------------------------------------- LIGHTS DEFINITION ----------------------------------------*/
 
     // DIRECTIONAL LIGHTS
-    // var dirLightAlpha = utils.degToRad(-60);
-    //var dirLightBeta = utils.degToRad(50);
 
+    // directional light A
     var dirLightAlphaA = utils.degToRad(document.getElementById("dirLightAlphaA").value);//20
     var dirLightBetaA = utils.degToRad(document.getElementById("dirLightBetaA").value);//32
     
+    // directional light B
     var dirLightAlphaB = utils.degToRad(document.getElementById("dirLightAlphaB").value);//55
     var dirLightBetaB = utils.degToRad(document.getElementById("dirLightBetaB").value);//95
     
+    // directional light "Record"
     var dirLightAlphaRecord = utils.degToRad(Math.random()*1000%360);
 	  var dirLightBetaRecord = utils.degToRad(Math.random()*1000%360);
 
@@ -472,23 +469,27 @@ function main() {
     ];
     var directionalLightColorB = fromHexToRGBVec(document.getElementById("LBlightColor").value);//5e5e5e
 
+    //directional light "Record" assumes a different color and direction each frame, its effect lasts for 
+    // a very short time in order to simulate the blinking lights of a pinball when the player
+    //sets a new high score record
     var directionalLightRecord = [-Math.cos(dirLightAlphaRecord) * Math.cos(dirLightBetaRecord),
     Math.sin(dirLightAlphaRecord),
     Math.cos(dirLightAlphaRecord) * Math.sin(dirLightBetaRecord)
     ];
     var directionalLightColorRecord = [Math.random(), Math.random(), Math.random()];//5e5e5e
 
-    // CAMERA SPACE TRANSFORMATION OF LIGHTS 
+    // CAMERA SPACE TRANSFORMATION OF DIRECTIONAL LIGHTS 
 
     // Directional Lights direction transformation to Camera Space
     var lightDirMatrix = utils.sub3x3from4x4(utils.invertMatrix(utils.transposeMatrix(viewMatrix)));
+
     var lightDirectionTransformedA = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightA));
     var lightDirectionTransformedB = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightB));
-    
     var lightDirectionTransformedRecord = utils.normalizeVec3(utils.multiplyMatrix3Vector3(lightDirMatrix, directionalLightRecord));
     
     // POINT LIGHT(s)
 
+    //Position
     var x = pLight.position.x;
     var y = 9.853;//parseFloat(document.getElementById("y").value/1000);
     var z = pLight.position.y;
@@ -500,10 +501,13 @@ function main() {
 
     var pointLightPos = [x,y,z,1.0];
 
+    //Color
     var pointLightColor = fromHexToRGBVec(pLight.color);
 
+    //Transform the point light's Position into Camera Space
     var pointLightPosTransformationMatrix = viewMatrix;
     var pointLightPosTransformed = utils.multiplyMatrixVector(pointLightPosTransformationMatrix,pointLightPos);
+
     // add each mesh / object with its world matrix
     for (var i = 0; i < allMeshes.length; i++) {
       var worldViewMatrix = utils.multiplyMatrices(viewMatrix, matricesArray[i]);
@@ -514,12 +518,10 @@ function main() {
 
       gl.uniformMatrix4fv(matrixLocation, gl.FALSE, utils.transposeMatrix(projectionMatrix));
       gl.uniformMatrix4fv(normalMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(normalTransformationMatrix));
-      gl.uniformMatrix3fv(dirMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(pointLightPosTransformationMatrix));
       
-      gl.uniformMatrix4fv(viewMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(worldViewMatrix));
+      gl.uniformMatrix4fv(worldViewMatrixPositionHandle, gl.FALSE, utils.transposeMatrix(worldViewMatrix));
 
-      gl.uniform4fv(pointLightPositionHandle2, pointLightPosTransformed);
-      gl.uniformMatrix4fv(pointLightPositionHandle3, gl.FALSE, utils.transposeMatrix(viewMatrix));
+      gl.uniform4fv(pointLightPositionHandle, pointLightPosTransformed);
       gl.uniform3fv(pointLightColorHandle, pointLightColor);
   
       //gl.uniform3fv(eyePositionHandle, eyePositionTransformed);

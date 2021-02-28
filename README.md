@@ -4,6 +4,7 @@ Pinball game in WebGL 2.0 for the [Computer Graphics][computer-graphics] course 
 
 ## Overview
 > Design and implementation of a pinball game. The game inspired is inspired to Super Mario. <br/>
+
 ## Game Design
 > The idea of the game is to score as many points as possible hitting the obstacles and avoiding the ball from falling down. <br/>
 There is a Magic Cube that gives either an additional life point or a bonus ball. <br/>
